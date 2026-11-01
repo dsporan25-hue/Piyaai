@@ -31,7 +31,6 @@ PIYA AI is an online, voice-controlled personal AI assistant built with React, T
 └── src/
     ├── App.tsx                                   # Main screen & full-screen assistant orchestrator
     ├── components/
-    │   ├── AndroidArchitecturePanel.tsx          # Android capability & APK build inspector
     │   ├── AssistantFullScreen.tsx               # Full-screen character & confirmation dock
     │   ├── MemoryVaultPanel.tsx                  # User-approved preference & history manager
     │   ├── PhoneActionsPanel.tsx                 # Contacts, YouTube, battery, torch, alarms & notes

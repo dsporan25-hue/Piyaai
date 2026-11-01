@@ -167,6 +167,7 @@ export const DEFAULT_CONTACTS: ContactItem[] = [
 export const UI_COPY: Record<
   LanguageCode,
   {
+    heroTitle: string;
     subtitle: string;
     startAssistant: string;
     voiceReady: string;
@@ -182,58 +183,69 @@ export const UI_COPY: Record<
     confirmBtn: string;
     cancelBtn: string;
     welcomeGreeting: string;
+    tabHome: string;
+    tabActions: string;
+    tabMemory: string;
     samplePrompts: string[];
   }
 > = {
   bn: {
-    subtitle: "ব্যক্তিগত এআই ভয়েস অ্যাসিস্ট্যান্ট · বাংলা ও হিন্দি",
-    startAssistant: "Start Assistant",
-    voiceReady: "কণ্ঠস্বর প্রস্তুত",
-    voiceListening: "পিয়া শুনছে...",
-    voiceThinking: "পিয়া চিন্তা করছে...",
+    heroTitle: "আপনার ব্যক্তিগত ভয়েস অ্যাসিস্ট্যান্ট",
+    subtitle: "বাংলা ও হিন্দিতে কথা বলুন, প্রশ্ন করুন এবং ফোনের কাজ নিয়ন্ত্রণ করুন।",
+    startAssistant: "পিয়া চালু করুন",
+    voiceReady: "কথা শুনতে প্রস্তুত",
+    voiceListening: "পিয়া শুনছে... (কথা শেষে পাঠান চাপুন)",
+    voiceThinking: "পিয়া উত্তর দিচ্ছে...",
     voiceSpeaking: "পিয়া কথা বলছে...",
     micDenied: "মাইক্রোফোন অনুমতি প্রয়োজন",
     offlineMode: "ইন্টারনেট সংযোগ নেই",
-    tapToSpeak: "কথা বলতে ট্যাপ করুন",
-    stopListening: "শোনা শেষ করুন",
-    stopSpeaking: "কথা থামান",
-    typePlaceholder: "বাংলায় বলুন বা লিখুন (যেমন: পরাণকে কল করো)...",
-    confirmBtn: "নিশ্চিত করুন",
-    cancelBtn: "বাতিল করুন",
+    tapToSpeak: "বলুন",
+    stopListening: "পাঠান",
+    stopSpeaking: "থামান",
+    typePlaceholder: "পিয়াকে বলুন বা লিখুন...",
+    confirmBtn: "হ্যাঁ, করুন",
+    cancelBtn: "বাতিল",
     welcomeGreeting:
-      "নমস্কার! আমি পিয়া এআই। আপনি বাংলায় বা হিন্দিতে আমার সাথে কথা বলতে পারেন, প্রশ্ন করতে পারেন বা ফোনের কাজ করতে বলতে পারেন।",
+      "নমস্কার! আমি পিয়া এআই। মাইক্রোফোন ট্যাপ করে বাংলায় বা হিন্দিতে কথা বলুন।",
+    tabHome: "পিয়া এআই",
+    tabActions: "ফোন কন্ট্রোল",
+    tabMemory: "মেমোরি",
     samplePrompts: [
       "পরাণকে কল করো",
       "রহিমকে ফোন লাগাও",
-      "ফোনের ব্যাটারি কত শতাংশ আছে?",
-      "ইউটিউবে রবীন্দ্রসংগীত সার্চ করো",
+      "ইউটিউবে নতুন বাংলা গান চালাও",
       "সকাল ৭টা ৩০ মিনিটে অ্যালার্ম সেট করো",
+      "ফোনের ব্যাটারি কত শতাংশ?",
       "মনে রাখো আমার প্রিয় রঙ নীল",
     ],
   },
   hi: {
-    subtitle: "व्यक्तिगत एआई वॉयस असिस्टेंट · बंगाली और हिन्दी",
-    startAssistant: "Start Assistant",
-    voiceReady: "आवाज़ तैयार है",
-    voiceListening: "पिया सुन रही है...",
-    voiceThinking: "पिया सोच रही है...",
+    heroTitle: "आपकी व्यक्तिगत वॉयस असिस्टेंट",
+    subtitle: "हिन्दी और बंगाली में बात करें, सवाल पूछें और फ़ोन के कार्य नियंत्रित करें।",
+    startAssistant: "पिया शुरू करें",
+    voiceReady: "सुनने के लिए तैयार",
+    voiceListening: "पिया सुन रही है... (बोलकर भेजें दबाएँ)",
+    voiceThinking: "पिया उत्तर दे रही है...",
     voiceSpeaking: "पिया बोल रही है...",
     micDenied: "माइक्रोफ़ोन अनुमति आवश्यक है",
     offlineMode: "इंटरनेट कनेक्शन नहीं है",
-    tapToSpeak: "बोलने के लिए टैप करें",
-    stopListening: "सुनना समाप्त करें",
-    stopSpeaking: "बोलना रोकें",
-    typePlaceholder: "हिन्दी में बोलें या लिखें (जैसे: Poran को कॉल करो)...",
-    confirmBtn: "पुष्टि करें",
+    tapToSpeak: "बोलें",
+    stopListening: "भेजें",
+    stopSpeaking: "रोकें",
+    typePlaceholder: "पिया से बोलें या लिखें...",
+    confirmBtn: "हाँ, करें",
     cancelBtn: "रद्द करें",
     welcomeGreeting:
-      "नमस्ते! मैं पिया एआई हूँ। आप मुझसे हिन्दी या बंगाली में बात कर सकते हैं, सवाल पूछ सकते हैं या फ़ोन के कार्य करवा सकते हैं।",
+      "नमस्ते! मैं पिया एआई हूँ। माइक्रोफ़ोन टैप करके हिन्दी या बंगाली में बात करें।",
+    tabHome: "पिया एआई",
+    tabActions: "फ़ोन कंट्रोल",
+    tabMemory: "मेमोरी",
     samplePrompts: [
       "Poran को कॉल करो",
       "Rahim को फ़ोन लगाओ",
-      "फ़ोन की बैटरी कितनी बची है?",
-      "YouTube पर Arijit Singh के गाने खोजो",
+      "YouTube पर Arijit Singh के गाने चलाओ",
       "सुबह 7 बजकर 30 मिनट का अलार्म लगाओ",
+      "फ़ोन की बैटरी कितनी है?",
       "याद रखो मुझे मसाला चाय पसंद है",
     ],
   },

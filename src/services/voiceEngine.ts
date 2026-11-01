@@ -4,8 +4,15 @@ export type MicPermissionState = "prompt" | "granted" | "denied" | "unsupported"
 
 export interface LipSyncFrame {
   mouthOpen: number; // 0.0 to 1.0
-  mouthSpread: number; // 0.0 to 1.0 (vowel brightness)
+  mouthSpread: number; // 0.0 to 1.0
   energy: number; // 0.0 to 1.0
+}
+
+export interface RecordedVoicePayload {
+  audioBase64: string;
+  mimeType: string;
+  byteSize: number;
+  webFallbackTranscript: string;
 }
 
 interface SpeechRecognitionAlternativeLike {
@@ -35,6 +42,73 @@ interface SpeechRecognitionInstance {
   abort: () => void;
 }
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || "").replace(/\/+$/, "");
+
+export function resolveApiUrl(path: string): string {
+  if (path.startsWith("http://") || path.startsWith("https://")) return path;
+  return `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+/**
+ * Safe JSON fetch helper that NEVER throws `Unexpected token '<', "<!doctype "... is not valid JSON`.
+ */
+export async function fetchApiJson<T>(
+  endpoint: string,
+  init: RequestInit = {},
+  timeoutMs = 22000
+): Promise<{ ok: boolean; status: number; data: T }> {
+  const controller = new AbortController();
+  const externalSignal = init.signal;
+
+  const onExternalAbort = () => controller.abort();
+  if (externalSignal) {
+    if (externalSignal.aborted) {
+      controller.abort();
+    } else {
+      externalSignal.addEventListener("abort", onExternalAbort, { once: true });
+    }
+  }
+
+  const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const resp = await fetch(resolveApiUrl(endpoint), {
+      ...init,
+      signal: controller.signal,
+    });
+
+    const rawText = await resp.text();
+    const trimmed = rawText.trimStart();
+
+    if (trimmed.startsWith("<")) {
+      throw new Error(
+        resp.status === 504 || resp.status === 502
+          ? "সার্ভার থেকে উত্তর আসতে দেরি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।"
+          : "সার্ভারের সাথে সংযোগে সাময়িক সমস্যা হয়েছে। পৃষ্ঠাটি রিফ্রেশ করে আবার চেষ্টা করুন।"
+      );
+    }
+
+    let parsed: T;
+    try {
+      parsed = (trimmed ? JSON.parse(trimmed) : {}) as T;
+    } catch {
+      throw new Error("সার্ভার থেকে অপ্রত্যাশিত রেসপন্স এসেছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+    }
+
+    return { ok: resp.ok, status: resp.status, data: parsed };
+  } catch (err) {
+    if (controller.signal.aborted && !externalSignal?.aborted) {
+      throw new Error("নেটওয়ার্ক ধীর গতির কারণে সময় শেষ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+    }
+    throw err;
+  } finally {
+    window.clearTimeout(timer);
+    if (externalSignal) {
+      externalSignal.removeEventListener("abort", onExternalAbort);
+    }
+  }
+}
+
 export async function queryMicrophonePermission(): Promise<MicPermissionState> {
   if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
     return "unsupported";
@@ -59,7 +133,7 @@ export async function requestExplicitMicrophoneAccess(): Promise<{
   if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) {
     return {
       state: "unsupported",
-      error: "Microphone capture is not supported in this browser/WebView.",
+      error: "এই ব্রাউজারে মাইক্রোফোন সাপোর্ট নেই।",
     };
   }
   try {
@@ -72,7 +146,7 @@ export async function requestExplicitMicrophoneAccess(): Promise<{
     return {
       state: isDenied ? "denied" : "prompt",
       error: isDenied
-        ? "Microphone permission was denied. Please grant Microphone access in browser or Android App Settings."
+        ? "মাইক্রোফোন অনুমতি দেওয়া হয়নি। ব্রাউজার বা ফোন সেটিংস থেকে Microphone Allow করুন।"
         : msg,
     };
   }
@@ -86,9 +160,14 @@ function blobToBase64(blob: Blob): Promise<string> {
       const commaIdx = result.indexOf(",");
       resolve(commaIdx >= 0 ? result.slice(commaIdx + 1) : result);
     };
-    reader.onerror = () => reject(new Error("Failed to read recorded audio."));
+    reader.onerror = () => reject(new Error("অডিও ডেটা পড়া যায়নি।"));
     reader.readAsDataURL(blob);
   });
+}
+
+function isAndroidEnvironment(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /android/i.test(navigator.userAgent);
 }
 
 export class PiyaVoiceEngine {
@@ -103,8 +182,8 @@ export class PiyaVoiceEngine {
   private inputAnalyser: AnalyserNode | null = null;
   private inputMonitorFrame = 0;
 
-  private outputAudioCtx: AudioContext | null = null;
-  private outputAudioEl: HTMLAudioElement | null = null;
+  private sharedPlaybackCtx: AudioContext | null = null;
+  private activeBufferSource: AudioBufferSourceNode | null = null;
   private outputAnalyser: AnalyserNode | null = null;
   private outputAnimFrame = 0;
   private synthFallbackInterval = 0;
@@ -113,6 +192,31 @@ export class PiyaVoiceEngine {
   private isRecording = false;
   private speechDetectedAt = 0;
   private lastLoudFrameAt = 0;
+
+  /**
+   * Unlocks Web Audio & pre-loads system TTS voices synchronously during a user tap gesture
+   * so mobile Android browsers never block voice playback after async API responses.
+   */
+  public unlockAudioOnGesture(): void {
+    try {
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) {
+        if (!this.sharedPlaybackCtx || this.sharedPlaybackCtx.state === "closed") {
+          this.sharedPlaybackCtx = new AudioCtx();
+        }
+        if (this.sharedPlaybackCtx.state === "suspended") {
+          this.sharedPlaybackCtx.resume().catch(() => {});
+        }
+      }
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.getVoices();
+      }
+    } catch {
+      // Ignore audio context init issues
+    }
+  }
 
   public async startListeningSession(options: {
     language: LanguageCode;
@@ -125,18 +229,37 @@ export class PiyaVoiceEngine {
     }
 
     this.stopSpeaking();
+    this.unlockAudioOnGesture();
 
     if (!navigator.mediaDevices?.getUserMedia) {
-      throw new Error("Microphone access is not supported in this environment.");
+      throw new Error("এই ব্রাউজারে মাইক্রোফোন সাপোর্ট নেই।");
     }
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      audio: {
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
-      },
-    });
+    let stream: MediaStream;
+    try {
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: 1,
+        },
+      });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "";
+      if (/denied|notallowed|permission/i.test(msg)) {
+        throw new Error(
+          options.language === "hi"
+            ? "माइक्रोफ़ोन की अनुमति नहीं मिली। कृपया ब्राउज़र में Microphone Allow करें।"
+            : "মাইক্রোফোন অনুমতি পাওয়া যায়নি। অনুগ্রহ করে ব্রাউজারে Microphone Allow করুন।"
+        );
+      }
+      throw new Error(
+        options.language === "hi"
+          ? "माइक्रोफ़ोन चालू नहीं हो सका। कृपया फिर से प्रयास करें।"
+          : "মাইক্রোফোন চালু করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।"
+      );
+    }
 
     this.mediaStream = stream;
     this.audioChunks = [];
@@ -146,42 +269,55 @@ export class PiyaVoiceEngine {
     this.speechDetectedAt = 0;
     this.lastLoudFrameAt = performance.now();
 
-    // Setup input level analyser + gentle auto-silence detection
+    // Time-domain RMS voice activity detector (works accurately across Android & Desktop mics)
     const AudioCtx =
       window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
     this.inputAudioCtx = new AudioCtx();
+    if (this.inputAudioCtx.state === "suspended") {
+      await this.inputAudioCtx.resume().catch(() => {});
+    }
+
     const source = this.inputAudioCtx.createMediaStreamSource(stream);
     this.inputAnalyser = this.inputAudioCtx.createAnalyser();
-    this.inputAnalyser.fftSize = 256;
+    this.inputAnalyser.fftSize = 512;
     source.connect(this.inputAnalyser);
 
-    const freqData = new Uint8Array(this.inputAnalyser.frequencyBinCount);
+    const timeDomain = new Uint8Array(this.inputAnalyser.fftSize);
     const sessionStartedAt = performance.now();
+    let noiseFloor = 0.008;
 
     const monitorInput = () => {
       if (!this.isRecording || !this.inputAnalyser) return;
-      this.inputAnalyser.getByteFrequencyData(freqData);
-      let sum = 0;
-      for (let i = 0; i < freqData.length; i++) {
-        sum += freqData[i];
+      this.inputAnalyser.getByteTimeDomainData(timeDomain);
+
+      let sumSquares = 0;
+      for (let i = 0; i < timeDomain.length; i++) {
+        const sample = (timeDomain[i] - 128) / 128;
+        sumSquares += sample * sample;
       }
-      const avg = sum / (freqData.length * 255);
-      const normalized = Math.min(1, avg * 3.2);
-      options.onInputLevel?.(normalized);
+      const rms = Math.sqrt(sumSquares / timeDomain.length);
+      const visualLevel = Math.min(1, rms * 6.5);
+      options.onInputLevel?.(visualLevel);
 
       const now = performance.now();
-      if (normalized > 0.14) {
-        if (!this.speechDetectedAt) this.speechDetectedAt = now;
+      const adaptiveThreshold = Math.max(0.02, Math.min(0.055, noiseFloor * 2.4));
+
+      if (rms > adaptiveThreshold) {
+        if (!this.speechDetectedAt) {
+          this.speechDetectedAt = now;
+        }
         this.lastLoudFrameAt = now;
+      } else if (!this.speechDetectedAt) {
+        noiseFloor = noiseFloor * 0.94 + rms * 0.06;
       }
 
-      // Auto-finish after user has spoken for >=400ms and paused for 1650ms, or max 16s cap
+      // Fast auto-finish: after >= 300ms of speech followed by 950ms pause, or 14s max cap
       if (
         (this.speechDetectedAt > 0 &&
-          now - this.speechDetectedAt > 450 &&
-          now - this.lastLoudFrameAt > 1650) ||
-        now - sessionStartedAt > 16000
+          now - this.speechDetectedAt > 300 &&
+          now - this.lastLoudFrameAt > 950) ||
+        now - sessionStartedAt > 14000
       ) {
         options.onAutoSilenceStop?.();
         return;
@@ -191,7 +327,7 @@ export class PiyaVoiceEngine {
     };
     this.inputMonitorFrame = requestAnimationFrame(monitorInput);
 
-    // Start MediaRecorder for reliable Gemini server-side transcription
+    // Compact 24kbps speech encoding for fast mobile 4G upload
     const preferredMime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus")
       ? "audio/webm;codecs=opus"
       : MediaRecorder.isTypeSupported("audio/webm")
@@ -200,64 +336,68 @@ export class PiyaVoiceEngine {
       ? "audio/mp4"
       : "";
 
-    this.mediaRecorder = preferredMime
-      ? new MediaRecorder(stream, { mimeType: preferredMime })
-      : new MediaRecorder(stream);
+    const recorderOptions: MediaRecorderOptions = preferredMime
+      ? { mimeType: preferredMime, audioBitsPerSecond: 24000 }
+      : { audioBitsPerSecond: 24000 };
+
+    try {
+      this.mediaRecorder = new MediaRecorder(stream, recorderOptions);
+    } catch {
+      this.mediaRecorder = new MediaRecorder(stream);
+    }
 
     this.mediaRecorder.ondataavailable = (ev) => {
       if (ev.data && ev.data.size > 0) {
         this.audioChunks.push(ev.data);
       }
     };
-    this.mediaRecorder.start(250);
+    this.mediaRecorder.start(150);
 
-    // Also start live Web Speech Recognition in parallel for instant live preview if supported
-    const SpeechRecConstructor =
-      (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionInstance })
-        .SpeechRecognition ||
-      (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionInstance })
-        .webkitSpeechRecognition;
+    // IMPORTANT: Never start webkitSpeechRecognition alongside MediaRecorder on Android!
+    // On Android OS, SpeechRecognition steals exclusive hardware mic access and mutes MediaRecorder.
+    if (!isAndroidEnvironment()) {
+      const SpeechRecConstructor =
+        (window as unknown as { SpeechRecognition?: new () => SpeechRecognitionInstance })
+          .SpeechRecognition ||
+        (window as unknown as { webkitSpeechRecognition?: new () => SpeechRecognitionInstance })
+          .webkitSpeechRecognition;
 
-    if (SpeechRecConstructor) {
-      try {
-        const rec = new SpeechRecConstructor();
-        rec.lang = options.language === "hi" ? "hi-IN" : "bn-BD";
-        rec.continuous = true;
-        rec.interimResults = true;
-        rec.onresult = (event: SpeechRecognitionEventLike) => {
-          let finalPart = "";
-          let interimPart = "";
-          for (let i = 0; i < event.results.length; i++) {
-            const res = event.results[i];
-            if (res.isFinal) {
-              finalPart += res[0].transcript + " ";
-            } else {
-              interimPart += res[0].transcript;
+      if (SpeechRecConstructor) {
+        try {
+          const rec = new SpeechRecConstructor();
+          rec.lang = options.language === "hi" ? "hi-IN" : "bn-BD";
+          rec.continuous = true;
+          rec.interimResults = true;
+          rec.onresult = (event: SpeechRecognitionEventLike) => {
+            let finalPart = "";
+            let interimPart = "";
+            for (let i = 0; i < event.results.length; i++) {
+              const res = event.results[i];
+              if (res.isFinal) {
+                finalPart += res[0].transcript + " ";
+              } else {
+                interimPart += res[0].transcript;
+              }
             }
-          }
-          if (finalPart.trim()) this.finalWebTranscript = finalPart.trim();
-          this.interimWebTranscript = (finalPart + interimPart).trim();
-          if (this.interimWebTranscript) {
-            options.onInterimTranscript?.(this.interimWebTranscript);
-          }
-        };
-        rec.onerror = () => {
-          // Non-fatal: MediaRecorder + Gemini /api/assistant/transcribe serves as authoritative fallback
-        };
-        rec.start();
-        this.recognition = rec;
-      } catch {
-        this.recognition = null;
+            if (finalPart.trim()) this.finalWebTranscript = finalPart.trim();
+            this.interimWebTranscript = (finalPart + interimPart).trim();
+            if (this.interimWebTranscript) {
+              options.onInterimTranscript?.(this.interimWebTranscript);
+            }
+          };
+          rec.onerror = () => {};
+          rec.start();
+          this.recognition = rec;
+        } catch {
+          this.recognition = null;
+        }
       }
     }
   }
 
-  public async finishListeningAndTranscribe(preferredLanguage: LanguageCode): Promise<{
-    transcript: string;
-    detectedLanguage: LanguageCode;
-  }> {
+  public async finishListeningRawAudio(): Promise<RecordedVoicePayload | null> {
     if (!this.isRecording) {
-      return { transcript: "", detectedLanguage: preferredLanguage };
+      return null;
     }
     this.isRecording = false;
     cancelAnimationFrame(this.inputMonitorFrame);
@@ -272,65 +412,48 @@ export class PiyaVoiceEngine {
     }
 
     const recordedBlob = await new Promise<Blob | null>((resolve) => {
-      if (!this.mediaRecorder || this.mediaRecorder.state === "inactive") {
+      const recorder = this.mediaRecorder;
+      if (!recorder || recorder.state === "inactive") {
         resolve(this.audioChunks.length > 0 ? new Blob(this.audioChunks) : null);
         return;
       }
-      const mimeType = this.mediaRecorder.mimeType || "audio/webm";
-      this.mediaRecorder.onstop = () => {
+      const mimeType = recorder.mimeType || "audio/webm";
+      recorder.onstop = () => {
         const blob =
           this.audioChunks.length > 0 ? new Blob(this.audioChunks, { type: mimeType }) : null;
         resolve(blob);
       };
-      this.mediaRecorder.stop();
+      try {
+        recorder.requestData();
+      } catch {
+        // Ignore
+      }
+      recorder.stop();
     });
 
+    const webFallbackTranscript = (this.finalWebTranscript || this.interimWebTranscript).trim();
     this.cleanupInputHardware();
 
-    const webCandidate = (this.finalWebTranscript || this.interimWebTranscript).trim();
-
-    // Prefer Gemini server-side transcription whenever audio was recorded so Bengali & Hindi script accuracy is crisp,
-    // falling back to Web Speech transcript if offline or if audio blob is empty.
-    if (recordedBlob && recordedBlob.size > 800) {
-      try {
-        const audioBase64 = await blobToBase64(recordedBlob);
-        const cleanMime = (recordedBlob.type || "audio/webm").split(";")[0];
-        const resp = await fetch("/api/assistant/transcribe", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            audioBase64,
-            mimeType: cleanMime,
-            preferredLanguage,
-          }),
-        });
-
-        if (resp.ok) {
-          const data = (await resp.json()) as {
-            transcript?: string;
-            detectedLanguage?: LanguageCode;
-          };
-          const serverText = (data.transcript || "").trim();
-          if (serverText) {
-            return {
-              transcript: serverText,
-              detectedLanguage: data.detectedLanguage || preferredLanguage,
-            };
-          }
-        } else if (!webCandidate) {
-          const errData = (await resp.json().catch(() => ({}))) as { error?: string };
-          throw new Error(errData.error || "Speech transcription request failed.");
-        }
-      } catch (err) {
-        if (!webCandidate) {
-          throw err;
-        }
+    if (!recordedBlob || recordedBlob.size < 120) {
+      if (webFallbackTranscript) {
+        return {
+          audioBase64: "",
+          mimeType: "audio/webm",
+          byteSize: 0,
+          webFallbackTranscript,
+        };
       }
+      return null;
     }
 
+    const audioBase64 = await blobToBase64(recordedBlob);
+    const cleanMime = (recordedBlob.type || "audio/webm").split(";")[0].trim() || "audio/webm";
+
     return {
-      transcript: webCandidate,
-      detectedLanguage: preferredLanguage,
+      audioBase64,
+      mimeType: cleanMime,
+      byteSize: recordedBlob.size,
+      webFallbackTranscript,
     };
   }
 
@@ -388,11 +511,26 @@ export class PiyaVoiceEngine {
       return;
     }
 
-    if (options.preferNeuralTts) {
-      const abortCtrl = new AbortController();
-      this.activeTtsAbort = abortCtrl;
-      try {
-        const resp = await fetch("/api/assistant/tts", {
+    // 1. Fast Instant Device Speech Mode (Default for near-zero latency on Android & capable browsers)
+    if (!options.preferNeuralTts) {
+      const startedFast = await this.tryFastBrowserSynthesisWithWatchdog(cleanText, options);
+      if (startedFast) {
+        return;
+      }
+      // If device lacked a Bengali/Hindi speech engine or timed out, seamlessly play Neural TTS below!
+    }
+
+    // 2. Cloud Studio Neural TTS (Gemini TTS) played via unlocked Web Audio Context
+    const abortCtrl = new AbortController();
+    this.activeTtsAbort = abortCtrl;
+    try {
+      const { ok, status, data } = await fetchApiJson<{
+        audioBase64?: string;
+        mimeType?: string;
+        error?: string;
+      }>(
+        "/api/assistant/tts",
+        {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -401,47 +539,136 @@ export class PiyaVoiceEngine {
             language: options.language,
           }),
           signal: abortCtrl.signal,
-        });
+        },
+        18000
+      );
 
-        if (!resp.ok) {
-          const errJson = (await resp.json().catch(() => ({}))) as { error?: string };
-          throw new Error(errJson.error || `Neural TTS failed (${resp.status})`);
-        }
+      if (!ok || !data.audioBase64) {
+        throw new Error(data.error || `TTS service unavailable (${status})`);
+      }
 
-        const data = (await resp.json()) as { audioBase64?: string; mimeType?: string };
-        if (!data.audioBase64) {
-          throw new Error("Empty audio returned from TTS service.");
-        }
-
-        await this.playBase64WavWithLipSync(data.audioBase64, options);
-        return;
-      } catch (err) {
-        if (abortCtrl.signal.aborted) {
-          options.onEnd?.();
-          return;
-        }
-        // Attempt local Web Speech synthesis fallback if available, otherwise report error cleanly
-        const fallbackWorked = this.speakWithBrowserSynthesis(cleanText, options);
-        if (!fallbackWorked) {
-          options.onError?.(
-            err instanceof Error ? err.message : "Text-to-speech playback failed."
-          );
-          options.onEnd?.();
-        }
+      await this.playBase64WavViaAudioContext(data.audioBase64, options);
+    } catch (err) {
+      if (abortCtrl.signal.aborted) {
+        options.onEnd?.();
         return;
       }
-    }
-
-    const ok = this.speakWithBrowserSynthesis(cleanText, options);
-    if (!ok) {
-      options.onError?.(
-        "Device speech synthesis is unavailable for this language. Enable Neural Gemini TTS in Settings."
-      );
+      // Last-resort browser synthesis attempt if Neural TTS failed
+      if (options.preferNeuralTts) {
+        const fallbackOk = await this.tryFastBrowserSynthesisWithWatchdog(cleanText, options);
+        if (fallbackOk) return;
+      }
+      options.onError?.(err instanceof Error ? err.message : "ভয়েস প্লেব্যাকে সমস্যা হয়েছে।");
       options.onEnd?.();
     }
   }
 
-  private async playBase64WavWithLipSync(
+  /**
+   * Attempts instant native device TTS (<100ms latency, 0KB download) with a 700ms start watchdog.
+   * Returns true if playback started and finished (or was stopped), or false if native TTS is unavailable/silent.
+   */
+  private tryFastBrowserSynthesisWithWatchdog(
+    text: string,
+    options: {
+      language: LanguageCode;
+      speechSpeed: number;
+      onStart?: () => void;
+      onLipSyncFrame?: (frame: LipSyncFrame) => void;
+      onEnd?: () => void;
+    }
+  ): Promise<boolean> {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      return Promise.resolve(false);
+    }
+
+    const voices = window.speechSynthesis.getVoices();
+    const langPrefix = options.language === "hi" ? "hi" : "bn";
+    const matchedVoice =
+      voices.find((v) => v.lang.toLowerCase().startsWith(langPrefix) && /female|google|india|bangla|bengali|hindi/i.test(v.name)) ||
+      voices.find((v) => v.lang.toLowerCase().startsWith(langPrefix));
+
+    // On non-Android desktop browsers where voices ARE loaded, if no bn/hi voice exists at all,
+    // skip straight to Gemini Neural TTS so Bengali/Hindi isn't skipped or misread by an English voice!
+    if (!isAndroidEnvironment() && voices.length > 0 && !matchedVoice) {
+      return Promise.resolve(false);
+    }
+
+    return new Promise<boolean>((resolve) => {
+      let hasStarted = false;
+      let settled = false;
+
+      const watchdog = window.setTimeout(() => {
+        if (!hasStarted && !settled) {
+          settled = true;
+          try {
+            window.speechSynthesis.cancel();
+          } catch {
+            // Ignore
+          }
+          resolve(false);
+        }
+      }, 750);
+
+      try {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = options.language === "hi" ? "hi-IN" : "bn-BD";
+        utter.rate = Math.min(1.5, Math.max(0.75, options.speechSpeed || 1.0));
+        if (matchedVoice) {
+          utter.voice = matchedVoice;
+        }
+
+        utter.onstart = () => {
+          hasStarted = true;
+          window.clearTimeout(watchdog);
+          options.onStart?.();
+          let phase = 0;
+          this.synthFallbackInterval = window.setInterval(() => {
+            phase += 0.48;
+            const open = Math.max(0.08, Math.abs(Math.sin(phase)) * 0.72);
+            const spread = 0.35 + Math.abs(Math.cos(phase * 0.7)) * 0.4;
+            options.onLipSyncFrame?.({ mouthOpen: open, mouthSpread: spread, energy: open });
+          }, 55);
+        };
+
+        utter.onend = () => {
+          window.clearTimeout(watchdog);
+          window.clearInterval(this.synthFallbackInterval);
+          options.onLipSyncFrame?.({ mouthOpen: 0, mouthSpread: 0.35, energy: 0 });
+          if (!settled) {
+            settled = true;
+            options.onEnd?.();
+            resolve(true);
+          }
+        };
+
+        utter.onerror = () => {
+          window.clearTimeout(watchdog);
+          window.clearInterval(this.synthFallbackInterval);
+          options.onLipSyncFrame?.({ mouthOpen: 0, mouthSpread: 0.35, energy: 0 });
+          if (!settled) {
+            settled = true;
+            if (hasStarted) {
+              options.onEnd?.();
+              resolve(true);
+            } else {
+              resolve(false);
+            }
+          }
+        };
+
+        window.speechSynthesis.speak(utter);
+      } catch {
+        window.clearTimeout(watchdog);
+        if (!settled) {
+          settled = true;
+          resolve(false);
+        }
+      }
+    });
+  }
+
+  private async playBase64WavViaAudioContext(
     audioBase64: string,
     options: {
       speechSpeed: number;
@@ -456,39 +683,43 @@ export class PiyaVoiceEngine {
     for (let i = 0; i < binary.length; i++) {
       bytes[i] = binary.charCodeAt(i);
     }
-    const blob = new Blob([bytes], { type: "audio/wav" });
-    const objectUrl = URL.createObjectURL(blob);
-
-    const audio = new Audio(objectUrl);
-    audio.playbackRate = Math.min(1.5, Math.max(0.7, options.speechSpeed || 1.0));
-    this.outputAudioEl = audio;
 
     const AudioCtx =
       window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    const ctx = new AudioCtx();
-    this.outputAudioCtx = ctx;
+
+    if (!this.sharedPlaybackCtx || this.sharedPlaybackCtx.state === "closed") {
+      this.sharedPlaybackCtx = new AudioCtx();
+    }
+    const ctx = this.sharedPlaybackCtx;
     if (ctx.state === "suspended") {
       await ctx.resume().catch(() => {});
     }
 
-    const mediaSource = ctx.createMediaElementSource(audio);
+    const arrayBuffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+    const decodedBuffer = await ctx.decodeAudioData(arrayBuffer);
+
+    const bufferSource = ctx.createBufferSource();
+    bufferSource.buffer = decodedBuffer;
+    bufferSource.playbackRate.value = Math.min(1.5, Math.max(0.75, options.speechSpeed || 1.0));
+
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 256;
     analyser.smoothingTimeConstant = 0.65;
-    mediaSource.connect(analyser);
+
+    bufferSource.connect(analyser);
     analyser.connect(ctx.destination);
+
+    this.activeBufferSource = bufferSource;
     this.outputAnalyser = analyser;
 
     const bins = new Uint8Array(analyser.frequencyBinCount);
+    let playing = true;
 
     const sampleLipSync = () => {
-      if (!this.outputAnalyser || !this.outputAudioEl || this.outputAudioEl.paused) {
-        return;
-      }
+      if (!playing || !this.outputAnalyser) return;
       this.outputAnalyser.getByteFrequencyData(bins);
 
-      // Low-mid formant band (mouth jaw open) vs mid-high band (lip spread)
       let lowSum = 0;
       let midSum = 0;
       const lowCount = Math.min(20, bins.length);
@@ -509,93 +740,21 @@ export class PiyaVoiceEngine {
     };
 
     return new Promise<void>((resolve) => {
-      const cleanup = () => {
+      bufferSource.onended = () => {
+        playing = false;
         cancelAnimationFrame(this.outputAnimFrame);
         options.onLipSyncFrame?.({ mouthOpen: 0, mouthSpread: 0.35, energy: 0 });
-        URL.revokeObjectURL(objectUrl);
-        if (this.outputAudioEl === audio) {
-          this.outputAudioEl = null;
-        }
-        if (this.outputAudioCtx === ctx) {
-          ctx.close().catch(() => {});
-          this.outputAudioCtx = null;
-          this.outputAnalyser = null;
+        if (this.activeBufferSource === bufferSource) {
+          this.activeBufferSource = null;
         }
         options.onEnd?.();
         resolve();
       };
 
-      audio.onplay = () => {
-        options.onStart?.();
-        this.outputAnimFrame = requestAnimationFrame(sampleLipSync);
-      };
-      audio.onended = cleanup;
-      audio.onerror = () => {
-        options.onError?.("Audio stream playback encountered an error.");
-        cleanup();
-      };
-
-      audio.play().catch((playErr) => {
-        options.onError?.(
-          playErr instanceof Error ? playErr.message : "Browser blocked audio autoplay."
-        );
-        cleanup();
-      });
+      options.onStart?.();
+      bufferSource.start(0);
+      this.outputAnimFrame = requestAnimationFrame(sampleLipSync);
     });
-  }
-
-  private speakWithBrowserSynthesis(
-    text: string,
-    options: {
-      language: LanguageCode;
-      speechSpeed: number;
-      onStart?: () => void;
-      onLipSyncFrame?: (frame: LipSyncFrame) => void;
-      onEnd?: () => void;
-    }
-  ): boolean {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      return false;
-    }
-    try {
-      window.speechSynthesis.cancel();
-      const utter = new SpeechSynthesisUtterance(text);
-      const targetLang = options.language === "hi" ? "hi-IN" : "bn-BD";
-      utter.lang = targetLang;
-      utter.rate = Math.min(1.5, Math.max(0.7, options.speechSpeed || 1.0));
-
-      const voices = window.speechSynthesis.getVoices();
-      const matchedVoice = voices.find((v) =>
-        v.lang.toLowerCase().startsWith(options.language === "hi" ? "hi" : "bn")
-      );
-      if (matchedVoice) {
-        utter.voice = matchedVoice;
-      }
-
-      utter.onstart = () => {
-        options.onStart?.();
-        let phase = 0;
-        this.synthFallbackInterval = window.setInterval(() => {
-          phase += 0.45;
-          const open = Math.max(0.08, Math.abs(Math.sin(phase)) * 0.72);
-          const spread = 0.35 + Math.abs(Math.cos(phase * 0.7)) * 0.4;
-          options.onLipSyncFrame?.({ mouthOpen: open, mouthSpread: spread, energy: open });
-        }, 55);
-      };
-
-      const finish = () => {
-        window.clearInterval(this.synthFallbackInterval);
-        options.onLipSyncFrame?.({ mouthOpen: 0, mouthSpread: 0.35, energy: 0 });
-        options.onEnd?.();
-      };
-
-      utter.onend = finish;
-      utter.onerror = finish;
-      window.speechSynthesis.speak(utter);
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   public stopSpeaking(): void {
@@ -606,18 +765,23 @@ export class PiyaVoiceEngine {
     cancelAnimationFrame(this.outputAnimFrame);
     window.clearInterval(this.synthFallbackInterval);
 
-    if (this.outputAudioEl) {
-      this.outputAudioEl.pause();
-      this.outputAudioEl.currentTime = 0;
-      this.outputAudioEl = null;
+    if (this.activeBufferSource) {
+      try {
+        this.activeBufferSource.stop();
+        this.activeBufferSource.disconnect();
+      } catch {
+        // Ignore
+      }
+      this.activeBufferSource = null;
     }
-    if (this.outputAudioCtx) {
-      this.outputAudioCtx.close().catch(() => {});
-      this.outputAudioCtx = null;
-      this.outputAnalyser = null;
-    }
+    this.outputAnalyser = null;
+
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+      try {
+        window.speechSynthesis.cancel();
+      } catch {
+        // Ignore
+      }
     }
   }
 }

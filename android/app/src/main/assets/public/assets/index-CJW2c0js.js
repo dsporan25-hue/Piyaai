@@ -11732,21 +11732,6 @@ var CircleAlert = createLucideIcon("circle-alert", [
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var CircleCheck = createLucideIcon("circle-check", [["circle", {
-	cx: "12",
-	cy: "12",
-	r: "10",
-	key: "1mglay"
-}], ["path", {
-	d: "m9 12 2 2 4-4",
-	key: "dzmm74"
-}]]);
-/**
-* @license lucide-react v0.546.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var ExternalLink = createLucideIcon("external-link", [
 	["path", {
 		d: "M15 3h6v6",
@@ -11982,30 +11967,6 @@ var Plus = createLucideIcon("plus", [["path", {
 * This source code is licensed under the ISC license.
 * See the LICENSE file in the root directory of this source tree.
 */
-var RefreshCw = createLucideIcon("refresh-cw", [
-	["path", {
-		d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8",
-		key: "v9h5vc"
-	}],
-	["path", {
-		d: "M21 3v5h-5",
-		key: "1q7to0"
-	}],
-	["path", {
-		d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16",
-		key: "3uifl3"
-	}],
-	["path", {
-		d: "M8 16H3v5",
-		key: "1cv678"
-	}]
-]);
-/**
-* @license lucide-react v0.546.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
 var Search = createLucideIcon("search", [["path", {
 	d: "m21 21-4.34-4.34",
 	key: "14j7rj"
@@ -12043,26 +12004,6 @@ var Settings = createLucideIcon("settings", [["path", {
 	r: "3",
 	key: "1v7zrd"
 }]]);
-/**
-* @license lucide-react v0.546.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
-var ShieldAlert = createLucideIcon("shield-alert", [
-	["path", {
-		d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
-		key: "oel41y"
-	}],
-	["path", {
-		d: "M12 8v4",
-		key: "1got3b"
-	}],
-	["path", {
-		d: "M12 16h.01",
-		key: "1drbdi"
-	}]
-]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -12130,33 +12071,6 @@ var Sparkles = createLucideIcon("sparkles", [
 		key: "6kqj1y"
 	}]
 ]);
-/**
-* @license lucide-react v0.546.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
-var Square = createLucideIcon("square", [["rect", {
-	width: "18",
-	height: "18",
-	x: "3",
-	y: "3",
-	rx: "2",
-	key: "afitv7"
-}]]);
-/**
-* @license lucide-react v0.546.0 - ISC
-*
-* This source code is licensed under the ISC license.
-* See the LICENSE file in the root directory of this source tree.
-*/
-var Terminal = createLucideIcon("terminal", [["path", {
-	d: "M12 19h8",
-	key: "baeox8"
-}], ["path", {
-	d: "m4 17 6-6-6-6",
-	key: "1yngyt"
-}]]);
 /**
 * @license lucide-react v0.546.0 - ISC
 *
@@ -12338,6 +12252,16 @@ var Youtube = createLucideIcon("youtube", [["path", {
 	d: "m10 15 5-3-5-3z",
 	key: "1jp15x"
 }]]);
+/**
+* @license lucide-react v0.546.0 - ISC
+*
+* This source code is licensed under the ISC license.
+* See the LICENSE file in the root directory of this source tree.
+*/
+var Zap = createLucideIcon("zap", [["path", {
+	d: "M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z",
+	key: "1xq2db"
+}]]);
 // src/constants/themesAndCopy.ts
 var import_client = require_client();
 var PIYA_THEMES = {
@@ -12498,52 +12422,60 @@ var DEFAULT_CONTACTS = [
 ];
 var UI_COPY = {
 	bn: {
-		subtitle: "ব্যক্তিগত এআই ভয়েস অ্যাসিস্ট্যান্ট · বাংলা ও হিন্দি",
-		startAssistant: "Start Assistant",
-		voiceReady: "কণ্ঠস্বর প্রস্তুত",
-		voiceListening: "পিয়া শুনছে...",
-		voiceThinking: "পিয়া চিন্তা করছে...",
+		heroTitle: "আপনার ব্যক্তিগত ভয়েস অ্যাসিস্ট্যান্ট",
+		subtitle: "বাংলা ও হিন্দিতে কথা বলুন, প্রশ্ন করুন এবং ফোনের কাজ নিয়ন্ত্রণ করুন।",
+		startAssistant: "পিয়া চালু করুন",
+		voiceReady: "কথা শুনতে প্রস্তুত",
+		voiceListening: "পিয়া শুনছে... (কথা শেষে পাঠান চাপুন)",
+		voiceThinking: "পিয়া উত্তর দিচ্ছে...",
 		voiceSpeaking: "পিয়া কথা বলছে...",
 		micDenied: "মাইক্রোফোন অনুমতি প্রয়োজন",
 		offlineMode: "ইন্টারনেট সংযোগ নেই",
-		tapToSpeak: "কথা বলতে ট্যাপ করুন",
-		stopListening: "শোনা শেষ করুন",
-		stopSpeaking: "কথা থামান",
-		typePlaceholder: "বাংলায় বলুন বা লিখুন (যেমন: পরাণকে কল করো)...",
-		confirmBtn: "নিশ্চিত করুন",
-		cancelBtn: "বাতিল করুন",
-		welcomeGreeting: "নমস্কার! আমি পিয়া এআই। আপনি বাংলায় বা হিন্দিতে আমার সাথে কথা বলতে পারেন, প্রশ্ন করতে পারেন বা ফোনের কাজ করতে বলতে পারেন।",
+		tapToSpeak: "বলুন",
+		stopListening: "পাঠান",
+		stopSpeaking: "থামান",
+		typePlaceholder: "পিয়াকে বলুন বা লিখুন...",
+		confirmBtn: "হ্যাঁ, করুন",
+		cancelBtn: "বাতিল",
+		welcomeGreeting: "নমস্কার! আমি পিয়া এআই। মাইক্রোফোন ট্যাপ করে বাংলায় বা হিন্দিতে কথা বলুন।",
+		tabHome: "পিয়া এআই",
+		tabActions: "ফোন কন্ট্রোল",
+		tabMemory: "মেমোরি",
 		samplePrompts: [
 			"পরাণকে কল করো",
 			"রহিমকে ফোন লাগাও",
-			"ফোনের ব্যাটারি কত শতাংশ আছে?",
-			"ইউটিউবে রবীন্দ্রসংগীত সার্চ করো",
+			"ইউটিউবে নতুন বাংলা গান চালাও",
 			"সকাল ৭টা ৩০ মিনিটে অ্যালার্ম সেট করো",
+			"ফোনের ব্যাটারি কত শতাংশ?",
 			"মনে রাখো আমার প্রিয় রঙ নীল"
 		]
 	},
 	hi: {
-		subtitle: "व्यक्तिगत एआई वॉयस असिस्टेंट · बंगाली और हिन्दी",
-		startAssistant: "Start Assistant",
-		voiceReady: "आवाज़ तैयार है",
-		voiceListening: "पिया सुन रही है...",
-		voiceThinking: "पिया सोच रही है...",
+		heroTitle: "आपकी व्यक्तिगत वॉयस असिस्टेंट",
+		subtitle: "हिन्दी और बंगाली में बात करें, सवाल पूछें और फ़ोन के कार्य नियंत्रित करें।",
+		startAssistant: "पिया शुरू करें",
+		voiceReady: "सुनने के लिए तैयार",
+		voiceListening: "पिया सुन रही है... (बोलकर भेजें दबाएँ)",
+		voiceThinking: "पिया उत्तर दे रही है...",
 		voiceSpeaking: "पिया बोल रही है...",
 		micDenied: "माइक्रोफ़ोन अनुमति आवश्यक है",
 		offlineMode: "इंटरनेट कनेक्शन नहीं है",
-		tapToSpeak: "बोलने के लिए टैप करें",
-		stopListening: "सुनना समाप्त करें",
-		stopSpeaking: "बोलना रोकें",
-		typePlaceholder: "हिन्दी में बोलें या लिखें (जैसे: Poran को कॉल करो)...",
-		confirmBtn: "पुष्टि करें",
+		tapToSpeak: "बोलें",
+		stopListening: "भेजें",
+		stopSpeaking: "रोकें",
+		typePlaceholder: "पिया से बोलें या लिखें...",
+		confirmBtn: "हाँ, करें",
 		cancelBtn: "रद्द करें",
-		welcomeGreeting: "नमस्ते! मैं पिया एआई हूँ। आप मुझसे हिन्दी या बंगाली में बात कर सकते हैं, सवाल पूछ सकते हैं या फ़ोन के कार्य करवा सकते हैं।",
+		welcomeGreeting: "नमस्ते! मैं पिया एआई हूँ। माइक्रोफ़ोन टैप करके हिन्दी या बंगाली में बात करें।",
+		tabHome: "पिया एआई",
+		tabActions: "फ़ोन कंट्रोल",
+		tabMemory: "मेमोरी",
 		samplePrompts: [
 			"Poran को कॉल करो",
 			"Rahim को फ़ोन लगाओ",
-			"फ़ोन की बैटरी कितनी बची है?",
-			"YouTube पर Arijit Singh के गाने खोजो",
+			"YouTube पर Arijit Singh के गाने चलाओ",
 			"सुबह 7 बजकर 30 मिनट का अलार्म लगाओ",
+			"फ़ोन की बैटरी कितनी है?",
 			"याद रखो मुझे मसाला चाय पसंद है"
 		]
 	}
@@ -13475,6 +13407,49 @@ function playAlarmChime() {
 	} catch {}
 }
 // src/services/voiceEngine.ts
+var API_BASE_URL = "".replace(/\/+$/, "");
+function resolveApiUrl(path) {
+	if (path.startsWith("http://") || path.startsWith("https://")) return path;
+	return `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+/**
+* Safe JSON fetch helper that NEVER throws `Unexpected token '<', "<!doctype "... is not valid JSON`.
+*/
+async function fetchApiJson(endpoint, init = {}, timeoutMs = 22e3) {
+	const controller = new AbortController();
+	const externalSignal = init.signal;
+	const onExternalAbort = () => controller.abort();
+	if (externalSignal) {
+		if (externalSignal.aborted) controller.abort();
+		else externalSignal.addEventListener("abort", onExternalAbort, { once: true });
+	}
+	const timer = window.setTimeout(() => controller.abort(), timeoutMs);
+	try {
+		const resp = await fetch(resolveApiUrl(endpoint), {
+			...init,
+			signal: controller.signal
+		});
+		const trimmed = (await resp.text()).trimStart();
+		if (trimmed.startsWith("<")) throw new Error(resp.status === 504 || resp.status === 502 ? "সার্ভার থেকে উত্তর আসতে দেরি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।" : "সার্ভারের সাথে সংযোগে সাময়িক সমস্যা হয়েছে। পৃষ্ঠাটি রিফ্রেশ করে আবার চেষ্টা করুন।");
+		let parsed;
+		try {
+			parsed = trimmed ? JSON.parse(trimmed) : {};
+		} catch {
+			throw new Error("সার্ভার থেকে অপ্রত্যাশিত রেসপন্স এসেছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+		}
+		return {
+			ok: resp.ok,
+			status: resp.status,
+			data: parsed
+		};
+	} catch (err) {
+		if (controller.signal.aborted && !externalSignal?.aborted) throw new Error("নেটওয়ার্ক ধীর গতির কারণে সময় শেষ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+		throw err;
+	} finally {
+		window.clearTimeout(timer);
+		if (externalSignal) externalSignal.removeEventListener("abort", onExternalAbort);
+	}
+}
 async function queryMicrophonePermission() {
 	if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) return "unsupported";
 	try {
@@ -13488,7 +13463,7 @@ async function queryMicrophonePermission() {
 async function requestExplicitMicrophoneAccess() {
 	if (typeof navigator === "undefined" || !navigator.mediaDevices?.getUserMedia) return {
 		state: "unsupported",
-		error: "Microphone capture is not supported in this browser/WebView."
+		error: "এই ব্রাউজারে মাইক্রোফোন সাপোর্ট নেই।"
 	};
 	try {
 		(await navigator.mediaDevices.getUserMedia({ audio: true })).getTracks().forEach((t) => t.stop());
@@ -13498,7 +13473,7 @@ async function requestExplicitMicrophoneAccess() {
 		const isDenied = /denied|notallowed|permission/i.test(msg);
 		return {
 			state: isDenied ? "denied" : "prompt",
-			error: isDenied ? "Microphone permission was denied. Please grant Microphone access in browser or Android App Settings." : msg
+			error: isDenied ? "মাইক্রোফোন অনুমতি দেওয়া হয়নি। ব্রাউজার বা ফোন সেটিংস থেকে Microphone Allow করুন।" : msg
 		};
 	}
 }
@@ -13510,9 +13485,13 @@ function blobToBase64(blob) {
 			const commaIdx = result.indexOf(",");
 			resolve(commaIdx >= 0 ? result.slice(commaIdx + 1) : result);
 		};
-		reader.onerror = () => reject(/* @__PURE__ */ new Error("Failed to read recorded audio."));
+		reader.onerror = () => reject(/* @__PURE__ */ new Error("অডিও ডেটা পড়া যায়নি।"));
 		reader.readAsDataURL(blob);
 	});
+}
+function isAndroidEnvironment() {
+	if (typeof navigator === "undefined") return false;
+	return /android/i.test(navigator.userAgent);
 }
 var PiyaVoiceEngine = class {
 	constructor() {
@@ -13525,8 +13504,8 @@ var PiyaVoiceEngine = class {
 		this.inputAudioCtx = null;
 		this.inputAnalyser = null;
 		this.inputMonitorFrame = 0;
-		this.outputAudioCtx = null;
-		this.outputAudioEl = null;
+		this.sharedPlaybackCtx = null;
+		this.activeBufferSource = null;
 		this.outputAnalyser = null;
 		this.outputAnimFrame = 0;
 		this.synthFallbackInterval = 0;
@@ -13535,15 +13514,38 @@ var PiyaVoiceEngine = class {
 		this.speechDetectedAt = 0;
 		this.lastLoudFrameAt = 0;
 	}
+	/**
+	* Unlocks Web Audio & pre-loads system TTS voices synchronously during a user tap gesture
+	* so mobile Android browsers never block voice playback after async API responses.
+	*/
+	unlockAudioOnGesture() {
+		try {
+			const AudioCtx = window.AudioContext || window.webkitAudioContext;
+			if (AudioCtx) {
+				if (!this.sharedPlaybackCtx || this.sharedPlaybackCtx.state === "closed") this.sharedPlaybackCtx = new AudioCtx();
+				if (this.sharedPlaybackCtx.state === "suspended") this.sharedPlaybackCtx.resume().catch(() => {});
+			}
+			if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.getVoices();
+		} catch {}
+	}
 	async startListeningSession(options) {
 		if (this.isRecording) await this.cancelListening();
 		this.stopSpeaking();
-		if (!navigator.mediaDevices?.getUserMedia) throw new Error("Microphone access is not supported in this environment.");
-		const stream = await navigator.mediaDevices.getUserMedia({ audio: {
-			echoCancellation: true,
-			noiseSuppression: true,
-			autoGainControl: true
-		} });
+		this.unlockAudioOnGesture();
+		if (!navigator.mediaDevices?.getUserMedia) throw new Error("এই ব্রাউজারে মাইক্রোফোন সাপোর্ট নেই।");
+		let stream;
+		try {
+			stream = await navigator.mediaDevices.getUserMedia({ audio: {
+				echoCancellation: true,
+				noiseSuppression: true,
+				autoGainControl: true,
+				channelCount: 1
+			} });
+		} catch (err) {
+			const msg = err instanceof Error ? err.message : "";
+			if (/denied|notallowed|permission/i.test(msg)) throw new Error(options.language === "hi" ? "माइक्रोफ़ोन की अनुमति नहीं मिली। कृपया ब्राउज़र में Microphone Allow करें।" : "মাইক্রোফোন অনুমতি পাওয়া যায়নি। অনুগ্রহ করে ব্রাউজারে Microphone Allow করুন।");
+			throw new Error(options.language === "hi" ? "माइक्रोफ़ोन चालू नहीं हो सका। कृपया फिर से प्रयास करें।" : "মাইক্রোফোন চালু করা যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।");
+		}
 		this.mediaStream = stream;
 		this.audioChunks = [];
 		this.interimWebTranscript = "";
@@ -13553,26 +13555,31 @@ var PiyaVoiceEngine = class {
 		this.lastLoudFrameAt = performance.now();
 		const AudioCtx = window.AudioContext || window.webkitAudioContext;
 		this.inputAudioCtx = new AudioCtx();
+		if (this.inputAudioCtx.state === "suspended") await this.inputAudioCtx.resume().catch(() => {});
 		const source = this.inputAudioCtx.createMediaStreamSource(stream);
 		this.inputAnalyser = this.inputAudioCtx.createAnalyser();
-		this.inputAnalyser.fftSize = 256;
+		this.inputAnalyser.fftSize = 512;
 		source.connect(this.inputAnalyser);
-		const freqData = new Uint8Array(this.inputAnalyser.frequencyBinCount);
+		const timeDomain = new Uint8Array(this.inputAnalyser.fftSize);
 		const sessionStartedAt = performance.now();
+		let noiseFloor = .008;
 		const monitorInput = () => {
 			if (!this.isRecording || !this.inputAnalyser) return;
-			this.inputAnalyser.getByteFrequencyData(freqData);
-			let sum = 0;
-			for (let i = 0; i < freqData.length; i++) sum += freqData[i];
-			const avg = sum / (freqData.length * 255);
-			const normalized = Math.min(1, avg * 3.2);
-			options.onInputLevel?.(normalized);
+			this.inputAnalyser.getByteTimeDomainData(timeDomain);
+			let sumSquares = 0;
+			for (let i = 0; i < timeDomain.length; i++) {
+				const sample = (timeDomain[i] - 128) / 128;
+				sumSquares += sample * sample;
+			}
+			const rms = Math.sqrt(sumSquares / timeDomain.length);
+			const visualLevel = Math.min(1, rms * 6.5);
+			options.onInputLevel?.(visualLevel);
 			const now = performance.now();
-			if (normalized > .14) {
+			if (rms > Math.max(.02, Math.min(.055, noiseFloor * 2.4))) {
 				if (!this.speechDetectedAt) this.speechDetectedAt = now;
 				this.lastLoudFrameAt = now;
-			}
-			if (this.speechDetectedAt > 0 && now - this.speechDetectedAt > 450 && now - this.lastLoudFrameAt > 1650 || now - sessionStartedAt > 16e3) {
+			} else if (!this.speechDetectedAt) noiseFloor = noiseFloor * .94 + rms * .06;
+			if (this.speechDetectedAt > 0 && now - this.speechDetectedAt > 300 && now - this.lastLoudFrameAt > 950 || now - sessionStartedAt > 14e3) {
 				options.onAutoSilenceStop?.();
 				return;
 			}
@@ -13580,41 +13587,48 @@ var PiyaVoiceEngine = class {
 		};
 		this.inputMonitorFrame = requestAnimationFrame(monitorInput);
 		const preferredMime = MediaRecorder.isTypeSupported("audio/webm;codecs=opus") ? "audio/webm;codecs=opus" : MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "";
-		this.mediaRecorder = preferredMime ? new MediaRecorder(stream, { mimeType: preferredMime }) : new MediaRecorder(stream);
+		const recorderOptions = preferredMime ? {
+			mimeType: preferredMime,
+			audioBitsPerSecond: 24e3
+		} : { audioBitsPerSecond: 24e3 };
+		try {
+			this.mediaRecorder = new MediaRecorder(stream, recorderOptions);
+		} catch {
+			this.mediaRecorder = new MediaRecorder(stream);
+		}
 		this.mediaRecorder.ondataavailable = (ev) => {
 			if (ev.data && ev.data.size > 0) this.audioChunks.push(ev.data);
 		};
-		this.mediaRecorder.start(250);
-		const SpeechRecConstructor = window.SpeechRecognition || window.webkitSpeechRecognition;
-		if (SpeechRecConstructor) try {
-			const rec = new SpeechRecConstructor();
-			rec.lang = options.language === "hi" ? "hi-IN" : "bn-BD";
-			rec.continuous = true;
-			rec.interimResults = true;
-			rec.onresult = (event) => {
-				let finalPart = "";
-				let interimPart = "";
-				for (let i = 0; i < event.results.length; i++) {
-					const res = event.results[i];
-					if (res.isFinal) finalPart += res[0].transcript + " ";
-					else interimPart += res[0].transcript;
-				}
-				if (finalPart.trim()) this.finalWebTranscript = finalPart.trim();
-				this.interimWebTranscript = (finalPart + interimPart).trim();
-				if (this.interimWebTranscript) options.onInterimTranscript?.(this.interimWebTranscript);
-			};
-			rec.onerror = () => {};
-			rec.start();
-			this.recognition = rec;
-		} catch {
-			this.recognition = null;
+		this.mediaRecorder.start(150);
+		if (!isAndroidEnvironment()) {
+			const SpeechRecConstructor = window.SpeechRecognition || window.webkitSpeechRecognition;
+			if (SpeechRecConstructor) try {
+				const rec = new SpeechRecConstructor();
+				rec.lang = options.language === "hi" ? "hi-IN" : "bn-BD";
+				rec.continuous = true;
+				rec.interimResults = true;
+				rec.onresult = (event) => {
+					let finalPart = "";
+					let interimPart = "";
+					for (let i = 0; i < event.results.length; i++) {
+						const res = event.results[i];
+						if (res.isFinal) finalPart += res[0].transcript + " ";
+						else interimPart += res[0].transcript;
+					}
+					if (finalPart.trim()) this.finalWebTranscript = finalPart.trim();
+					this.interimWebTranscript = (finalPart + interimPart).trim();
+					if (this.interimWebTranscript) options.onInterimTranscript?.(this.interimWebTranscript);
+				};
+				rec.onerror = () => {};
+				rec.start();
+				this.recognition = rec;
+			} catch {
+				this.recognition = null;
+			}
 		}
 	}
-	async finishListeningAndTranscribe(preferredLanguage) {
-		if (!this.isRecording) return {
-			transcript: "",
-			detectedLanguage: preferredLanguage
-		};
+	async finishListeningRawAudio() {
+		if (!this.isRecording) return null;
 		this.isRecording = false;
 		cancelAnimationFrame(this.inputMonitorFrame);
 		if (this.recognition) {
@@ -13624,47 +13638,36 @@ var PiyaVoiceEngine = class {
 			this.recognition = null;
 		}
 		const recordedBlob = await new Promise((resolve) => {
-			if (!this.mediaRecorder || this.mediaRecorder.state === "inactive") {
+			const recorder = this.mediaRecorder;
+			if (!recorder || recorder.state === "inactive") {
 				resolve(this.audioChunks.length > 0 ? new Blob(this.audioChunks) : null);
 				return;
 			}
-			const mimeType = this.mediaRecorder.mimeType || "audio/webm";
-			this.mediaRecorder.onstop = () => {
+			const mimeType = recorder.mimeType || "audio/webm";
+			recorder.onstop = () => {
 				resolve(this.audioChunks.length > 0 ? new Blob(this.audioChunks, { type: mimeType }) : null);
 			};
-			this.mediaRecorder.stop();
+			try {
+				recorder.requestData();
+			} catch {}
+			recorder.stop();
 		});
+		const webFallbackTranscript = (this.finalWebTranscript || this.interimWebTranscript).trim();
 		this.cleanupInputHardware();
-		const webCandidate = (this.finalWebTranscript || this.interimWebTranscript).trim();
-		if (recordedBlob && recordedBlob.size > 800) try {
-			const audioBase64 = await blobToBase64(recordedBlob);
-			const cleanMime = (recordedBlob.type || "audio/webm").split(";")[0];
-			const resp = await fetch("/api/assistant/transcribe", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					audioBase64,
-					mimeType: cleanMime,
-					preferredLanguage
-				})
-			});
-			if (resp.ok) {
-				const data = await resp.json();
-				const serverText = (data.transcript || "").trim();
-				if (serverText) return {
-					transcript: serverText,
-					detectedLanguage: data.detectedLanguage || preferredLanguage
-				};
-			} else if (!webCandidate) {
-				const errData = await resp.json().catch(() => ({}));
-				throw new Error(errData.error || "Speech transcription request failed.");
-			}
-		} catch (err) {
-			if (!webCandidate) throw err;
+		if (!recordedBlob || recordedBlob.size < 120) {
+			if (webFallbackTranscript) return {
+				audioBase64: "",
+				mimeType: "audio/webm",
+				byteSize: 0,
+				webFallbackTranscript
+			};
+			return null;
 		}
 		return {
-			transcript: webCandidate,
-			detectedLanguage: preferredLanguage
+			audioBase64: await blobToBase64(recordedBlob),
+			mimeType: (recordedBlob.type || "audio/webm").split(";")[0].trim() || "audio/webm",
+			byteSize: recordedBlob.size,
+			webFallbackTranscript
 		};
 	}
 	async cancelListening() {
@@ -13701,67 +13704,144 @@ var PiyaVoiceEngine = class {
 			options.onEnd?.();
 			return;
 		}
-		if (options.preferNeuralTts) {
-			const abortCtrl = new AbortController();
-			this.activeTtsAbort = abortCtrl;
-			try {
-				const resp = await fetch("/api/assistant/tts", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						text: cleanText,
-						voiceName: options.voiceName,
-						language: options.language
-					}),
-					signal: abortCtrl.signal
-				});
-				if (!resp.ok) {
-					const errJson = await resp.json().catch(() => ({}));
-					throw new Error(errJson.error || `Neural TTS failed (${resp.status})`);
-				}
-				const data = await resp.json();
-				if (!data.audioBase64) throw new Error("Empty audio returned from TTS service.");
-				await this.playBase64WavWithLipSync(data.audioBase64, options);
-				return;
-			} catch (err) {
-				if (abortCtrl.signal.aborted) {
-					options.onEnd?.();
-					return;
-				}
-				if (!this.speakWithBrowserSynthesis(cleanText, options)) {
-					options.onError?.(err instanceof Error ? err.message : "Text-to-speech playback failed.");
-					options.onEnd?.();
-				}
+		if (!options.preferNeuralTts) {
+			if (await this.tryFastBrowserSynthesisWithWatchdog(cleanText, options)) return;
+		}
+		const abortCtrl = new AbortController();
+		this.activeTtsAbort = abortCtrl;
+		try {
+			const { ok, status, data } = await fetchApiJson("/api/assistant/tts", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					text: cleanText,
+					voiceName: options.voiceName,
+					language: options.language
+				}),
+				signal: abortCtrl.signal
+			}, 18e3);
+			if (!ok || !data.audioBase64) throw new Error(data.error || `TTS service unavailable (${status})`);
+			await this.playBase64WavViaAudioContext(data.audioBase64, options);
+		} catch (err) {
+			if (abortCtrl.signal.aborted) {
+				options.onEnd?.();
 				return;
 			}
-		}
-		if (!this.speakWithBrowserSynthesis(cleanText, options)) {
-			options.onError?.("Device speech synthesis is unavailable for this language. Enable Neural Gemini TTS in Settings.");
+			if (options.preferNeuralTts) {
+				if (await this.tryFastBrowserSynthesisWithWatchdog(cleanText, options)) return;
+			}
+			options.onError?.(err instanceof Error ? err.message : "ভয়েস প্লেব্যাকে সমস্যা হয়েছে।");
 			options.onEnd?.();
 		}
 	}
-	async playBase64WavWithLipSync(audioBase64, options) {
+	/**
+	* Attempts instant native device TTS (<100ms latency, 0KB download) with a 700ms start watchdog.
+	* Returns true if playback started and finished (or was stopped), or false if native TTS is unavailable/silent.
+	*/
+	tryFastBrowserSynthesisWithWatchdog(text, options) {
+		if (typeof window === "undefined" || !("speechSynthesis" in window)) return Promise.resolve(false);
+		const voices = window.speechSynthesis.getVoices();
+		const langPrefix = options.language === "hi" ? "hi" : "bn";
+		const matchedVoice = voices.find((v) => v.lang.toLowerCase().startsWith(langPrefix) && /female|google|india|bangla|bengali|hindi/i.test(v.name)) || voices.find((v) => v.lang.toLowerCase().startsWith(langPrefix));
+		if (!isAndroidEnvironment() && voices.length > 0 && !matchedVoice) return Promise.resolve(false);
+		return new Promise((resolve) => {
+			let hasStarted = false;
+			let settled = false;
+			const watchdog = window.setTimeout(() => {
+				if (!hasStarted && !settled) {
+					settled = true;
+					try {
+						window.speechSynthesis.cancel();
+					} catch {}
+					resolve(false);
+				}
+			}, 750);
+			try {
+				window.speechSynthesis.cancel();
+				const utter = new SpeechSynthesisUtterance(text);
+				utter.lang = options.language === "hi" ? "hi-IN" : "bn-BD";
+				utter.rate = Math.min(1.5, Math.max(.75, options.speechSpeed || 1));
+				if (matchedVoice) utter.voice = matchedVoice;
+				utter.onstart = () => {
+					hasStarted = true;
+					window.clearTimeout(watchdog);
+					options.onStart?.();
+					let phase = 0;
+					this.synthFallbackInterval = window.setInterval(() => {
+						phase += .48;
+						const open = Math.max(.08, Math.abs(Math.sin(phase)) * .72);
+						const spread = .35 + Math.abs(Math.cos(phase * .7)) * .4;
+						options.onLipSyncFrame?.({
+							mouthOpen: open,
+							mouthSpread: spread,
+							energy: open
+						});
+					}, 55);
+				};
+				utter.onend = () => {
+					window.clearTimeout(watchdog);
+					window.clearInterval(this.synthFallbackInterval);
+					options.onLipSyncFrame?.({
+						mouthOpen: 0,
+						mouthSpread: .35,
+						energy: 0
+					});
+					if (!settled) {
+						settled = true;
+						options.onEnd?.();
+						resolve(true);
+					}
+				};
+				utter.onerror = () => {
+					window.clearTimeout(watchdog);
+					window.clearInterval(this.synthFallbackInterval);
+					options.onLipSyncFrame?.({
+						mouthOpen: 0,
+						mouthSpread: .35,
+						energy: 0
+					});
+					if (!settled) {
+						settled = true;
+						if (hasStarted) {
+							options.onEnd?.();
+							resolve(true);
+						} else resolve(false);
+					}
+				};
+				window.speechSynthesis.speak(utter);
+			} catch {
+				window.clearTimeout(watchdog);
+				if (!settled) {
+					settled = true;
+					resolve(false);
+				}
+			}
+		});
+	}
+	async playBase64WavViaAudioContext(audioBase64, options) {
 		const binary = atob(audioBase64);
 		const bytes = new Uint8Array(binary.length);
 		for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-		const blob = new Blob([bytes], { type: "audio/wav" });
-		const objectUrl = URL.createObjectURL(blob);
-		const audio = new Audio(objectUrl);
-		audio.playbackRate = Math.min(1.5, Math.max(.7, options.speechSpeed || 1));
-		this.outputAudioEl = audio;
-		const ctx = new (window.AudioContext || window.webkitAudioContext)();
-		this.outputAudioCtx = ctx;
+		const AudioCtx = window.AudioContext || window.webkitAudioContext;
+		if (!this.sharedPlaybackCtx || this.sharedPlaybackCtx.state === "closed") this.sharedPlaybackCtx = new AudioCtx();
+		const ctx = this.sharedPlaybackCtx;
 		if (ctx.state === "suspended") await ctx.resume().catch(() => {});
-		const mediaSource = ctx.createMediaElementSource(audio);
+		const arrayBuffer = bytes.buffer.slice(bytes.byteOffset, bytes.byteOffset + bytes.byteLength);
+		const decodedBuffer = await ctx.decodeAudioData(arrayBuffer);
+		const bufferSource = ctx.createBufferSource();
+		bufferSource.buffer = decodedBuffer;
+		bufferSource.playbackRate.value = Math.min(1.5, Math.max(.75, options.speechSpeed || 1));
 		const analyser = ctx.createAnalyser();
 		analyser.fftSize = 256;
 		analyser.smoothingTimeConstant = .65;
-		mediaSource.connect(analyser);
+		bufferSource.connect(analyser);
 		analyser.connect(ctx.destination);
+		this.activeBufferSource = bufferSource;
 		this.outputAnalyser = analyser;
 		const bins = new Uint8Array(analyser.frequencyBinCount);
+		let playing = true;
 		const sampleLipSync = () => {
-			if (!this.outputAnalyser || !this.outputAudioEl || this.outputAudioEl.paused) return;
+			if (!playing || !this.outputAnalyser) return;
 			this.outputAnalyser.getByteFrequencyData(bins);
 			let lowSum = 0;
 			let midSum = 0;
@@ -13782,77 +13862,22 @@ var PiyaVoiceEngine = class {
 			this.outputAnimFrame = requestAnimationFrame(sampleLipSync);
 		};
 		return new Promise((resolve) => {
-			const cleanup = () => {
+			bufferSource.onended = () => {
+				playing = false;
 				cancelAnimationFrame(this.outputAnimFrame);
 				options.onLipSyncFrame?.({
 					mouthOpen: 0,
 					mouthSpread: .35,
 					energy: 0
 				});
-				URL.revokeObjectURL(objectUrl);
-				if (this.outputAudioEl === audio) this.outputAudioEl = null;
-				if (this.outputAudioCtx === ctx) {
-					ctx.close().catch(() => {});
-					this.outputAudioCtx = null;
-					this.outputAnalyser = null;
-				}
+				if (this.activeBufferSource === bufferSource) this.activeBufferSource = null;
 				options.onEnd?.();
 				resolve();
 			};
-			audio.onplay = () => {
-				options.onStart?.();
-				this.outputAnimFrame = requestAnimationFrame(sampleLipSync);
-			};
-			audio.onended = cleanup;
-			audio.onerror = () => {
-				options.onError?.("Audio stream playback encountered an error.");
-				cleanup();
-			};
-			audio.play().catch((playErr) => {
-				options.onError?.(playErr instanceof Error ? playErr.message : "Browser blocked audio autoplay.");
-				cleanup();
-			});
+			options.onStart?.();
+			bufferSource.start(0);
+			this.outputAnimFrame = requestAnimationFrame(sampleLipSync);
 		});
-	}
-	speakWithBrowserSynthesis(text, options) {
-		if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
-		try {
-			window.speechSynthesis.cancel();
-			const utter = new SpeechSynthesisUtterance(text);
-			utter.lang = options.language === "hi" ? "hi-IN" : "bn-BD";
-			utter.rate = Math.min(1.5, Math.max(.7, options.speechSpeed || 1));
-			const matchedVoice = window.speechSynthesis.getVoices().find((v) => v.lang.toLowerCase().startsWith(options.language === "hi" ? "hi" : "bn"));
-			if (matchedVoice) utter.voice = matchedVoice;
-			utter.onstart = () => {
-				options.onStart?.();
-				let phase = 0;
-				this.synthFallbackInterval = window.setInterval(() => {
-					phase += .45;
-					const open = Math.max(.08, Math.abs(Math.sin(phase)) * .72);
-					const spread = .35 + Math.abs(Math.cos(phase * .7)) * .4;
-					options.onLipSyncFrame?.({
-						mouthOpen: open,
-						mouthSpread: spread,
-						energy: open
-					});
-				}, 55);
-			};
-			const finish = () => {
-				window.clearInterval(this.synthFallbackInterval);
-				options.onLipSyncFrame?.({
-					mouthOpen: 0,
-					mouthSpread: .35,
-					energy: 0
-				});
-				options.onEnd?.();
-			};
-			utter.onend = finish;
-			utter.onerror = finish;
-			window.speechSynthesis.speak(utter);
-			return true;
-		} catch {
-			return false;
-		}
 	}
 	stopSpeaking() {
 		if (this.activeTtsAbort) {
@@ -13861,17 +13886,17 @@ var PiyaVoiceEngine = class {
 		}
 		cancelAnimationFrame(this.outputAnimFrame);
 		window.clearInterval(this.synthFallbackInterval);
-		if (this.outputAudioEl) {
-			this.outputAudioEl.pause();
-			this.outputAudioEl.currentTime = 0;
-			this.outputAudioEl = null;
+		if (this.activeBufferSource) {
+			try {
+				this.activeBufferSource.stop();
+				this.activeBufferSource.disconnect();
+			} catch {}
+			this.activeBufferSource = null;
 		}
-		if (this.outputAudioCtx) {
-			this.outputAudioCtx.close().catch(() => {});
-			this.outputAudioCtx = null;
-			this.outputAnalyser = null;
-		}
-		if (typeof window !== "undefined" && "speechSynthesis" in window) window.speechSynthesis.cancel();
+		this.outputAnalyser = null;
+		if (typeof window !== "undefined" && "speechSynthesis" in window) try {
+			window.speechSynthesis.cancel();
+		} catch {}
 	}
 };
 // node_modules/react/cjs/react-jsx-runtime.production.js
@@ -14109,13 +14134,13 @@ var PiyaCharacter3D = ({ visualState, themeId, lipSync, micLevel, compactPreview
 	});
 };
 // src/components/AssistantFullScreen.tsx
-var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOnline, lipSync, micLevel, interimTranscript, messages, pendingAction, errorBanner, onDismissError, onBackToHome, onOpenSettings, onChangeLanguage, onToggleMic, onStopSpeaking, onSendTextCommand, onConfirmPendingAction, onCancelPendingAction, onSelectDisambiguatedContact, onClearConversation }) => {
+var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOnline, lipSync, micLevel, interimTranscript, messages, pendingAction, errorBanner, onDismissError, onBackToHome, onOpenSettings, onChangeLanguage, onToggleMic, onCancelMic, onStopSpeaking, onSendTextCommand, onConfirmPendingAction, onCancelPendingAction, onSelectDisambiguatedContact, onClearConversation }) => {
 	const [dockCollapsed, setDockCollapsed] = (0, import_react.useState)(false);
 	const [historyOpen, setHistoryOpen] = (0, import_react.useState)(false);
 	const [inputValue, setInputValue] = (0, import_react.useState)("");
 	const [digitFilter, setDigitFilter] = (0, import_react.useState)("");
 	const copy = UI_COPY[language];
-	const latestAssistantMsg = [...messages].reverse().find((m) => m.role === "assistant");
+	const latestSpokenReply = [...messages].reverse().find((m) => m.role === "assistant" && !m.isError);
 	const statusLabel = !isOnline ? copy.offlineMode : micPermission === "denied" ? copy.micDenied : visualState === "listening" ? copy.voiceListening : visualState === "thinking" ? copy.voiceThinking : visualState === "speaking" ? copy.voiceSpeaking : copy.voiceReady;
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
@@ -14137,73 +14162,63 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 		className: "fixed inset-0 z-40 flex flex-col bg-[var(--piya-bg)] text-slate-100 overflow-hidden",
 		children: [
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
-				className: "relative z-30 flex items-center justify-between gap-4 px-4 h-14 border-b border-[var(--piya-border)] bg-[#060b18]/95",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center gap-2.5 shrink-0",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-								type: "button",
-								onClick: onBackToHome,
-								className: "min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors",
-								"aria-label": "Back to Home",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowLeft, { className: "w-5 h-5" })
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
-								src: OFFICIAL_PIYA_CHARACTER_IMAGE,
-								alt: "PIYA AI",
-								className: "w-8 h-8 rounded-lg object-cover object-[50%_16%] border border-[var(--piya-border)] shrink-0"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-								className: "font-display text-base font-bold tracking-tight text-white whitespace-nowrap",
-								children: "PIYA AI"
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-						className: "flex items-center gap-2 text-xs font-medium text-slate-300 truncate",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							style: { color: "var(--piya-accent-bright)" },
-							children: statusLabel
+				className: "relative z-30 flex items-center justify-between gap-2 px-3 sm:px-5 h-14 border-b border-[var(--piya-border)] bg-[#060b18]/95",
+				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-2 shrink-0",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: onBackToHome,
+							className: "min-h-[42px] min-w-[42px] flex items-center justify-center rounded-xl text-slate-200 hover:text-white hover:bg-white/5 transition-colors",
+							"aria-label": "Back",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(ArrowLeft, { className: "w-5 h-5" })
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: OFFICIAL_PIYA_CHARACTER_IMAGE,
+							alt: "PIYA AI",
+							className: "w-8 h-8 rounded-lg object-cover object-[50%_16%] border border-[var(--piya-border)] shrink-0"
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "font-display text-base font-bold tracking-tight text-white whitespace-nowrap",
+							children: "PIYA AI"
 						})
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "flex items-center gap-1.5 shrink-0",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "flex items-center p-0.5 rounded-lg bg-[#0d162c] border border-[var(--piya-border)]",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: () => onChangeLanguage("bn"),
-									className: `min-h-[34px] px-2.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 ${language === "bn" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
-									children: "বাংলা"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: () => onChangeLanguage("hi"),
-									className: `min-h-[34px] px-2.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 ${language === "hi" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
-									children: "हिन्दी"
-								})]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					]
+				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+					className: "flex items-center gap-1.5 shrink-0",
+					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center p-0.5 rounded-lg bg-[#0d162c] border border-[var(--piya-border)]",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "button",
-								onClick: () => setHistoryOpen(true),
-								className: "min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors",
-								"aria-label": "Open Conversation History",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageSquare, { className: "w-5 h-5" })
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								onClick: () => onChangeLanguage("bn"),
+								className: `min-h-[34px] px-2.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 ${language === "bn" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
+								children: "বাংলা"
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "button",
-								onClick: onOpenSettings,
-								className: "min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors",
-								"aria-label": "Open Settings",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Settings, { className: "w-5 h-5" })
-							})
-						]
-					})
-				]
+								onClick: () => onChangeLanguage("hi"),
+								className: `min-h-[34px] px-2.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 ${language === "hi" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
+								children: "हिन्दी"
+							})]
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: () => setHistoryOpen(true),
+							className: "min-h-[42px] min-w-[42px] flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors",
+							"aria-label": "Conversation History",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(MessageSquare, { className: "w-5 h-5" })
+						}),
+						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+							type: "button",
+							onClick: onOpenSettings,
+							className: "min-h-[42px] min-w-[42px] flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition-colors",
+							"aria-label": "Settings",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Settings, { className: "w-5 h-5" })
+						})
+					]
+				})]
 			}),
 			errorBanner && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "relative z-30 mx-auto mt-2 w-[min(680px,94vw)] rounded-xl border border-rose-500/40 bg-[#1f0b14]/95 px-4 py-2.5 flex items-start justify-between gap-3 text-xs text-rose-200",
+				className: "relative z-30 mx-auto mt-2 w-[min(680px,94vw)] rounded-xl border border-rose-500/40 bg-[#1f0b14]/95 px-3.5 py-2.5 flex items-start justify-between gap-3 text-xs text-rose-200",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex items-start gap-2",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleAlert, { className: "w-4 h-4 text-rose-400 shrink-0 mt-0.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: errorBanner })]
@@ -14211,7 +14226,7 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 					type: "button",
 					onClick: onDismissError,
 					className: "min-h-[28px] min-w-[28px] flex items-center justify-center rounded-lg text-rose-300 hover:text-white",
-					"aria-label": "Dismiss error",
+					"aria-label": "Dismiss",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "w-4 h-4" })
 				})]
 			}),
@@ -14225,33 +14240,55 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 				})
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "relative z-30 mx-auto w-[min(860px,96vw)] pb-3",
+				className: "relative z-30 mx-auto w-[min(820px,96vw)] pb-3",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 					className: "flex justify-center mb-1",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 						type: "button",
 						onClick: () => setDockCollapsed((v) => !v),
-						className: "min-h-[36px] px-3 py-1 rounded-t-xl border border-b-0 border-[var(--piya-border)] bg-[#081022]/95 text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0",
-						children: dockCollapsed ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronUp, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Show Controls" })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Hide Controls" })] })
+						className: "min-h-[32px] px-3 py-1 rounded-t-xl border border-b-0 border-[var(--piya-border)] bg-[#081022]/95 text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0",
+						children: dockCollapsed ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronUp, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: language === "bn" ? "কন্ট্রোল দেখান" : "कंट्रोल दिखाएँ" })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ChevronDown, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: language === "bn" ? "লুকান" : "छुपाएँ" })] })
 					})
 				}), !dockCollapsed && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-					className: "rounded-2xl border border-[var(--piya-border)] bg-[#081022]/95 p-3.5 sm:p-4 shadow-2xl space-y-3",
+					className: "rounded-2xl border border-[var(--piya-border)] bg-[#081022]/95 p-3 sm:p-4 shadow-2xl space-y-2.5",
 					children: [
+						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "flex items-center justify-between gap-3 px-1",
+							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+								className: "text-xs font-semibold truncate",
+								style: { color: "var(--piya-accent-bright)" },
+								children: statusLabel
+							}), visualState === "listening" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "flex items-center gap-2 shrink-0",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+									className: "w-20 h-2 rounded-full bg-slate-800 overflow-hidden",
+									children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "h-full transition-all duration-75 rounded-full",
+										style: {
+											width: `${Math.max(12, Math.round(micLevel * 100))}%`,
+											backgroundColor: "var(--piya-accent-bright)"
+										}
+									})
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+									type: "button",
+									onClick: onCancelMic,
+									className: "min-h-[28px] px-2 rounded-lg border border-slate-700 text-[11px] text-slate-300 hover:text-white",
+									children: copy.cancelBtn
+								})]
+							})]
+						}),
 						pendingAction && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "rounded-xl border border-[var(--piya-border)] bg-[#0d1830] p-3.5 space-y-3",
+							className: "rounded-xl border border-[var(--piya-border)] bg-[#0d1830] p-3 space-y-2.5",
 							children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: "flex items-start justify-between gap-3",
-									children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-										className: "text-sm font-semibold text-white",
-										children: pendingAction.title
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-										className: "text-xs text-slate-300 mt-0.5 leading-relaxed",
-										children: pendingAction.explanation
-									})] })
-								}),
+								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+									className: "text-sm font-semibold text-white",
+									children: pendingAction.title
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+									className: "text-xs text-slate-300 mt-0.5 leading-relaxed",
+									children: pendingAction.explanation
+								})] }),
 								pendingAction.type === "call_disambiguate" && pendingAction.matchedContacts && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "space-y-2.5",
+									className: "space-y-2",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 										className: "grid grid-cols-1 sm:grid-cols-2 gap-2",
 										children: pendingAction.matchedContacts.map((cnt) => {
@@ -14259,7 +14296,7 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 											return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 												type: "button",
 												onClick: () => onSelectDisambiguatedContact(cnt),
-												className: "min-h-[48px] px-3 py-2 rounded-xl border border-[var(--piya-border)] bg-[#081022] hover:border-[var(--piya-accent)] flex items-center justify-between gap-2 text-left transition-colors",
+												className: "min-h-[46px] px-3 py-2 rounded-xl border border-[var(--piya-border)] bg-[#081022] hover:border-[var(--piya-accent)] flex items-center justify-between gap-2 text-left transition-colors",
 												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 													className: "min-w-0",
 													children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
@@ -14269,7 +14306,7 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 														className: "text-[11px] text-slate-400",
 														children: [
 															cnt.label,
-															" · Last 4:",
+															" ·",
 															" ",
 															/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 																className: "font-mono-tabular text-slate-200",
@@ -14293,31 +14330,31 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 												maxLength: 4,
 												value: digitFilter,
 												onChange: (e) => setDigitFilter(e.target.value),
-												placeholder: language === "bn" ? "শেষ ৪টি সংখ্যা লিখুন (যেমন 4821)" : "आखिरी 4 अंक दर्ज करें (जैसे 4821)",
-												className: "flex-1 min-h-[42px] px-3 rounded-lg bg-[#060b18] border border-[var(--piya-border)] text-xs text-white placeholder:text-slate-500 font-mono-tabular focus:outline-none focus:border-[var(--piya-accent)]"
+												placeholder: language === "bn" ? "শেষ ৪ ডিজিট (যেমন 4821)" : "आखिरी 4 अंक (जैसे 4821)",
+												className: "flex-1 min-h-[40px] px-3 rounded-lg bg-[#060b18] border border-[var(--piya-border)] text-xs text-white placeholder:text-slate-500 font-mono-tabular focus:outline-none focus:border-[var(--piya-accent)]"
 											}),
 											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												type: "submit",
-												className: "min-h-[42px] px-3.5 rounded-lg bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold whitespace-nowrap shrink-0",
-												children: "Select"
+												className: "min-h-[40px] px-3.5 rounded-lg bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold whitespace-nowrap shrink-0",
+												children: "OK"
 											}),
 											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												type: "button",
 												onClick: onCancelPendingAction,
-												className: "min-h-[42px] px-3 rounded-lg border border-slate-700 text-xs text-slate-300 hover:text-white whitespace-nowrap shrink-0",
+												className: "min-h-[40px] px-3 rounded-lg border border-slate-700 text-xs text-slate-300 hover:text-white whitespace-nowrap shrink-0",
 												children: copy.cancelBtn
 											})
 										]
 									})]
 								}),
 								pendingAction.type !== "call_disambiguate" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-2.5",
+									className: "flex flex-wrap items-center gap-2",
 									children: [pendingAction.intentHref ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("a", {
 										href: pendingAction.intentHref,
 										target: pendingAction.intentHref.startsWith("http") ? "_blank" : void 0,
 										rel: "noopener noreferrer",
 										onClick: () => onConfirmPendingAction(),
-										className: "min-h-[44px] px-4 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
+										className: "min-h-[42px] px-4 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
 										children: [
 											/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "w-4 h-4" }),
 											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.confirmBtn }),
@@ -14326,12 +14363,12 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 									}) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										type: "button",
 										onClick: onConfirmPendingAction,
-										className: "min-h-[44px] px-4 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
+										className: "min-h-[42px] px-4 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.confirmBtn })]
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										type: "button",
 										onClick: onCancelPendingAction,
-										className: "min-h-[44px] px-4 py-2 rounded-xl border border-slate-700 bg-[#070d1c] text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0",
+										className: "min-h-[42px] px-4 py-2 rounded-xl border border-slate-700 bg-[#070d1c] text-xs font-medium text-slate-300 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.cancelBtn })]
 									})]
 								})
@@ -14342,44 +14379,29 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 							children: visualState === "listening" && interimTranscript ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 								className: "text-sm text-cyan-200 leading-relaxed",
 								children: interimTranscript
-							}) : latestAssistantMsg ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "space-y-1.5",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-									className: `text-sm leading-relaxed ${latestAssistantMsg.isError ? "text-rose-300" : "text-slate-100"}`,
-									children: latestAssistantMsg.text
-								}), latestAssistantMsg.sources && latestAssistantMsg.sources.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-400",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Sources:" }), latestAssistantMsg.sources.slice(0, 3).map((src, i) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("a", {
-										href: src.uri,
-										target: "_blank",
-										rel: "noopener noreferrer",
-										className: "underline hover:text-white truncate max-w-[180px]",
-										children: src.title || src.uri
-									}, i))]
-								})]
+							}) : latestSpokenReply ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+								className: "text-sm text-slate-100 leading-relaxed",
+								children: latestSpokenReply.text
 							}) : /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-xs text-slate-400 leading-relaxed",
+								className: "text-xs text-slate-300 leading-relaxed",
 								children: copy.welcomeGreeting
 							})
 						}),
 						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "flex items-center gap-2.5",
+							className: "flex items-center gap-2",
 							children: [
 								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "button",
 									onClick: onToggleMic,
-									disabled: !isOnline,
-									className: `min-h-[50px] px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-2 transition-transform active:scale-95 whitespace-nowrap shrink-0 ${visualState === "listening" ? "bg-rose-500 text-white" : "bg-[var(--piya-accent)] text-[var(--piya-on-accent)] disabled:opacity-45"}`,
+									disabled: !isOnline || visualState === "thinking",
+									className: `min-h-[50px] px-4 rounded-xl font-semibold text-xs flex items-center justify-center gap-1.5 transition-transform active:scale-95 whitespace-nowrap shrink-0 ${visualState === "listening" ? "bg-rose-500 text-white shadow-lg shadow-rose-500/30" : "bg-[var(--piya-accent)] text-[var(--piya-on-accent)] disabled:opacity-45"}`,
 									"aria-label": visualState === "listening" ? copy.stopListening : copy.tapToSpeak,
-									children: visualState === "listening" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Square, { className: "w-4 h-4 fill-current" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.stopListening })] }) : micPermission === "denied" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MicOff, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Mic Blocked" })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mic, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-										className: "hidden sm:inline",
-										children: copy.tapToSpeak
-									})] })
+									children: visualState === "listening" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.stopListening })] }) : micPermission === "denied" ? /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(MicOff, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Mic" })] }) : /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(import_jsx_runtime.Fragment, { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mic, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.tapToSpeak })] })
 								}),
 								visualState === "speaking" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: onStopSpeaking,
-									className: "min-h-[50px] px-3.5 rounded-xl border border-amber-400/50 bg-amber-500/15 text-amber-200 hover:bg-amber-500/25 text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
+									className: "min-h-[50px] px-3 rounded-xl border border-amber-400/50 bg-amber-500/15 text-amber-200 hover:bg-amber-500/25 text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(VolumeX, { className: "w-4 h-4" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.stopSpeaking })]
 								}),
 								/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("form", {
@@ -14391,12 +14413,12 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 										onChange: (e) => setInputValue(e.target.value),
 										placeholder: copy.typePlaceholder,
 										disabled: !isOnline || visualState === "thinking",
-										className: "w-full min-h-[50px] px-3.5 rounded-xl bg-[#050a16] border border-slate-800 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[var(--piya-accent)] disabled:opacity-50"
+										className: "w-full min-h-[50px] px-3 rounded-xl bg-[#050a16] border border-slate-800 text-sm text-white placeholder:text-slate-500 focus:outline-none focus:border-[var(--piya-accent)] disabled:opacity-50"
 									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 										type: "submit",
 										disabled: !isOnline || !inputValue.trim() || visualState === "thinking",
-										className: "min-h-[50px] min-w-[50px] rounded-xl border border-[var(--piya-border)] bg-[#0d1830] text-slate-200 hover:text-white disabled:opacity-40 flex items-center justify-center shrink-0 transition-colors",
-										"aria-label": "Send Message",
+										className: "min-h-[50px] min-w-[48px] rounded-xl border border-[var(--piya-border)] bg-[#0d1830] text-slate-200 hover:text-white disabled:opacity-40 flex items-center justify-center shrink-0 transition-colors",
+										"aria-label": "Send",
 										children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Send, { className: "w-4 h-4" })
 									})]
 								})
@@ -14413,19 +14435,19 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 						className: "flex items-center justify-between px-5 py-4 border-b border-slate-800",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 							className: "font-display text-base font-semibold text-white",
-							children: "Conversation History"
+							children: language === "bn" ? "কথোপকথনের ইতিহাস" : "बातचीत का इतिहास"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: "flex items-center gap-2",
 							children: [messages.length > 0 && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 								type: "button",
 								onClick: onClearConversation,
-								className: "min-h-[40px] px-3 rounded-lg text-xs text-rose-300 hover:bg-rose-500/10 flex items-center gap-1.5 whitespace-nowrap shrink-0",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Clear" })]
+								className: "min-h-[38px] px-3 rounded-lg text-xs text-rose-300 hover:bg-rose-500/10 flex items-center gap-1.5 whitespace-nowrap shrink-0",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: language === "bn" ? "মুছে ফেলুন" : "साफ़ करें" })]
 							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 								type: "button",
 								onClick: () => setHistoryOpen(false),
-								className: "min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg text-slate-300 hover:text-white",
-								"aria-label": "Close History",
+								className: "min-h-[38px] min-w-[38px] flex items-center justify-center rounded-lg text-slate-300 hover:text-white",
+								"aria-label": "Close",
 								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "w-5 h-5" })
 							})]
 						})]
@@ -14433,13 +14455,13 @@ var AssistantFullScreen = ({ language, themeId, visualState, micPermission, isOn
 						className: "flex-1 overflow-y-auto p-4 space-y-3",
 						children: messages.length === 0 ? /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 							className: "text-xs text-slate-400 text-center py-8",
-							children: "No conversation messages yet. Tap the microphone or choose a prompt to begin."
+							children: language === "bn" ? "এখনও কোনো কথোপকথন হয়নি।" : "अभी तक कोई बातचीत नहीं हुई है।"
 						}) : messages.map((m) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 							className: `rounded-2xl p-3.5 text-sm leading-relaxed ${m.role === "user" ? "ml-8 bg-[var(--piya-accent-soft)] border border-[var(--piya-border)] text-white" : m.isError ? "mr-8 bg-rose-950/50 border border-rose-500/30 text-rose-200" : "mr-8 bg-[#0e1930] border border-slate-800 text-slate-100"}`,
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "text-[11px] text-slate-400 mb-1",
 								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: m.role === "user" ? "You" : "PIYA AI" }),
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: m.role === "user" ? language === "bn" ? "আপনি" : "आप" : "PIYA AI" }),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 										className: "mx-1.5",
 										children: "·"
@@ -15128,71 +15150,65 @@ var MemoryVaultPanel = ({ memories, messages, memoryEnabled, autoConfirmMemory, 
 	});
 };
 // src/components/SettingsModal.tsx
-var SettingsModal = ({ open, settings, micPermission, connectionStatus, memoriesCount, onClose, onUpdateSettings, onRequestMicPermission, onVerifyConnection, onTestVoiceSample, onClearMemories, onResetAllData }) => {
+var SettingsModal = ({ open, settings, micPermission, memoriesCount, onClose, onUpdateSettings, onRequestMicPermission, onTestVoiceSample, onClearMemories, onResetAllData }) => {
 	if (!open) return null;
+	const isBn = settings.language === "bn";
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 		className: "fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 overflow-y-auto",
 		children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 			className: "w-full max-w-2xl max-h-[90vh] rounded-3xl border border-[var(--piya-border)] bg-[#080f20] flex flex-col overflow-hidden shadow-2xl",
 			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex items-center justify-between px-6 py-4 border-b border-slate-800",
+				className: "flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-800",
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h2", {
 					className: "font-display text-lg font-bold text-white",
-					children: "PIYA AI Settings"
+					children: isBn ? "পিয়া এআই সেটিংস" : "पिया एआई सेटिंग्स"
 				}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
 					className: "text-xs text-slate-400",
-					children: "Language · Voice · Theme · Permissions · Privacy"
+					children: isBn ? "ভাষা · ভয়েস স্পিড · থিম · প্রাইভেসি" : "भाषा · वॉयस स्पीड · थीम · प्राइवेसी"
 				})] }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 					type: "button",
 					onClick: onClose,
-					className: "min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-white/5",
+					className: "min-h-[42px] min-w-[42px] flex items-center justify-center rounded-xl text-slate-300 hover:text-white hover:bg-white/5",
 					"aria-label": "Close Settings",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "w-5 h-5" })
 				})]
 			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-				className: "flex-1 overflow-y-auto p-6 space-y-6",
+				className: "flex-1 overflow-y-auto p-5 sm:p-6 space-y-6",
 				children: [
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 						className: "space-y-2.5",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-								className: "text-sm font-semibold text-white",
-								children: "1. Assistant Language"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-xs text-slate-400",
-								children: "PIYA AI automatically replies in Bengali when you speak Bengali and in Hindi when you speak Hindi. Choose your default primary language:"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "grid grid-cols-2 gap-3",
-								children: [{
-									code: "bn",
-									title: "বাংলা (Bengali)",
-									sub: "Primary Language"
-								}, {
-									code: "hi",
-									title: "हिन्दी (Hindi)",
-									sub: "Secondary Language"
-								}].map((item) => {
-									const active = settings.language === item.code;
-									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-										type: "button",
-										onClick: () => onUpdateSettings({ language: item.code }),
-										className: `min-h-[56px] p-3.5 rounded-xl border text-left transition-colors flex items-center justify-between ${active ? "border-[var(--piya-accent)] bg-[var(--piya-accent-soft)] text-white" : "border-slate-800 bg-[#050a16] text-slate-300 hover:text-white"}`,
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "text-sm font-semibold",
-											children: item.title
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-											className: "text-[11px] text-slate-400",
-											children: item.sub
-										})] }), active && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
-											className: "w-4 h-4 shrink-0",
-											style: { color: "var(--piya-accent-bright)" }
-										})]
-									}, item.code);
-								})
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
+							className: "text-sm font-semibold text-white",
+							children: isBn ? "১. ভাষা নির্বাচন" : "1. भाषा चुनें"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "grid grid-cols-2 gap-3",
+							children: [{
+								code: "bn",
+								title: "বাংলা",
+								sub: "প্রধান ভাষা"
+							}, {
+								code: "hi",
+								title: "हिन्दी",
+								sub: "द्वितीय भाषा"
+							}].map((item) => {
+								const active = settings.language === item.code;
+								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => onUpdateSettings({ language: item.code }),
+									className: `min-h-[54px] p-3.5 rounded-xl border text-left transition-colors flex items-center justify-between ${active ? "border-[var(--piya-accent)] bg-[var(--piya-accent-soft)] text-white" : "border-slate-800 bg-[#050a16] text-slate-300 hover:text-white"}`,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-sm font-semibold",
+										children: item.title
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-[11px] text-slate-400",
+										children: item.sub
+									})] }), active && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+										className: "w-4 h-4 shrink-0",
+										style: { color: "var(--piya-accent-bright)" }
+									})]
+								}, item.code);
 							})
-						]
+						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 						className: "space-y-3 pt-4 border-t border-slate-800/80",
@@ -15201,63 +15217,87 @@ var SettingsModal = ({ open, settings, micPermission, connectionStatus, memories
 								className: "flex items-center justify-between gap-3",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
 									className: "text-sm font-semibold text-white",
-									children: "2. Voice & Speech Speed"
+									children: isBn ? "২. কণ্ঠস্বর ও জবাবের গতি" : "2. आवाज़ और उत्तर की गति"
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: onTestVoiceSample,
 									className: "min-h-[38px] px-3 rounded-lg border border-[var(--piya-border)] bg-[#050a16] text-xs font-medium text-slate-200 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Volume2, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Preview Voice" })]
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Volume2, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: isBn ? "কণ্ঠ শুনুন" : "आवाज़ सुनें" })]
 								})]
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "grid grid-cols-1 sm:grid-cols-2 gap-2.5",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => onUpdateSettings({ preferNeuralTts: false }),
+									className: `min-h-[58px] p-3.5 rounded-xl border text-left transition-colors flex items-start justify-between gap-2 ${!settings.preferNeuralTts ? "border-[var(--piya-accent)] bg-[var(--piya-accent-soft)]" : "border-slate-800 bg-[#050a16] hover:border-slate-700"}`,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+										className: "text-xs font-semibold text-white flex items-center gap-1.5",
+										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Zap, {
+											className: "w-3.5 h-3.5",
+											style: { color: "var(--piya-accent-bright)" }
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: isBn ? "সুপার ফাস্ট ভয়েস (প্রস্তাবিত)" : "सुपर फ़ास्ट वॉयस (अनुशंसित)" })]
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-[11px] text-slate-400 mt-0.5",
+										children: isBn ? "সাথে সাথে তাৎক্ষণিক কণ্ঠে জবাব দেবে" : "बिना देरी के तुरंत आवाज़ में जवाब देगी"
+									})] }), !settings.preferNeuralTts && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+										className: "w-4 h-4 shrink-0 mt-0.5",
+										style: { color: "var(--piya-accent-bright)" }
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: () => onUpdateSettings({ preferNeuralTts: true }),
+									className: `min-h-[58px] p-3.5 rounded-xl border text-left transition-colors flex items-start justify-between gap-2 ${settings.preferNeuralTts ? "border-[var(--piya-accent)] bg-[var(--piya-accent-soft)]" : "border-slate-800 bg-[#050a16] hover:border-slate-700"}`,
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-xs font-semibold text-white",
+										children: isBn ? "স্টুডিও নিউরাল ভয়েস" : "स्टूडियो न्यूरल वॉयस"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-[11px] text-slate-400 mt-0.5",
+										children: isBn ? "উচ্চমানের ক্লাউড কণ্ঠ (দ্রুত নেটওয়ার্ক প্রয়োজন)" : "उच्च गुणवत्ता क्लाउड आवाज़ (तेज़ इंटरनेट आवश्यक)"
+									})] }), settings.preferNeuralTts && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, {
+										className: "w-4 h-4 shrink-0 mt-0.5",
+										style: { color: "var(--piya-accent-bright)" }
+									})]
+								})]
+							}),
+							settings.preferNeuralTts && /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 								className: "grid grid-cols-1 sm:grid-cols-2 gap-2.5",
 								children: VOICE_OPTIONS.map((v) => {
 									const active = settings.voiceName === v.id;
 									return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 										type: "button",
 										onClick: () => onUpdateSettings({ voiceName: v.id }),
-										className: `min-h-[52px] px-3.5 py-2.5 rounded-xl border text-left transition-colors ${active ? "border-[var(--piya-accent)] bg-[var(--piya-accent-soft)]" : "border-slate-800 bg-[#050a16] hover:border-slate-700"}`,
+										className: `min-h-[50px] px-3.5 py-2.5 rounded-xl border text-left transition-colors ${active ? "border-[var(--piya-accent)] bg-[var(--piya-accent-soft)]" : "border-slate-800 bg-[#050a16] hover:border-slate-700"}`,
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 											className: "text-xs font-semibold text-white",
 											children: v.label
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 											className: "text-[11px] text-slate-400 mt-0.5",
-											children: settings.language === "bn" ? v.bnDesc : v.hiDesc
+											children: isBn ? v.bnDesc : v.hiDesc
 										})]
 									}, v.id);
 								})
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "rounded-xl border border-slate-800 bg-[#050a16] p-3.5 space-y-2",
-								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex items-center justify-between text-xs",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "text-slate-300 font-medium",
-											children: "Speech Speed"
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
-											className: "font-mono-tabular text-white font-semibold",
-											children: [settings.speechSpeed.toFixed(2), "x"]
-										})]
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
-										type: "range",
-										min: .75,
-										max: 1.4,
-										step: .05,
-										value: settings.speechSpeed,
-										onChange: (e) => onUpdateSettings({ speechSpeed: Number(e.target.value) }),
-										className: "w-full accent-[var(--piya-accent)]"
-									}),
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex justify-between text-[11px] text-slate-500 font-mono-tabular",
-										children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "0.75x Calm" }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "1.00x Natural" }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "1.40x Brisk" })
-										]
-									})
-								]
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+									className: "flex items-center justify-between text-xs",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+										className: "text-slate-300 font-medium",
+										children: isBn ? "কথা বলার গতি" : "बोलने की गति"
+									}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", {
+										className: "font-mono-tabular text-white font-semibold",
+										children: [settings.speechSpeed.toFixed(2), "x"]
+									})]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("input", {
+									type: "range",
+									min: .8,
+									max: 1.4,
+									step: .05,
+									value: settings.speechSpeed,
+									onChange: (e) => onUpdateSettings({ speechSpeed: Number(e.target.value) }),
+									className: "w-full accent-[var(--piya-accent)]"
+								})]
 							})
 						]
 					}),
@@ -15265,7 +15305,7 @@ var SettingsModal = ({ open, settings, micPermission, connectionStatus, memories
 						className: "space-y-2.5 pt-4 border-t border-slate-800/80",
 						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
 							className: "text-sm font-semibold text-white",
-							children: "3. Interface & Dress Accent Theme"
+							children: isBn ? "৩. থিম নির্বাচন" : "3. थीम चुनें"
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 							className: "grid grid-cols-1 sm:grid-cols-2 gap-2.5",
 							children: Object.keys(PIYA_THEMES).map((id) => {
@@ -15274,7 +15314,7 @@ var SettingsModal = ({ open, settings, micPermission, connectionStatus, memories
 								return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: () => onUpdateSettings({ theme: id }),
-									className: `min-h-[56px] p-3 rounded-xl border text-left flex items-center justify-between gap-3 transition-colors ${selected ? "border-white/50 bg-[#0e1830]" : "border-slate-800 bg-[#050a16] hover:border-slate-700"}`,
+									className: `min-h-[52px] p-3 rounded-xl border text-left flex items-center justify-between gap-3 transition-colors ${selected ? "border-white/50 bg-[#0e1830]" : "border-slate-800 bg-[#050a16] hover:border-slate-700"}`,
 									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 										className: "flex items-center gap-3 min-w-0",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
@@ -15284,10 +15324,10 @@ var SettingsModal = ({ open, settings, micPermission, connectionStatus, memories
 											className: "min-w-0",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 												className: "text-xs font-semibold text-white truncate",
-												children: t.name
+												children: isBn ? t.bnName : t.hiName
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 												className: "text-[11px] text-slate-400 truncate",
-												children: settings.language === "bn" ? t.bnName : t.hiName
+												children: t.name
 											})]
 										})]
 									}), selected && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Check, { className: "w-4 h-4 text-white shrink-0" })]
@@ -15298,83 +15338,37 @@ var SettingsModal = ({ open, settings, micPermission, connectionStatus, memories
 					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
 						className: "space-y-3 pt-4 border-t border-slate-800/80",
 						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h3", {
-								className: "text-sm font-semibold text-white",
-								children: "4. Microphone Permission & AI Connection"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "rounded-xl border border-slate-800 bg-[#050a16] p-3.5 flex flex-wrap items-center justify-between gap-3",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-									className: "text-xs font-semibold text-white",
-									children: "Microphone Permission"
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "text-[11px] text-slate-400 mt-0.5",
-									children: [
-										"Status: ",
-										/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-											className: "uppercase text-slate-200",
-											children: micPermission
-										}),
-										" · PIYA AI never listens secretly in the background."
-									]
-								})] }), micPermission !== "granted" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: onRequestMicPermission,
-									className: "min-h-[40px] px-3.5 rounded-lg bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mic, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Grant Microphone" })]
-								})]
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "rounded-xl border border-slate-800 bg-[#050a16] p-3.5 flex flex-wrap items-center justify-between gap-3",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "min-w-0",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "text-xs font-semibold text-white",
-										children: "Secure Gemini Backend Connection"
-									}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-										className: "text-[11px] text-slate-400 mt-0.5",
-										children: connectionStatus.message
-									})]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-									type: "button",
-									onClick: onVerifyConnection,
-									disabled: connectionStatus.checking,
-									className: "min-h-[40px] px-3.5 rounded-lg border border-[var(--piya-border)] text-xs font-medium text-slate-200 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 disabled:opacity-50",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(RefreshCw, { className: `w-3.5 h-3.5 ${connectionStatus.checking ? "animate-spin" : ""}` }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: connectionStatus.checking ? "Checking..." : "Verify Live" })]
-								})]
-							})
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-						className: "space-y-3 pt-4 border-t border-slate-800/80",
-						children: [
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
 								className: "text-sm font-semibold text-white flex items-center gap-2",
 								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Shield, {
 									className: "w-4 h-4",
 									style: { color: "var(--piya-accent-bright)" }
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "5. Memory & Privacy Controls" })]
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: isBn ? "৪. মাইক্রোফোন ও প্রাইভেসি" : "4. माइक्रोफ़ोन और प्राइवेसी" })]
 							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-								className: "text-xs text-slate-400 leading-relaxed",
-								children: "API keys are protected exclusively on the backend server and never embedded inside frontend code or the Android APK. Sensitive permissions (Microphone, Contacts, Call, Device Admin lock) are requested only when you invoke those features."
+							micPermission !== "granted" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+								className: "rounded-xl border border-slate-800 bg-[#050a16] p-3.5 flex flex-wrap items-center justify-between gap-3",
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+									className: "text-xs text-slate-300",
+									children: isBn ? "ভয়েস কথা বলার জন্য মাইক্রোফোন চালু করুন" : "आवाज़ में बात करने के लिए माइक्रोफ़ोन चालू करें"
+								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+									type: "button",
+									onClick: onRequestMicPermission,
+									className: "min-h-[38px] px-3.5 rounded-lg bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold flex items-center gap-1.5 whitespace-nowrap shrink-0",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mic, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: isBn ? "মাইক্রোফোন অনুমতি দিন" : "माइक्रोफ़ोन अनुमति दें" })]
+								})]
 							}),
 							/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "flex flex-wrap items-center gap-2.5",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
+								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 									type: "button",
 									onClick: onClearMemories,
-									className: "min-h-[42px] px-3.5 rounded-xl border border-slate-700 text-xs font-medium text-slate-200 hover:text-white whitespace-nowrap shrink-0",
-									children: [
-										"Clear Saved Memories (",
-										memoriesCount,
-										")"
-									]
+									className: "min-h-[40px] px-3.5 rounded-xl border border-slate-700 text-xs font-medium text-slate-200 hover:text-white whitespace-nowrap shrink-0",
+									children: isBn ? `সংরক্ষিত মেমোরি মুছুন (${memoriesCount})` : `सेव की गई मेमोरी हटाएँ (${memoriesCount})`
 								}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 									type: "button",
 									onClick: onResetAllData,
-									className: "min-h-[42px] px-3.5 rounded-xl border border-rose-500/40 bg-rose-950/40 text-xs font-semibold text-rose-200 hover:bg-rose-900/50 flex items-center gap-1.5 whitespace-nowrap shrink-0",
-									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Delete All App Data" })]
+									className: "min-h-[40px] px-3.5 rounded-xl border border-rose-500/40 bg-rose-950/40 text-xs font-semibold text-rose-200 hover:bg-rose-900/50 flex items-center gap-1.5 whitespace-nowrap shrink-0",
+									children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Trash2, { className: "w-3.5 h-3.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: isBn ? "সব ডেটা মুছে ফেলুন" : "सारा डेटा हटाएँ" })]
 								})]
 							})
 						]
@@ -15521,288 +15515,29 @@ var ProfileModal = ({ open, profile, onClose, onSaveProfile, onLogoutSession, on
 		})
 	});
 };
-// src/components/AndroidArchitecturePanel.tsx
-var AndroidArchitecturePanel = () => {
-	const nativeCap = isNativeAndroidRuntime();
-	const androidWeb = isAndroidBrowser();
-	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-		className: "space-y-6",
-		children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-			className: "rounded-2xl border border-[var(--piya-border)] bg-[var(--piya-surface)] p-5 space-y-4",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "flex flex-wrap items-start justify-between gap-4",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h2", {
-					className: "font-display text-lg font-semibold text-white flex items-center gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Smartphone, {
-						className: "w-5 h-5",
-						style: { color: "var(--piya-accent-bright)" }
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Capacitor Android Architecture & Signed APK Configuration" })]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-					className: "text-xs text-slate-400 mt-1 max-w-3xl leading-relaxed",
-					children: [
-						"Current Runtime:",
-						" ",
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "text-slate-200 font-medium",
-							children: nativeCap ? "Capacitor Native Android APK" : androidWeb ? "Android Mobile Browser" : "Web Studio Preview"
-						}),
-						" ",
-						"· Package ID: ",
-						/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "font-mono-tabular text-slate-200",
-							children: "com.poran.piyaai"
-						})
-					]
-				})] })
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-				className: "overflow-x-auto rounded-xl border border-slate-800",
-				children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("table", {
-					className: "w-full text-left border-collapse text-xs",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("thead", { children: /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", {
-						className: "border-b border-slate-800 bg-[#060c1a] text-slate-300",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-								className: "py-3 px-4 font-semibold",
-								children: "Capability"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-								className: "py-3 px-4 font-semibold",
-								children: "Current Web / Browser Status"
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("th", {
-								className: "py-3 px-4 font-semibold",
-								children: "Android Capacitor APK Status"
-							})
-						]
-					}) }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("tbody", {
-						className: "divide-y divide-slate-800/70 bg-[#070d1b]",
-						children: [
-							{
-								feature: "Gemini Online Brain (Bengali & Hindi)",
-								webStatus: "Working Live (Server-Side /api/assistant/chat)",
-								apkStatus: "Working Live (HTTPS Backend — Zero Key in APK)"
-							},
-							{
-								feature: "Speech-to-Text & Neural Text-to-Speech",
-								webStatus: "Working Live (MediaRecorder + Gemini STT & Neural WAV TTS)",
-								apkStatus: "Working Live (RECORD_AUDIO Permission + Lifecycle Safe)"
-							},
-							{
-								feature: "Official PIYA AI Main Character & Voice Stage",
-								webStatus: "Working Live (Official Character Image + 60fps Audio-Reactive Stage)",
-								apkStatus: "Working Live (Bundled in /public/assets + Hardware Accelerated WebView)"
-							},
-							{
-								feature: "YouTube & YouTube Music Search / Launch",
-								webStatus: "Working Live (Direct Search URLs & Deep Links)",
-								apkStatus: "Working Live (Native Intent.ACTION_SEARCH / Package Launch)"
-							},
-							{
-								feature: "Confirmed Calling & Multi-Contact Last-4-Digit Selection",
-								webStatus: "Working Live (Confirmation Flow + tel: Dialer Intent)",
-								apkStatus: "Working Live (READ_CONTACTS + CALL_PHONE / ACTION_DIAL)"
-							},
-							{
-								feature: "Battery Percentage & Notes & Alarms",
-								webStatus: "Working Live (navigator.getBattery, Local Vault, Audio Alarm)",
-								apkStatus: "Working Live (BatteryManager + AlarmClock.ACTION_SET_ALARM)"
-							},
-							{
-								feature: "Flashlight, Wi-Fi/Bluetooth Settings & Phone Lock",
-								webStatus: "Torch via Camera API where supported; OS Lock requires APK",
-								apkStatus: "PiyaDeviceControlPlugin.java + DevicePolicyManager.lockNow()"
-							}
-						].map((row) => /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("tr", { children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-								className: "py-3 px-4 font-medium text-white",
-								children: row.feature
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-								className: "py-3 px-4 text-slate-300",
-								children: row.webStatus
-							}),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("td", {
-								className: "py-3 px-4 text-slate-300",
-								children: row.apkStatus
-							})
-						] }, row.feature))
-					})]
-				})
-			})]
-		}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-			className: "grid grid-cols-1 lg:grid-cols-2 gap-6",
-			children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "rounded-2xl border border-[var(--piya-border)] bg-[var(--piya-surface)] p-5 space-y-3",
-				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
-					className: "font-display text-base font-semibold text-white flex items-center gap-2",
-					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Terminal, {
-						className: "w-4 h-4",
-						style: { color: "var(--piya-accent-bright)" }
-					}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Included Android Source Files" })]
-				}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("ul", {
-					className: "space-y-2 text-xs text-slate-300",
-					children: [
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
-							className: "flex items-start gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "w-4 h-4 text-emerald-400 shrink-0 mt-0.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular text-slate-100",
-									children: "capacitor.config.ts"
-								}),
-								" — Configured for ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "com.poran.piyaai"
-								}),
-								" & secure HTTPS backend URL."
-							] })]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
-							className: "flex items-start gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "w-4 h-4 text-emerald-400 shrink-0 mt-0.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular text-slate-100",
-									children: "android/app/src/main/AndroidManifest.xml"
-								}),
-								" ",
-								"— Declares ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "RECORD_AUDIO"
-								}),
-								",",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "READ_CONTACTS"
-								}),
-								",",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "CALL_PHONE"
-								}),
-								",",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "SET_ALARM"
-								}),
-								", package visibility",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "<queries>"
-								}),
-								", and",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "PiyaDeviceAdminReceiver"
-								}),
-								"."
-							] })]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
-							className: "flex items-start gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "w-4 h-4 text-emerald-400 shrink-0 mt-0.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular text-slate-100",
-									children: "PiyaDeviceControlPlugin.java"
-								}),
-								" ",
-								"— Native Android Capacitor bridge executing",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "DevicePolicyManager.lockNow()"
-								}),
-								",",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "CameraManager.setTorchMode"
-								}),
-								",",
-								" ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "AlarmClock"
-								}),
-								", and package launch intents."
-							] })]
-						}),
-						/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("li", {
-							className: "flex items-start gap-2",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(CircleCheck, { className: "w-4 h-4 text-emerald-400 shrink-0 mt-0.5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular text-slate-100",
-									children: "android/app/build.gradle"
-								}),
-								" — Includes production ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "signingConfigs.release"
-								}),
-								" ",
-								"reading from ",
-								/* @__PURE__ */ (0, import_jsx_runtime.jsx)("code", {
-									className: "font-mono-tabular",
-									children: "keystore.properties"
-								}),
-								"."
-							] })]
-						})
-					]
-				})]
-			}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("section", {
-				className: "rounded-2xl border border-[var(--piya-border)] bg-[var(--piya-surface)] p-5 space-y-3",
-				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("h3", {
-						className: "font-display text-base font-semibold text-white flex items-center gap-2",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(ShieldAlert, { className: "w-4 h-4 text-amber-400" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Building the Signed Release APK" })]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "rounded-xl bg-[#050a16] border border-slate-800 p-3.5 font-mono-tabular text-xs text-slate-200 space-y-1.5 overflow-x-auto",
-						children: [
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "1. npm run build" }),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "2. npx cap sync android" }),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "3. keytool -genkey -v -keystore piya-release.jks -keyalg RSA -keysize 2048 -validity 10000 -alias piya" }),
-							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { children: "4. ./gradlew assembleRelease (inside /android)" })
-						]
-					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
-						className: "text-xs text-slate-400 leading-relaxed",
-						children: "Sensitive Android permissions (Contacts, Call Phone, Microphone, and Device Administrator for screen lock) require explicit runtime approval on the physical Android phone before PIYA AI executes those actions."
-					})
-				]
-			})]
-		})]
-	});
-};
 // src/App.tsx
 /**
 * @license
 * SPDX-License-Identifier: Apache-2.0
 */
 var STORAGE_KEYS = {
-	settings: "piya_ai_settings_v1",
+	settings: "piya_ai_settings_v2",
 	profile: "piya_ai_profile_v1",
 	contacts: "piya_ai_contacts_v1",
 	memories: "piya_ai_memories_v1",
 	notes: "piya_ai_notes_v1",
 	alarms: "piya_ai_alarms_v1",
-	history: "piya_ai_history_v1"
+	history: "piya_ai_history_v2"
 };
 var DEFAULT_SETTINGS = {
 	language: "bn",
 	voiceName: "Kore",
-	speechSpeed: 1,
+	speechSpeed: 1.05,
 	theme: "classic-cyan",
 	characterMode: "3d-rig",
 	memoryEnabled: true,
 	autoConfirmMemory: false,
-	preferNeuralTts: true
+	preferNeuralTts: false
 };
 var DEFAULT_PROFILE = {
 	displayName: "Poran",
@@ -15830,17 +15565,10 @@ function App() {
 	const [memories, setMemories] = (0, import_react.useState)(() => loadStoredJson(STORAGE_KEYS.memories, []));
 	const [notes, setNotes] = (0, import_react.useState)(() => loadStoredJson(STORAGE_KEYS.notes, []));
 	const [alarms, setAlarms] = (0, import_react.useState)(() => loadStoredJson(STORAGE_KEYS.alarms, []));
-	const [messages, setMessages] = (0, import_react.useState)(() => loadStoredJson(STORAGE_KEYS.history, []));
+	const [messages, setMessages] = (0, import_react.useState)(() => loadStoredJson(STORAGE_KEYS.history, []).filter((m) => !m.isError));
 	const [visualState, setVisualState] = (0, import_react.useState)("idle");
 	const [micPermission, setMicPermission] = (0, import_react.useState)("prompt");
 	const [isOnline, setIsOnline] = (0, import_react.useState)(typeof navigator !== "undefined" ? navigator.onLine : true);
-	const [connectionStatus, setConnectionStatus] = (0, import_react.useState)({
-		online: true,
-		aiConfigured: true,
-		aiVerified: false,
-		checking: false,
-		message: "Checking secure backend..."
-	});
 	const [lipSync, setLipSync] = (0, import_react.useState)({
 		mouthOpen: 0,
 		mouthSpread: .35,
@@ -15861,6 +15589,7 @@ function App() {
 	const [deviceAdminActive, setDeviceAdminActive] = (0, import_react.useState)(false);
 	const voiceEngineRef = (0, import_react.useRef)(null);
 	if (!voiceEngineRef.current) voiceEngineRef.current = new PiyaVoiceEngine();
+	const finishingMicRef = (0, import_react.useRef)(false);
 	(0, import_react.useEffect)(() => {
 		applyThemeCssVariables(settings.theme);
 		document.documentElement.lang = settings.language;
@@ -15882,35 +15611,8 @@ function App() {
 		window.localStorage.setItem(STORAGE_KEYS.alarms, JSON.stringify(alarms));
 	}, [alarms]);
 	(0, import_react.useEffect)(() => {
-		window.localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(messages.slice(-40)));
+		window.localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(messages.filter((m) => !m.isError).slice(-40)));
 	}, [messages]);
-	const checkBackendStatus = (0, import_react.useCallback)(async (verifyLive = false) => {
-		setConnectionStatus((prev) => ({
-			...prev,
-			checking: true
-		}));
-		try {
-			const resp = await fetch(`/api/status${verifyLive ? "?verify=true" : ""}`);
-			if (!resp.ok) throw new Error(`Backend status returned ${resp.status}`);
-			const data = await resp.json();
-			setConnectionStatus({
-				online: data.online,
-				aiConfigured: data.aiConfigured,
-				aiVerified: data.aiVerified,
-				checking: false,
-				message: data.message,
-				errorCode: data.errorCode
-			});
-		} catch (err) {
-			setConnectionStatus({
-				online: false,
-				aiConfigured: false,
-				aiVerified: false,
-				checking: false,
-				message: err instanceof Error ? err.message : "Unable to reach PIYA AI backend server."
-			});
-		}
-	}, []);
 	const refreshDeviceTelemetry = (0, import_react.useCallback)(async () => {
 		const bat = await readLiveBatteryStatus();
 		setBattery(bat);
@@ -15919,15 +15621,11 @@ function App() {
 	}, []);
 	(0, import_react.useEffect)(() => {
 		queryMicrophonePermission().then(setMicPermission);
-		checkBackendStatus(false);
 		refreshDeviceTelemetry();
-		const handleOnline = () => {
-			setIsOnline(true);
-			checkBackendStatus(false);
-		};
+		const handleOnline = () => setIsOnline(true);
 		const handleOffline = () => {
 			setIsOnline(false);
-			setErrorBanner(settings.language === "bn" ? "ইন্টারনেট সংযোগ বিচ্ছিন্ন হয়েছে। পিয়া এআই অনলাইন সংযোগ ছাড়া উত্তর তৈরি করতে পারে না।" : "इंटरनेट कनेक्शन टूट गया है। पिया एआई ऑनलाइन कनेक्शन के बिना उत्तर नहीं दे सकती।");
+			setErrorBanner(settings.language === "bn" ? "ইন্টারনেট সংযোগ বিচ্ছিন্ন হয়েছে।" : "इंटरनेट कनेक्शन टूट गया है।");
 		};
 		const handleVisibilityChange = () => {
 			if (document.hidden) {
@@ -15946,11 +15644,7 @@ function App() {
 			voiceEngineRef.current?.cancelListening();
 			voiceEngineRef.current?.stopSpeaking();
 		};
-	}, [
-		checkBackendStatus,
-		refreshDeviceTelemetry,
-		settings.language
-	]);
+	}, [refreshDeviceTelemetry, settings.language]);
 	(0, import_react.useEffect)(() => {
 		const timer = window.setInterval(() => {
 			const now = /* @__PURE__ */ new Date();
@@ -15971,12 +15665,12 @@ function App() {
 		}, 1e3);
 		return () => window.clearInterval(timer);
 	}, []);
-	const updateSettings = (patch) => {
+	const updateSettings = (0, import_react.useCallback)((patch) => {
 		setSettings((prev) => ({
 			...prev,
 			...patch
 		}));
-	};
+	}, []);
 	const speakAssistantReply = (0, import_react.useCallback)(async (text, lang) => {
 		if (!voiceEngineRef.current) return;
 		setVisualState("speaking");
@@ -15996,8 +15690,8 @@ function App() {
 				});
 				setVisualState("idle");
 			},
-			onError: (msg) => {
-				setErrorBanner(`Voice synthesis notice: ${msg}`);
+			onError: () => {
+				setVisualState("idle");
 			}
 		});
 	}, [
@@ -16040,12 +15734,12 @@ function App() {
 			};
 		}
 		const namesSummary = matches.map((m) => `${m.name} (${m.phone.replace(/\D/g, "").slice(-4)})`).join(", ");
-		const disambiguateMsg = activeLang === "bn" ? `একাধিক কন্টাক্ট পাওয়া গেছে: ${namesSummary}। অনুগ্রহ করে নাম অথবা নম্বরের শেষ চারটি ডিজিট বলুন।` : `एक से अधिक कॉन्टैक्ट मिले हैं: ${namesSummary}। कृपया सही कॉन्टैक्ट चुनें या नंबर के आखिरी चार अंक बताएँ।`;
+		const disambiguateMsg = activeLang === "bn" ? `একাধিক কন্টাক্ট পাওয়া গেছে: ${namesSummary}। অনুগ্রহ করে নাম অথবা শেষ চারটি ডিজিট বলুন।` : `एक से अधिक कॉन्टैक्ट मिले हैं: ${namesSummary}। कृपया नाम या आखिरी चार अंक बताएँ।`;
 		return {
 			pending: {
 				id: `pa_${Date.now()}`,
 				type: "call_disambiguate",
-				title: activeLang === "bn" ? `${matches.length}টি মিল পাওয়া গেছে — কন্টাক্ট বেছে নিন` : `${matches.length} कॉन्टैक्ट मिले — सही कॉन्टैक्ट चुनें`,
+				title: activeLang === "bn" ? `${matches.length}টি কন্টাক্ট পাওয়া গেছে` : `${matches.length} कॉन्टैक्ट मिले`,
 				explanation: disambiguateMsg,
 				matchedContacts: matches
 			},
@@ -16079,7 +15773,7 @@ function App() {
 			if (isNativeAndroidRuntime()) try {
 				await PiyaNativePlugin.placeCall({ phoneNumber: act.selectedContact.phone });
 			} catch (err) {
-				setErrorBanner(err instanceof Error ? err.message : "Failed to initiate Android call.");
+				setErrorBanner(err instanceof Error ? err.message : "কল শুরু করা যায়নি।");
 				return;
 			}
 			const msg = lang === "bn" ? `${act.selectedContact.name}-কে এখন কল করা হচ্ছে।` : `अब ${act.selectedContact.name} को कॉल लगाया जा रहा है।`;
@@ -16114,8 +15808,8 @@ function App() {
 		if (act.type === "lock_phone") {
 			const lockRes = await executeDeviceLock();
 			setActionStatusToast(lockRes.message);
-			const msg = lockRes.locked ? lang === "bn" ? "ফোন লক করা হয়েছে।" : "फ़ोन लॉक कर दिया गया है।" : lang === "bn" ? `ফোন লক করতে হলে ইনস্টল করা Android APK-তে Device Administrator অনুমতি সক্রিয় করতে হবে। (${lockRes.message})` : `फ़ोन लॉक करने के लिए इंस्टॉल किए गए Android APK में Device Administrator अनुमति सक्रिय होनी चाहिए। (${lockRes.message})`;
-			appendMessage("assistant", msg, lang, { actionBadge: lockRes.locked ? "Phone Locked" : "Device Admin Required" });
+			const msg = lockRes.locked ? lang === "bn" ? "ফোন লক করা হয়েছে।" : "फ़ोन लॉक कर दिया गया है।" : lang === "bn" ? "ফোন লক করতে হলে Android APK-তে Device Administrator অনুমতি সক্রিয় করুন।" : "फ़ोन लॉक करने के लिए Android APK में Device Administrator अनुमति सक्रिय करें।";
+			appendMessage("assistant", msg, lang, { actionBadge: lockRes.locked ? "Locked" : "Device Admin" });
 			await speakAssistantReply(msg, lang);
 			return;
 		}
@@ -16141,7 +15835,7 @@ function App() {
 				label
 			}).catch(() => {});
 			const formattedTime = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-			const msg = lang === "bn" ? `${formattedTime} সময়ের জন্য "${label}" অ্যালার্ম সেট করা হয়েছে।` : `${formattedTime} बजे के लिए "${label}" अलार्म सेट कर दिया गया है।`;
+			const msg = lang === "bn" ? `${formattedTime} সময়ের জন্য অ্যালার্ম সেট করা হয়েছে।` : `${formattedTime} बजे के लिए अलार्म सेट कर दिया गया है।`;
 			appendMessage("assistant", msg, lang, { actionBadge: "Alarm Set" });
 			await speakAssistantReply(msg, lang);
 			return;
@@ -16154,7 +15848,7 @@ function App() {
 				createdAt: (/* @__PURE__ */ new Date()).toISOString()
 			};
 			setMemories((prev) => [item, ...prev]);
-			const msg = lang === "bn" ? "আপনার পছন্দটি নিরাপদে মেমরিতে সংরক্ষণ করা হয়েছে।" : "आपकी पसंद सुरक्षित रूप से मेमोरी में सहेज ली गई है।";
+			const msg = lang === "bn" ? "আপনার তথ্যটি মেমোরিতে সংরক্ষণ করা হয়েছে।" : "आपकी जानकारी मेमोरी में सहेज ली गई है।";
 			appendMessage("assistant", msg, lang, { actionBadge: "Memory Saved" });
 			await speakAssistantReply(msg, lang);
 		}
@@ -16175,65 +15869,217 @@ function App() {
 		settings.language,
 		speakAssistantReply
 	]);
+	/**
+	* Checks if user text resolves an active confirmation/disambiguation dialog.
+	* Returns true if handled locally without needing an action override.
+	*/
+	const tryHandlePendingConfirmation = (0, import_react.useCallback)(async (spokenOrTyped, turnLang) => {
+		if (!pendingAction) return false;
+		const trimmed = spokenOrTyped.trim();
+		const parsed = parseVoiceConfirmationIntent(trimmed);
+		if (pendingAction.type === "call_disambiguate" && pendingAction.matchedContacts) {
+			if (parsed.fourDigits) {
+				const matchedBy4 = pendingAction.matchedContacts.find((c) => c.phone.replace(/\D/g, "").endsWith(parsed.fourDigits));
+				if (matchedBy4) {
+					appendMessage("user", trimmed, turnLang);
+					await handleSelectDisambiguatedContact(matchedBy4);
+					return true;
+				}
+			}
+			const matchedByName = pendingAction.matchedContacts.find((c) => c.name.toLowerCase().includes(trimmed.toLowerCase()));
+			if (matchedByName) {
+				appendMessage("user", trimmed, turnLang);
+				await handleSelectDisambiguatedContact(matchedByName);
+				return true;
+			}
+			if (parsed.decision === "cancel") {
+				appendMessage("user", trimmed, turnLang);
+				await handleCancelPendingAction();
+				return true;
+			}
+			return false;
+		}
+		if (parsed.decision === "confirm") {
+			appendMessage("user", trimmed, turnLang);
+			if (pendingAction.intentHref && !isNativeAndroidRuntime()) {
+				if (pendingAction.intentHref.startsWith("tel:")) window.location.href = pendingAction.intentHref;
+			}
+			await handleConfirmPendingAction();
+			return true;
+		}
+		if (parsed.decision === "cancel") {
+			appendMessage("user", trimmed, turnLang);
+			await handleCancelPendingAction();
+			return true;
+		}
+		return false;
+	}, [
+		appendMessage,
+		handleCancelPendingAction,
+		handleConfirmPendingAction,
+		handleSelectDisambiguatedContact,
+		pendingAction
+	]);
+	/**
+	* Applies Gemini toolActions + speaks PIYA AI's reply immediately.
+	*/
+	const applyAssistantResponse = (0, import_react.useCallback)(async (userTranscript, rawReply, replyLang, toolActions, freshBattery) => {
+		if (replyLang !== settings.language) updateSettings({ language: replyLang });
+		let finalSpokenReply = rawReply;
+		let actionBadge;
+		if (toolActions && toolActions.length > 0) for (const tool of toolActions) {
+			const args = tool.args || {};
+			if (tool.name === "proposePhoneCall") {
+				const callPrep = prepareCallAction(typeof args.contactName === "string" ? args.contactName : void 0, typeof args.lastFourDigits === "string" ? args.lastFourDigits : void 0, replyLang);
+				setPendingAction(callPrep.pending);
+				if (callPrep.spokenOverride) finalSpokenReply = callPrep.spokenOverride;
+				actionBadge = "Phone Call";
+			} else if (tool.name === "searchYouTube") {
+				const q = String(args.query || "").trim() || userTranscript;
+				const platform = args.targetApp === "youtube_music" ? "youtube_music" : "youtube";
+				const url = buildYouTubeSearchUrl(q, platform);
+				setPendingAction({
+					id: `pa_${Date.now()}`,
+					type: "youtube_search",
+					title: platform === "youtube_music" ? `YouTube Music: ${q}` : `YouTube: ${q}`,
+					explanation: replyLang === "bn" ? `"${q}" ইউটিউবে খুলতে হ্যাঁ চাপুন।` : `"${q}" को YouTube पर खोलने के लिए हाँ दबाएँ।`,
+					youtubeQuery: q,
+					youtubePlatform: platform,
+					intentHref: isNativeAndroidRuntime() ? void 0 : url
+				});
+				actionBadge = "YouTube";
+			} else if (tool.name === "openApplication") {
+				const target = resolveAppLaunchTarget(String(args.appName || "App"));
+				setPendingAction({
+					id: `pa_${Date.now()}`,
+					type: "open_app",
+					title: `${target.label}`,
+					explanation: replyLang === "bn" ? `${target.label} অ্যাপটি খুলতে চান?` : `क्या आप ${target.label} ऐप खोलना चाहते हैं?`,
+					appName: target.label,
+					intentHref: isNativeAndroidRuntime() || !target.href ? void 0 : target.href
+				});
+				actionBadge = target.label;
+			} else if (tool.name === "lockPhoneScreen") {
+				setPendingAction({
+					id: `pa_${Date.now()}`,
+					type: "lock_phone",
+					title: replyLang === "bn" ? "ফোন স্ক্রিন লক" : "फ़ोन स्क्रीन लॉक",
+					explanation: replyLang === "bn" ? "পিয়া এআই ফোন লক করবে। আপনি কি নিশ্চিত?" : "पिया एआई फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?"
+				});
+				actionBadge = "Lock Screen";
+			} else if (tool.name === "openSystemSettings") {
+				const rawSec = String(args.settingType || "phone_settings");
+				const sec = rawSec === "wifi" || rawSec === "bluetooth" || rawSec === "device_admin" ? rawSec : "phone_settings";
+				const sysPreview = await executeSystemSettingsOpen(sec);
+				setPendingAction({
+					id: `pa_${Date.now()}`,
+					type: "open_settings",
+					title: sec.replace("_", " ").toUpperCase(),
+					explanation: sysPreview.message,
+					settingSection: sec,
+					intentHref: sysPreview.intentHref
+				});
+				actionBadge = "Settings";
+			} else if (tool.name === "controlFlashlight") {
+				const mode = String(args.mode || "toggle");
+				const torchRes = await setHardwareFlashlight(mode === "on" ? true : mode === "off" ? false : !flashlightOn);
+				setFlashlightOn(torchRes.enabled);
+				if (!torchRes.success) finalSpokenReply = replyLang === "bn" ? "এই ব্রাউজারে ফ্ল্যাশলাইট কন্ট্রোল নেই। Android APK-তে এটি সরাসরি কাজ করে।" : "इस ब्राउज़र में फ़्लैशलाइट कंट्रोल उपलब्ध नहीं है। Android APK में यह सीधे काम करता है।";
+				actionBadge = "Flashlight";
+			} else if (tool.name === "checkBatteryStatus") {
+				if (!freshBattery.supported || freshBattery.level === null) finalSpokenReply = replyLang === "bn" ? "আপনার বর্তমান ব্রাউজার ব্যাটারির তথ্য দিচ্ছে না। Android অ্যাপে এটি কাজ করে।" : "आपका ब्राउज़र बैटरी की जानकारी नहीं दे रहा है। Android ऐप में यह काम करता है।";
+				actionBadge = "Battery";
+			} else if (tool.name === "setDeviceAlarm") {
+				const hour = Math.max(0, Math.min(23, Number(args.hour ?? 7)));
+				const minute = Math.max(0, Math.min(59, Number(args.minute ?? 0)));
+				const label = String(args.label || "PIYA AI Alarm");
+				const tStr = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+				setPendingAction({
+					id: `pa_${Date.now()}`,
+					type: "set_alarm",
+					title: `${tStr}`,
+					explanation: replyLang === "bn" ? `${tStr} সময়ে "${label}" অ্যালার্ম সেট করতে চান?` : `क्या आप ${tStr} बजे के लिए "${label}" अलार्म सेट करना चाहते हैं?`,
+					alarmData: {
+						hour,
+						minute,
+						label
+					}
+				});
+				actionBadge = `Alarm ${tStr}`;
+			} else if (tool.name === "createPersonalNote") {
+				const title = String(args.title || "Note");
+				const content = String(args.content || userTranscript);
+				const newNote = {
+					id: `nt_${Date.now()}`,
+					title,
+					content,
+					createdAt: (/* @__PURE__ */ new Date()).toISOString()
+				};
+				setNotes((prev) => [newNote, ...prev]);
+				actionBadge = "Note Saved";
+			} else if (tool.name === "proposeMemorySave" && settings.memoryEnabled) {
+				const category = String(args.category || "Preference");
+				const fact = String(args.fact || "");
+				if (fact) {
+					if (settings.autoConfirmMemory) {
+						setMemories((prev) => [{
+							id: `mem_${Date.now()}`,
+							category,
+							fact,
+							createdAt: (/* @__PURE__ */ new Date()).toISOString()
+						}, ...prev]);
+						actionBadge = "Memory Saved";
+					} else {
+						setPendingAction({
+							id: `pa_${Date.now()}`,
+							type: "save_memory",
+							title: replyLang === "bn" ? "মেমোরিতে সংরক্ষণ" : "मेमोरी में सहेजें",
+							explanation: replyLang === "bn" ? `পিয়া কি এটি মনে রাখবে: "${fact}"?` : `क्या पिया यह याद रखे: "${fact}"?`,
+							memoryData: {
+								category,
+								fact
+							}
+						});
+						actionBadge = "Save Memory";
+					}
+				}
+			}
+		}
+		appendMessage("assistant", finalSpokenReply, replyLang, { actionBadge });
+		await speakAssistantReply(finalSpokenReply, replyLang);
+	}, [
+		appendMessage,
+		flashlightOn,
+		prepareCallAction,
+		settings.autoConfirmMemory,
+		settings.language,
+		settings.memoryEnabled,
+		speakAssistantReply,
+		updateSettings
+	]);
 	const processUserUtterance = (0, import_react.useCallback)(async (rawText, detectedLangHint) => {
 		const trimmed = rawText.trim();
 		if (!trimmed) return;
+		voiceEngineRef.current?.unlockAudioOnGesture();
 		if (!isOnline) {
 			setErrorBanner(UI_COPY[settings.language].offlineMode);
 			return;
 		}
 		setErrorBanner(null);
 		const turnLang = detectedLangHint || settings.language;
-		if (pendingAction) {
-			const parsed = parseVoiceConfirmationIntent(trimmed);
-			if (pendingAction.type === "call_disambiguate" && pendingAction.matchedContacts) {
-				if (parsed.fourDigits) {
-					const matchedBy4 = pendingAction.matchedContacts.find((c) => c.phone.replace(/\D/g, "").endsWith(parsed.fourDigits));
-					if (matchedBy4) {
-						appendMessage("user", trimmed, turnLang);
-						await handleSelectDisambiguatedContact(matchedBy4);
-						return;
-					}
-				}
-				const matchedByName = pendingAction.matchedContacts.find((c) => c.name.toLowerCase().includes(trimmed.toLowerCase()));
-				if (matchedByName) {
-					appendMessage("user", trimmed, turnLang);
-					await handleSelectDisambiguatedContact(matchedByName);
-					return;
-				}
-				if (parsed.decision === "cancel") {
-					appendMessage("user", trimmed, turnLang);
-					await handleCancelPendingAction();
-					return;
-				}
-			} else {
-				if (parsed.decision === "confirm") {
-					appendMessage("user", trimmed, turnLang);
-					if (pendingAction.intentHref && !isNativeAndroidRuntime()) {
-						if (pendingAction.intentHref.startsWith("tel:")) window.location.href = pendingAction.intentHref;
-					}
-					await handleConfirmPendingAction();
-					return;
-				}
-				if (parsed.decision === "cancel") {
-					appendMessage("user", trimmed, turnLang);
-					await handleCancelPendingAction();
-					return;
-				}
-			}
-		}
+		if (await tryHandlePendingConfirmation(trimmed, turnLang)) return;
 		appendMessage("user", trimmed, turnLang);
 		setVisualState("thinking");
 		try {
 			const freshBattery = await readLiveBatteryStatus();
 			setBattery(freshBattery);
-			const resp = await fetch("/api/assistant/chat", {
+			const { ok, status, data } = await fetchApiJson("/api/assistant/chat", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({
 					message: trimmed,
 					preferredLanguage: settings.language,
-					history: messages.slice(-12).map((m) => ({
+					history: messages.slice(-8).map((m) => ({
 						role: m.role,
 						text: m.text
 					})),
@@ -16248,191 +16094,113 @@ function App() {
 					}
 				})
 			});
-			const data = await resp.json();
-			if (!resp.ok || !data.reply) throw new Error(data.error || `Gemini service error (${resp.status})`);
+			if (!ok || !data.reply) throw new Error(data.error || `সার্ভার ত্রুটি (${status})`);
 			const replyLang = data.language === "hi" ? "hi" : "bn";
-			if (replyLang !== settings.language) updateSettings({ language: replyLang });
-			let finalSpokenReply = data.reply;
-			let actionBadge;
-			if (data.toolActions && data.toolActions.length > 0) for (const tool of data.toolActions) {
-				const args = tool.args || {};
-				if (tool.name === "proposePhoneCall") {
-					const callPrep = prepareCallAction(typeof args.contactName === "string" ? args.contactName : void 0, typeof args.lastFourDigits === "string" ? args.lastFourDigits : void 0, replyLang);
-					setPendingAction(callPrep.pending);
-					if (callPrep.spokenOverride) finalSpokenReply = callPrep.spokenOverride;
-					actionBadge = "Phone Call";
-				} else if (tool.name === "searchYouTube") {
-					const q = String(args.query || "").trim() || trimmed;
-					const platform = args.targetApp === "youtube_music" ? "youtube_music" : "youtube";
-					const url = buildYouTubeSearchUrl(q, platform);
-					setPendingAction({
-						id: `pa_${Date.now()}`,
-						type: "youtube_search",
-						title: platform === "youtube_music" ? `YouTube Music: ${q}` : `YouTube Search: ${q}`,
-						explanation: replyLang === "bn" ? `"${q}" এর জন্য ইউটিউব খোলার জন্য নিশ্চিত করুন।` : `"${q}" को YouTube पर खोलने के लिए पुष्टि करें।`,
-						youtubeQuery: q,
-						youtubePlatform: platform,
-						intentHref: isNativeAndroidRuntime() ? void 0 : url
-					});
-					actionBadge = "YouTube Search";
-				} else if (tool.name === "openApplication") {
-					const target = resolveAppLaunchTarget(String(args.appName || "App"));
-					setPendingAction({
-						id: `pa_${Date.now()}`,
-						type: "open_app",
-						title: `Open ${target.label}`,
-						explanation: replyLang === "bn" ? `${target.label} অ্যাপটি খুলতে চান?` : `क्या आप ${target.label} ऐप खोलना चाहते हैं?`,
-						appName: target.label,
-						intentHref: isNativeAndroidRuntime() || !target.href ? void 0 : target.href
-					});
-					actionBadge = `Open ${target.label}`;
-				} else if (tool.name === "lockPhoneScreen") {
-					setPendingAction({
-						id: `pa_${Date.now()}`,
-						type: "lock_phone",
-						title: replyLang === "bn" ? "ফোন স্ক্রিন লক নিশ্চিতকরণ" : "फ़ोन स्क्रीन लॉक पुष्टि",
-						explanation: replyLang === "bn" ? "পিয়া এআই Android DevicePolicyManager ব্যবহার করে ফোন লক করবে। আপনি কি নিশ্চিত?" : "पिया एआई Android DevicePolicyManager का उपयोग करके फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?"
-					});
-					actionBadge = "Lock Screen";
-				} else if (tool.name === "openSystemSettings") {
-					const rawSec = String(args.settingType || "phone_settings");
-					const sec = rawSec === "wifi" || rawSec === "bluetooth" || rawSec === "device_admin" ? rawSec : "phone_settings";
-					const sysPreview = await executeSystemSettingsOpen(sec);
-					setPendingAction({
-						id: `pa_${Date.now()}`,
-						type: "open_settings",
-						title: `Open ${sec.replace("_", " ").toUpperCase()}`,
-						explanation: sysPreview.message,
-						settingSection: sec,
-						intentHref: sysPreview.intentHref
-					});
-					actionBadge = "System Settings";
-				} else if (tool.name === "controlFlashlight") {
-					const mode = String(args.mode || "toggle");
-					const torchRes = await setHardwareFlashlight(mode === "on" ? true : mode === "off" ? false : !flashlightOn);
-					setFlashlightOn(torchRes.enabled);
-					if (!torchRes.success) finalSpokenReply = replyLang === "bn" ? `এই ব্রাউজার বা ডিভাইসে ফ্ল্যাশলাইট হার্ডওয়্যার পাওয়া যায়নি। (${torchRes.message})` : `इस ब्राउज़र या डिवाइस पर फ़्लैशलाइट हार्डवेयर उपलब्ध नहीं है। (${torchRes.message})`;
-					actionBadge = "Flashlight";
-				} else if (tool.name === "checkBatteryStatus") {
-					if (!freshBattery.supported || freshBattery.level === null) finalSpokenReply = replyLang === "bn" ? "দুঃখিত, আপনার বর্তমান ব্রাউজার ব্যাটারির তথ্য প্রদান করছে না। Android APK-তে এটি সরাসরি কাজ করে।" : "क्षमा करें, आपका वर्तमान ब्राउज़र बैटरी की जानकारी प्रदान नहीं कर रहा है। Android APK में यह सीधे काम करता है।";
-					actionBadge = "Battery Readout";
-				} else if (tool.name === "setDeviceAlarm") {
-					const hour = Math.max(0, Math.min(23, Number(args.hour ?? 7)));
-					const minute = Math.max(0, Math.min(59, Number(args.minute ?? 0)));
-					const label = String(args.label || "PIYA AI Alarm");
-					const tStr = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-					setPendingAction({
-						id: `pa_${Date.now()}`,
-						type: "set_alarm",
-						title: `Set Alarm · ${tStr}`,
-						explanation: replyLang === "bn" ? `${tStr} সময়ে "${label}" অ্যালার্ম সেট করতে চান?` : `क्या आप ${tStr} बजे के लिए "${label}" अलार्म सेट करना चाहते हैं?`,
-						alarmData: {
-							hour,
-							minute,
-							label
-						}
-					});
-					actionBadge = `Alarm ${tStr}`;
-				} else if (tool.name === "createPersonalNote") {
-					const title = String(args.title || "Voice Note");
-					const content = String(args.content || trimmed);
-					const newNote = {
-						id: `nt_${Date.now()}`,
-						title,
-						content,
-						createdAt: (/* @__PURE__ */ new Date()).toISOString()
-					};
-					setNotes((prev) => [newNote, ...prev]);
-					actionBadge = "Note Saved";
-				} else if (tool.name === "proposeMemorySave" && settings.memoryEnabled) {
-					const category = String(args.category || "Preference");
-					const fact = String(args.fact || "");
-					if (fact) {
-						if (settings.autoConfirmMemory) {
-							setMemories((prev) => [{
-								id: `mem_${Date.now()}`,
-								category,
-								fact,
-								createdAt: (/* @__PURE__ */ new Date()).toISOString()
-							}, ...prev]);
-							actionBadge = "Memory Saved";
-						} else {
-							setPendingAction({
-								id: `pa_${Date.now()}`,
-								type: "save_memory",
-								title: replyLang === "bn" ? "মেমরিতে সংরক্ষণের অনুমতি" : "मेमोरी में सहेजने की अनुमति",
-								explanation: replyLang === "bn" ? `পিয়া এআই কি এই তথ্যটি মনে রাখবে: "${fact}"?` : `क्या पिया एआई यह जानकारी याद रखे: "${fact}"?`,
-								memoryData: {
-									category,
-									fact
-								}
-							});
-							actionBadge = "Approve Memory";
-						}
-					}
-				}
-			}
-			appendMessage("assistant", finalSpokenReply, replyLang, {
-				sources: data.sources,
-				actionBadge
-			});
-			await speakAssistantReply(finalSpokenReply, replyLang);
+			await applyAssistantResponse(trimmed, data.reply, replyLang, data.toolActions, freshBattery);
 		} catch (err) {
 			setVisualState("idle");
-			const errMsg = err instanceof Error ? err.message : "Failed to generate response from Gemini backend.";
+			const errMsg = err instanceof Error ? err.message : "উত্তর তৈরিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।";
 			setErrorBanner(errMsg);
-			appendMessage("assistant", errMsg, turnLang, { isError: true });
 		}
 	}, [
 		appendMessage,
+		applyAssistantResponse,
 		contacts,
 		deviceAdminActive,
 		flashlightOn,
-		handleCancelPendingAction,
-		handleConfirmPendingAction,
-		handleSelectDisambiguatedContact,
 		isOnline,
 		memories,
 		messages,
-		pendingAction,
-		prepareCallAction,
-		settings.autoConfirmMemory,
 		settings.language,
 		settings.memoryEnabled,
-		speakAssistantReply
+		tryHandlePendingConfirmation
 	]);
 	const finishActiveMicCapture = (0, import_react.useCallback)(async () => {
-		if (!voiceEngineRef.current) return;
+		if (!voiceEngineRef.current || finishingMicRef.current) return;
+		finishingMicRef.current = true;
 		setVisualState("thinking");
 		setMicLevel(0);
 		try {
-			const { transcript, detectedLanguage } = await voiceEngineRef.current.finishListeningAndTranscribe(settings.language);
+			const payload = await voiceEngineRef.current.finishListeningRawAudio();
 			setInterimTranscript("");
-			if (!transcript.trim()) {
+			if (!payload) {
 				setVisualState("idle");
-				setErrorBanner(settings.language === "bn" ? "কোনো স্পষ্ট কথা শোনা যায়নি। অনুগ্রহ করে আবার মাইক্রোফোন ট্যাপ করে বলুন।" : "कोई स्पष्ट आवाज़ सुनाई नहीं दी। कृपया माइक्रोफ़ोन टैप करके फिर से बोलें।");
+				setErrorBanner(settings.language === "bn" ? "কোনো কথা শোনা যায়নি। মাইক বাটনে ট্যাপ করে স্পষ্টভাবে বলুন।" : "कोई आवाज़ नहीं मिली। माइक दबाकर स्पष्ट रूप से बोलें।");
 				return;
 			}
-			await processUserUtterance(transcript, detectedLanguage);
+			if (!payload.audioBase64 && payload.webFallbackTranscript) {
+				await processUserUtterance(payload.webFallbackTranscript, settings.language);
+				return;
+			}
+			const freshBattery = await readLiveBatteryStatus();
+			setBattery(freshBattery);
+			const { ok, status, data } = await fetchApiJson("/api/assistant/voice-turn", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					audioBase64: payload.audioBase64,
+					mimeType: payload.mimeType,
+					preferredLanguage: settings.language,
+					history: messages.slice(-8).map((m) => ({
+						role: m.role,
+						text: m.text
+					})),
+					memories: settings.memoryEnabled ? memories : [],
+					contacts,
+					deviceState: {
+						batteryLevel: freshBattery.level,
+						isCharging: freshBattery.charging,
+						isNativeAndroid: isNativeAndroidRuntime(),
+						isDeviceAdminActive: deviceAdminActive,
+						flashlightOn
+					}
+				})
+			});
+			if (!ok) {
+				if (payload.webFallbackTranscript) {
+					await processUserUtterance(payload.webFallbackTranscript, settings.language);
+					return;
+				}
+				throw new Error(data.error || `ভয়েস সার্ভিস ত্রুটি (${status})`);
+			}
+			const transcript = (data.transcript || payload.webFallbackTranscript || "").trim();
+			if (data.heardSpeech === false || !transcript) {
+				setVisualState("idle");
+				setErrorBanner(settings.language === "bn" ? "স্পষ্ট কথা শোনা যায়নি। অনুগ্রহ করে আবার মাইক ট্যাপ করে বলুন।" : "स्पष्ट आवाज़ सुनाई नहीं दी। कृपया माइक टैप करके फिर से बोलें।");
+				return;
+			}
+			const replyLang = data.language === "hi" ? "hi" : "bn";
+			if (await tryHandlePendingConfirmation(transcript, replyLang)) return;
+			appendMessage("user", transcript, replyLang);
+			await applyAssistantResponse(transcript, data.reply || "", replyLang, data.toolActions, freshBattery);
 		} catch (err) {
 			setVisualState("idle");
 			setInterimTranscript("");
-			setErrorBanner(err instanceof Error ? err.message : "Speech recognition encountered an error.");
+			setErrorBanner(err instanceof Error ? err.message : "ভয়েস চিনতে সমস্যা হয়েছে। আবার চেষ্টা করুন।");
+		} finally {
+			finishingMicRef.current = false;
 		}
-	}, [processUserUtterance, settings.language]);
+	}, [
+		appendMessage,
+		applyAssistantResponse,
+		contacts,
+		deviceAdminActive,
+		flashlightOn,
+		memories,
+		messages,
+		processUserUtterance,
+		settings.language,
+		settings.memoryEnabled,
+		tryHandlePendingConfirmation
+	]);
 	const handleToggleMic = (0, import_react.useCallback)(async () => {
 		if (!voiceEngineRef.current) return;
+		voiceEngineRef.current.unlockAudioOnGesture();
 		if (visualState === "listening") {
 			await finishActiveMicCapture();
 			return;
 		}
 		setErrorBanner(null);
-		const perm = await requestExplicitMicrophoneAccess();
-		setMicPermission(perm.state);
-		if (perm.state !== "granted") {
-			setErrorBanner(perm.error || (settings.language === "bn" ? "মাইক্রোফোন অনুমতি প্রত্যাখ্যান করা হয়েছে।" : "माइक्रोफ़ोन अनुमति अस्वीकार कर दी गई है।"));
-			return;
-		}
 		try {
 			setInterimTranscript("");
 			setVisualState("listening");
@@ -16444,15 +16212,24 @@ function App() {
 					finishActiveMicCapture();
 				}
 			});
+			setMicPermission("granted");
 		} catch (err) {
 			setVisualState("idle");
-			setErrorBanner(err instanceof Error ? err.message : "Could not start microphone.");
+			const msg = err instanceof Error ? err.message : "মাইক্রোফোন চালু করা যায়নি।";
+			if (/অনুমতি|অনুমোদন|allow|permission|अनुमति/i.test(msg)) setMicPermission("denied");
+			setErrorBanner(msg);
 		}
 	}, [
 		finishActiveMicCapture,
 		settings.language,
 		visualState
 	]);
+	const handleCancelMic = (0, import_react.useCallback)(() => {
+		voiceEngineRef.current?.cancelListening();
+		setInterimTranscript("");
+		setMicLevel(0);
+		setVisualState("idle");
+	}, []);
 	const handleStopSpeaking = (0, import_react.useCallback)(() => {
 		voiceEngineRef.current?.stopSpeaking();
 		setLipSync({
@@ -16470,10 +16247,9 @@ function App() {
 		setAlarms([]);
 		setContacts(DEFAULT_CONTACTS);
 		setSettings(DEFAULT_SETTINGS);
-		setActionStatusToast("All saved conversations, memories, notes, and custom data cleared.");
-	}, []);
+		setActionStatusToast(settings.language === "bn" ? "সব সংরক্ষিত ডেটা মুছে ফেলা হয়েছে।" : "सारा डेटा हटा दिया गया है।");
+	}, [settings.language]);
 	const copy = UI_COPY[settings.language];
-	const currentTheme = PIYA_THEMES[settings.theme];
 	const voiceStatusText = !isOnline ? copy.offlineMode : micPermission === "denied" ? copy.micDenied : visualState === "listening" ? copy.voiceListening : visualState === "thinking" ? copy.voiceThinking : visualState === "speaking" ? copy.voiceSpeaking : copy.voiceReady;
 	return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 		className: "min-h-screen flex flex-col bg-[var(--piya-bg)] text-slate-100",
@@ -16483,7 +16259,6 @@ function App() {
 				children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 					className: "flex items-center gap-2.5 text-sm font-semibold",
 					children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(BellRing, { className: "w-5 h-5" }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("span", { children: [
-						"Alarm Ringing: ",
 						String(ringingAlarm.hour).padStart(2, "0"),
 						":",
 						String(ringingAlarm.minute).padStart(2, "0"),
@@ -16494,36 +16269,39 @@ function App() {
 					type: "button",
 					onClick: () => setRingingAlarm(null),
 					className: "min-h-[38px] px-4 rounded-lg bg-slate-950 text-white text-xs font-semibold whitespace-nowrap shrink-0",
-					children: "Dismiss Alarm"
+					children: "বন্ধ করুন"
 				})]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("header", {
-				className: "sticky top-0 z-30 flex items-center justify-between gap-8 px-5 sm:px-8 h-16 border-b border-[var(--piya-border)] bg-[#060b18]/95",
+				className: "sticky top-0 z-30 flex items-center justify-between gap-4 px-4 sm:px-8 h-16 border-b border-[var(--piya-border)] bg-[#060b18]/95",
 				children: [
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 						type: "button",
 						onClick: () => setActiveTab("home"),
-						className: "font-display text-xl font-bold tracking-tight text-white whitespace-nowrap shrink-0 text-left",
-						children: "PIYA AI"
+						className: "flex items-center gap-2.5 shrink-0 text-left",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("img", {
+							src: OFFICIAL_PIYA_CHARACTER_IMAGE,
+							alt: "PIYA AI",
+							className: "w-9 h-9 rounded-xl object-cover object-[50%_16%] border border-[var(--piya-border)]"
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
+							className: "font-display text-lg sm:text-xl font-bold tracking-tight text-white whitespace-nowrap",
+							children: "PIYA AI"
+						})]
 					}),
 					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
 						className: "hidden md:flex items-center gap-6 text-sm font-medium text-slate-300",
 						children: [
 							{
 								id: "home",
-								label: "Main Stage"
+								label: copy.tabHome
 							},
 							{
 								id: "actions",
-								label: "Phone Actions"
+								label: copy.tabActions
 							},
 							{
 								id: "memory",
-								label: "Memory Vault"
-							},
-							{
-								id: "android",
-								label: "Android APK"
+								label: copy.tabMemory
 							}
 						].map((item) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 							type: "button",
@@ -16532,93 +16310,94 @@ function App() {
 							children: item.label
 						}, item.id))
 					}),
-					/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+					/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 						className: "flex items-center gap-2 shrink-0",
-						children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-							type: "button",
-							onClick: () => setFullScreenAssistant(true),
-							className: "min-h-[42px] px-4 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold hover:opacity-95 transition-opacity whitespace-nowrap shrink-0",
-							children: copy.startAssistant
-						})
+						children: [
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => setProfileOpen(true),
+								className: "min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl border border-slate-800 bg-[#0b1326] text-slate-200 hover:text-white transition-colors",
+								"aria-label": "Profile",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(User, {
+									className: "w-4 h-4",
+									style: { color: "var(--piya-accent-bright)" }
+								})
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => setSettingsOpen(true),
+								className: "min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl border border-slate-800 bg-[#0b1326] text-slate-200 hover:text-white transition-colors",
+								"aria-label": "Settings",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(Settings, {
+									className: "w-4 h-4",
+									style: { color: "var(--piya-accent-bright)" }
+								})
+							}),
+							/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
+								type: "button",
+								onClick: () => {
+									voiceEngineRef.current?.unlockAudioOnGesture();
+									setFullScreenAssistant(true);
+								},
+								className: "min-h-[40px] px-3.5 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold hover:opacity-95 transition-opacity whitespace-nowrap shrink-0",
+								children: copy.startAssistant
+							})
+						]
 					})
 				]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("main", {
-				className: "flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 pb-24 md:pb-10",
+				className: "flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-5 pb-24 md:pb-10",
 				children: [
 					activeTab === "home" && /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-						className: "grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch",
-						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "lg:col-span-6 flex flex-col justify-between space-y-6 rounded-3xl border border-[var(--piya-border)] bg-[var(--piya-surface)] p-6 sm:p-8",
+						className: "grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch",
+						children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							className: "lg:col-span-6 lg:order-2 rounded-3xl border border-[var(--piya-border)] bg-[#02050d] h-[440px] sm:h-[540px] lg:h-[600px] flex flex-col overflow-hidden relative",
+							children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "flex-1 min-h-0",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PiyaCharacter3D, {
+									visualState,
+									themeId: settings.theme,
+									lipSync,
+									micLevel,
+									compactPreview: true
+								})
+							})
+						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
+							className: "lg:col-span-6 lg:order-1 flex flex-col justify-between space-y-6 rounded-3xl border border-[var(--piya-border)] bg-[var(--piya-surface)] p-5 sm:p-8",
 							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 								className: "space-y-5",
 								children: [
-									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400",
-										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", { children: [
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												style: { color: "var(--piya-accent-bright)" },
-												className: "font-semibold",
-												children: voiceStatusText
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "mx-2",
-												"aria-hidden": "true",
-												children: "·"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: currentTheme.name }),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-												className: "mx-2",
-												"aria-hidden": "true",
-												children: "·"
-											}),
-											/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Developer: Poran" })
-										] }), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-											className: "flex items-center gap-2",
-											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-												type: "button",
-												onClick: () => setProfileOpen(true),
-												className: "min-h-[44px] px-3 rounded-xl border border-slate-800 bg-[#060c1a] text-xs font-medium text-slate-200 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(User, {
-													className: "w-4 h-4",
-													style: { color: "var(--piya-accent-bright)" }
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: profile.signedIn ? profile.displayName : "Profile" })]
-											}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
-												type: "button",
-												onClick: () => setSettingsOpen(true),
-												className: "min-h-[44px] px-3 rounded-xl border border-slate-800 bg-[#060c1a] text-xs font-medium text-slate-200 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors",
-												children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Settings, {
-													className: "w-4 h-4",
-													style: { color: "var(--piya-accent-bright)" }
-												}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "Settings" })]
-											})]
-										})]
+									/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+										className: "text-xs font-semibold",
+										style: { color: "var(--piya-accent-bright)" },
+										children: voiceStatusText
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "space-y-3",
+										className: "space-y-2.5",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("h1", {
-											className: "font-display text-3xl sm:text-5xl font-bold tracking-tight text-white leading-[1.12]",
+											className: "font-display text-2xl sm:text-4xl font-bold tracking-tight text-white leading-snug",
 											style: { textWrap: "balance" },
-											children: "Natural Voice Intelligence in Bengali & Hindi"
-										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("p", {
-											className: "text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl",
-											children: [copy.subtitle, ". Converse naturally with PIYA AI, ask real-world questions powered by Gemini, and execute confirmed actions on your Android phone."]
+											children: copy.heroTitle
+										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("p", {
+											className: "text-sm sm:text-base text-slate-300 leading-relaxed",
+											children: copy.subtitle
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center justify-between gap-4 pt-1",
+										className: "flex flex-wrap items-center justify-between gap-3 pt-1",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
 											className: "flex items-center gap-1 p-1 rounded-xl bg-[#060c1a] border border-slate-800",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												type: "button",
 												onClick: () => updateSettings({ language: "bn" }),
-												className: `min-h-[40px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${settings.language === "bn" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
-												children: "বাংলা (Bengali)"
+												className: `min-h-[38px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${settings.language === "bn" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
+												children: "বাংলা"
 											}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 												type: "button",
 												onClick: () => updateSettings({ language: "hi" }),
-												className: `min-h-[40px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${settings.language === "hi" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
-												children: "हिन्दी (Hindi)"
+												className: `min-h-[38px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${settings.language === "hi" ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]" : "text-slate-300 hover:text-white"}`,
+												children: "हिन्दी"
 											})]
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 											className: "flex items-center gap-2",
@@ -16630,7 +16409,7 @@ function App() {
 													onClick: () => updateSettings({ theme: tId }),
 													className: `min-h-[36px] min-w-[36px] rounded-xl flex items-center justify-center border transition-transform ${active ? "border-white scale-105 bg-white/10" : "border-slate-800 bg-[#060c1a] hover:border-slate-600"}`,
 													title: t.name,
-													"aria-label": `Switch theme to ${t.name}`,
+													"aria-label": t.name,
 													children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
 														className: "w-4 h-4 rounded-full",
 														style: { backgroundColor: t.accent }
@@ -16640,21 +16419,25 @@ function App() {
 										})]
 									}),
 									/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-										className: "flex flex-wrap items-center gap-3 pt-2",
+										className: "flex flex-wrap items-center gap-3 pt-1",
 										children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 											type: "button",
-											onClick: () => setFullScreenAssistant(true),
-											className: "min-h-[54px] px-7 py-3 rounded-2xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] font-semibold text-sm flex items-center justify-center gap-2.5 shadow-lg transition-transform active:scale-[0.98] whitespace-nowrap shrink-0",
+											onClick: () => {
+												voiceEngineRef.current?.unlockAudioOnGesture();
+												setFullScreenAssistant(true);
+											},
+											className: "min-h-[52px] px-6 py-3 rounded-2xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] font-semibold text-sm flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-[0.98] whitespace-nowrap shrink-0",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Play, { className: "w-4 h-4 fill-current" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: copy.startAssistant })]
 										}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("button", {
 											type: "button",
 											onClick: () => {
+												voiceEngineRef.current?.unlockAudioOnGesture();
 												setFullScreenAssistant(true);
-												setTimeout(() => {
+												window.setTimeout(() => {
 													handleToggleMic();
-												}, 120);
+												}, 80);
 											},
-											className: "min-h-[54px] px-5 py-3 rounded-2xl border border-[var(--piya-border)] bg-[#060c1a] text-slate-100 hover:text-white font-medium text-sm flex items-center gap-2 whitespace-nowrap shrink-0 transition-colors",
+											className: "min-h-[52px] px-5 py-3 rounded-2xl border border-[var(--piya-border)] bg-[#060c1a] text-slate-100 hover:text-white font-semibold text-sm flex items-center gap-2 whitespace-nowrap shrink-0 transition-colors",
 											children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)(Mic, {
 												className: "w-4 h-4",
 												style: { color: "var(--piya-accent-bright)" }
@@ -16662,48 +16445,21 @@ function App() {
 										})]
 									})
 								]
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "pt-5 border-t border-slate-800/80 space-y-2.5",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-									className: "text-xs font-medium text-slate-400",
-									children: [
-										"Try a command in ",
-										settings.language === "bn" ? "বাংলা" : "हिन्दी",
-										":"
-									]
-								}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+							}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
+								className: "pt-4 border-t border-slate-800/80 space-y-2.5",
+								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
 									className: "flex flex-wrap gap-2",
 									children: copy.samplePrompts.map((promptText) => /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
 										type: "button",
 										onClick: () => {
+											voiceEngineRef.current?.unlockAudioOnGesture();
 											setFullScreenAssistant(true);
 											processUserUtterance(promptText, settings.language);
 										},
-										className: "min-h-[40px] px-3.5 py-1.5 rounded-xl border border-slate-800 bg-[#060c1a] hover:border-[var(--piya-accent)] text-xs text-slate-200 hover:text-white text-left transition-colors",
+										className: "min-h-[38px] px-3 py-1.5 rounded-xl border border-slate-800 bg-[#060c1a] hover:border-[var(--piya-accent)] text-xs text-slate-200 hover:text-white text-left transition-colors",
 										children: promptText
 									}, promptText))
-								})]
-							})]
-						}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-							className: "lg:col-span-6 rounded-3xl border border-[var(--piya-border)] bg-[#02050d] min-h-[520px] lg:min-h-[620px] flex flex-col overflow-hidden relative",
-							children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", {
-								className: "flex-1 min-h-0",
-								children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(PiyaCharacter3D, {
-									visualState,
-									themeId: settings.theme,
-									lipSync,
-									micLevel,
-									compactPreview: true
 								})
-							}), /* @__PURE__ */ (0, import_jsx_runtime.jsxs)("div", {
-								className: "px-5 py-3 border-t border-slate-800/80 bg-[#081022] flex items-center justify-between gap-3 text-xs text-slate-400",
-								children: [/* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", { children: "PIYA AI Official Main Character · Full head-to-toe view" }), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("button", {
-									type: "button",
-									onClick: () => setFullScreenAssistant(true),
-									className: "font-semibold hover:underline whitespace-nowrap shrink-0",
-									style: { color: "var(--piya-accent-bright)" },
-									children: "Open Full Screen"
-								})]
 							})]
 						})]
 					}),
@@ -16722,6 +16478,7 @@ function App() {
 						onImportContacts: (imported) => setContacts((prev) => [...imported, ...prev]),
 						onDeleteContact: (id) => setContacts((prev) => prev.filter((c) => c.id !== id)),
 						onRequestCallByQuery: (q) => {
+							voiceEngineRef.current?.unlockAudioOnGesture();
 							const callPrep = prepareCallAction(q, void 0, settings.language);
 							setPendingAction(callPrep.pending);
 							setFullScreenAssistant(true);
@@ -16737,7 +16494,7 @@ function App() {
 								content,
 								createdAt: (/* @__PURE__ */ new Date()).toISOString()
 							}, ...prev]);
-							setActionStatusToast(`Saved note: "${title}"`);
+							setActionStatusToast(`নোট সংরক্ষিত: "${title}"`);
 						},
 						onDeleteNote: (id) => setNotes((prev) => prev.filter((n) => n.id !== id)),
 						onAddAlarm: (hour, minute, label) => {
@@ -16745,7 +16502,7 @@ function App() {
 							setPendingAction({
 								id: `pa_${Date.now()}`,
 								type: "set_alarm",
-								title: `Confirm Alarm · ${tStr}`,
+								title: `${tStr}`,
 								explanation: settings.language === "bn" ? `${tStr} সময়ে "${label}" অ্যালার্ম সেট করতে চান?` : `क्या आप ${tStr} बजे के लिए "${label}" अलार्म सेट करना चाहते हैं?`,
 								alarmData: {
 									hour,
@@ -16764,7 +16521,7 @@ function App() {
 						onRefreshBattery: async () => {
 							const bat = await readLiveBatteryStatus();
 							setBattery(bat);
-							setActionStatusToast(bat.supported && bat.level !== null ? `Live Battery: ${bat.level}% (${bat.charging ? "Charging" : "On Battery"})` : "Web Battery API is unavailable on this browser; supported in Android WebView & Capacitor APK.");
+							setActionStatusToast(bat.supported && bat.level !== null ? `ব্যাটারি: ${bat.level}%` : "বর্তমান ব্রাউজারে ব্যাটারি রিডিং নেই; Android APK-তে উপলব্ধ।");
 						},
 						onToggleFlashlight: async () => {
 							const res = await setHardwareFlashlight(!flashlightOn);
@@ -16778,7 +16535,7 @@ function App() {
 								setPendingAction({
 									id: `pa_${Date.now()}`,
 									type: "open_settings",
-									title: `Open Android ${sec.replace("_", " ")}`,
+									title: sec.replace("_", " ").toUpperCase(),
 									explanation: res.message,
 									settingSection: sec,
 									intentHref: res.intentHref
@@ -16790,8 +16547,8 @@ function App() {
 							setPendingAction({
 								id: `pa_${Date.now()}`,
 								type: "lock_phone",
-								title: settings.language === "bn" ? "ফোন স্ক্রিন লক নিশ্চিতকরণ" : "फ़ोन स्क्रीन लॉक पुष्टि",
-								explanation: settings.language === "bn" ? "পিয়া এআই Android DevicePolicyManager ব্যবহার করে ফোন লক করবে। নিশ্চিত করতে চান?" : "पिया एआई Android DevicePolicyManager से फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?"
+								title: settings.language === "bn" ? "ফোন স্ক্রিন লক" : "फ़ोन स्क्रीन लॉक",
+								explanation: settings.language === "bn" ? "পিয়া এআই ফোন লক করবে। নিশ্চিত করতে চান?" : "पिया एआई फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?"
 							});
 							setFullScreenAssistant(true);
 						},
@@ -16813,32 +16570,26 @@ function App() {
 						onDeleteMemory: (id) => setMemories((prev) => prev.filter((m) => m.id !== id)),
 						onClearAllMemories: () => setMemories([]),
 						onClearHistory: () => setMessages([])
-					}),
-					activeTab === "android" && /* @__PURE__ */ (0, import_jsx_runtime.jsx)(AndroidArchitecturePanel, {})
+					})
 				]
 			}),
 			/* @__PURE__ */ (0, import_jsx_runtime.jsx)("nav", {
-				className: "md:hidden fixed bottom-0 left-0 right-0 z-30 h-16 border-t border-[var(--piya-border)] bg-[#060b18]/95 grid grid-cols-4 items-center",
+				className: "md:hidden fixed bottom-0 left-0 right-0 z-30 h-16 border-t border-[var(--piya-border)] bg-[#060b18]/95 grid grid-cols-3 items-center",
 				children: [
 					{
 						id: "home",
-						label: "Assistant",
+						label: copy.tabHome,
 						Icon: Sparkles
 					},
 					{
 						id: "actions",
-						label: "Actions",
+						label: copy.tabActions,
 						Icon: Wrench
 					},
 					{
 						id: "memory",
-						label: "Memory",
+						label: copy.tabMemory,
 						Icon: Brain
-					},
-					{
-						id: "android",
-						label: "Android",
-						Icon: Smartphone
 					}
 				].map(({ id, label, Icon }) => {
 					const active = activeTab === id;
@@ -16850,7 +16601,7 @@ function App() {
 							className: "w-5 h-5",
 							style: active ? { color: "var(--piya-accent-bright)" } : void 0
 						}), /* @__PURE__ */ (0, import_jsx_runtime.jsx)("span", {
-							className: "text-[10px] font-medium mt-1 whitespace-nowrap",
+							className: "text-[11px] font-medium mt-1 whitespace-nowrap",
 							children: label
 						})]
 					}, id);
@@ -16877,6 +16628,7 @@ function App() {
 				onOpenSettings: () => setSettingsOpen(true),
 				onChangeLanguage: (lang) => updateSettings({ language: lang }),
 				onToggleMic: handleToggleMic,
+				onCancelMic: handleCancelMic,
 				onStopSpeaking: handleStopSpeaking,
 				onSendTextCommand: (txt) => processUserUtterance(txt),
 				onConfirmPendingAction: handleConfirmPendingAction,
@@ -16888,7 +16640,6 @@ function App() {
 				open: settingsOpen,
 				settings,
 				micPermission,
-				connectionStatus,
 				memoriesCount: memories.length,
 				onClose: () => setSettingsOpen(false),
 				onUpdateSettings: updateSettings,
@@ -16897,9 +16648,9 @@ function App() {
 					setMicPermission(res.state);
 					if (res.error) setErrorBanner(res.error);
 				},
-				onVerifyConnection: () => checkBackendStatus(true),
 				onTestVoiceSample: () => {
-					const sample = settings.language === "bn" ? "নমস্কার, আমি পিয়া এআই। আমি আপনার কথা শুনতে এবং সাহায্য করতে প্রস্তুত।" : "नमस्ते, मैं पिया एआई हूँ। मैं आपकी सहायता करने के लिए तैयार हूँ।";
+					voiceEngineRef.current?.unlockAudioOnGesture();
+					const sample = settings.language === "bn" ? "নমস্কার, আমি পিয়া এআই। আমি দ্রুত আপনার কথা শুনতে ও সাহায্য করতে প্রস্তুত।" : "नमस्ते, मैं पिया एआई हूँ। मैं तुरंत आपकी मदद करने के लिए तैयार हूँ।";
 					speakAssistantReply(sample, settings.language);
 				},
 				onClearMemories: () => setMemories([]),
@@ -16926,7 +16677,7 @@ function App() {
 					type: "button",
 					onClick: () => setActionStatusToast(null),
 					className: "text-slate-400 hover:text-white",
-					"aria-label": "Close notification",
+					"aria-label": "Close",
 					children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(X, { className: "w-4 h-4" })
 				})]
 			})

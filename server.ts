@@ -1,11 +1,11 @@
 import "dotenv/config";
 import express from "express";
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
-import type { Content, FunctionDeclaration } from "@google/genai";
+import type { Content, Schema } from "@google/genai";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,11 +39,37 @@ interface DeviceStateInput {
   flashlightOn?: boolean;
 }
 
+interface StructuredTurnOutput {
+  heardSpeech?: boolean;
+  transcript?: string;
+  language?: string;
+  reply?: string;
+  actionName?: string;
+  contactName?: string;
+  lastFourDigits?: string;
+  query?: string;
+  targetApp?: string;
+  appName?: string;
+  settingType?: string;
+  flashlightMode?: string;
+  alarmHour?: number;
+  alarmMinute?: number;
+  alarmLabel?: string;
+  noteTitle?: string;
+  noteContent?: string;
+  memoryCategory?: string;
+  memoryFact?: string;
+}
+
+const FAST_CONVERSATION_MODEL = "gemini-3.1-flash-lite";
+const TRANSCRIBE_MODEL = "gemini-3.5-transcribe";
+const TTS_MODEL = "gemini-3.8-flash-lite-tts";
+
 function getGenAIClient(): GoogleGenAI {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey === "MY_GEMINI_API_KEY" || apiKey.trim() === "") {
     const err = new Error(
-      "GEMINI_API_KEY is not configured on the backend. Please verify your API key in Settings > Secrets."
+      "GEMINI_API_KEY সেট করা নেই। অনুগ্রহ করে AI Studio-র Settings > Secrets প্যানেলে API key যাচাই করুন।"
     );
     (err as Error & { statusCode?: number }).statusCode = 503;
     throw err;
@@ -55,13 +81,13 @@ function getGenAIClient(): GoogleGenAI {
       headers: {
         "User-Agent": "aistudio-build",
       },
+      timeout: 20000,
     },
   });
 }
 
 /**
  * Detects whether user input is explicitly Bengali or Hindi, falling back to preferred language.
- * Prevents random language switching.
  */
 function detectActiveLanguage(text: string, preferredLanguage: SupportedLanguage): SupportedLanguage {
   const bengaliChars = (text.match(/[\u0980-\u09FF]/g) || []).length;
@@ -90,7 +116,6 @@ function detectActiveLanguage(text: string, preferredLanguage: SupportedLanguage
     "dako",
     "mone rakho",
     "hyan",
-    "na ",
   ];
   const romanHindiMarkers = [
     "kaise",
@@ -99,7 +124,6 @@ function detectActiveLanguage(text: string, preferredLanguage: SupportedLanguage
     "meri",
     "tum",
     "aap",
-    "karo",
     "chalao",
     "bajao",
     "lagao",
@@ -123,276 +147,345 @@ function detectActiveLanguage(text: string, preferredLanguage: SupportedLanguage
   return preferredLanguage;
 }
 
-const assistantFunctionDeclarations: FunctionDeclaration[] = [
-  {
-    name: "proposePhoneCall",
-    description:
-      "Search saved contacts by name or last 4 phone digits to place a phone call. Always triggers the confirmation or contact disambiguation flow before calling.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        contactName: {
-          type: Type.STRING,
-          description: "Name of the contact the user wants to call (e.g. 'Poran', 'Rahim').",
-        },
-        lastFourDigits: {
-          type: Type.STRING,
-          description: "Optional last four digits of the phone number when disambiguating contacts.",
-        },
-      },
+const structuredTurnSchema: Schema = {
+  type: Type.OBJECT,
+  properties: {
+    heardSpeech: {
+      type: Type.BOOLEAN,
+      description:
+        "For audio input: true if clear human words were spoken, false ONLY if the audio is pure silence or static with no speech. For text input: always true.",
+    },
+    transcript: {
+      type: Type.STRING,
+      description:
+        "Exact words spoken by the user written in Bengali script (বাংলা) if spoken in Bengali, or Devanagari script (हिन्दी) if spoken in Hindi. Empty string if heardSpeech is false.",
+    },
+    language: {
+      type: Type.STRING,
+      description: "Must be 'bn' if the user spoke/wrote Bengali, or 'hi' if the user spoke/wrote Hindi.",
+    },
+    reply: {
+      type: Type.STRING,
+      description:
+        "Natural, warm, concise spoken response from PIYA AI in the SAME language ('bn' in বাংলা লিপি, 'hi' in देवनागरी लिपि). Keep to 1-3 short sentences so voice playback is fast and natural.",
+    },
+    actionName: {
+      type: Type.STRING,
+      description:
+        "Must be one of: 'none', 'proposePhoneCall', 'searchYouTube', 'openApplication', 'lockPhoneScreen', 'openSystemSettings', 'controlFlashlight', 'checkBatteryStatus', 'setDeviceAlarm', 'createPersonalNote', 'proposeMemorySave'.",
+    },
+    contactName: {
+      type: Type.STRING,
+      description: "Contact name to call when actionName is 'proposePhoneCall' (match saved contacts list if possible).",
+    },
+    lastFourDigits: {
+      type: Type.STRING,
+      description: "Optional last 4 digits of phone number when disambiguating contacts.",
+    },
+    query: {
+      type: Type.STRING,
+      description: "Song or video search query when actionName is 'searchYouTube'.",
+    },
+    targetApp: {
+      type: Type.STRING,
+      description: "'youtube' or 'youtube_music' when actionName is 'searchYouTube'.",
+    },
+    appName: {
+      type: Type.STRING,
+      description: "Application name when actionName is 'openApplication' (e.g. YouTube, WhatsApp, Spotify, Chrome, Google Maps, Gmail, Instagram).",
+    },
+    settingType: {
+      type: Type.STRING,
+      description: "One of 'wifi', 'bluetooth', 'phone_settings', 'device_admin' when actionName is 'openSystemSettings'.",
+    },
+    flashlightMode: {
+      type: Type.STRING,
+      description: "One of 'on', 'off', 'toggle' when actionName is 'controlFlashlight'.",
+    },
+    alarmHour: {
+      type: Type.INTEGER,
+      description: "Hour in 24-hour format (0-23) when actionName is 'setDeviceAlarm'.",
+    },
+    alarmMinute: {
+      type: Type.INTEGER,
+      description: "Minute (0-59) when actionName is 'setDeviceAlarm'.",
+    },
+    alarmLabel: {
+      type: Type.STRING,
+      description: "Alarm label when actionName is 'setDeviceAlarm'.",
+    },
+    noteTitle: {
+      type: Type.STRING,
+      description: "Short note title when actionName is 'createPersonalNote'.",
+    },
+    noteContent: {
+      type: Type.STRING,
+      description: "Note content when actionName is 'createPersonalNote'.",
+    },
+    memoryCategory: {
+      type: Type.STRING,
+      description: "Category ('Preference', 'Profile', 'Music', 'Routine') when actionName is 'proposeMemorySave'.",
+    },
+    memoryFact: {
+      type: Type.STRING,
+      description: "Concise user fact/preference to save when actionName is 'proposeMemorySave'.",
     },
   },
-  {
-    name: "searchYouTube",
-    description: "Search YouTube or YouTube Music for songs, artists, or videos.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        query: {
-          type: Type.STRING,
-          description: "Song title, artist, or video search query.",
-        },
-        targetApp: {
-          type: Type.STRING,
-          description: "Either 'youtube' or 'youtube_music'. Defaults to 'youtube'.",
-        },
-      },
-      required: ["query"],
-    },
-  },
-  {
-    name: "openApplication",
-    description:
-      "Open an installed Android application such as YouTube, YouTube Music, WhatsApp, Spotify, Chrome, Maps, Camera, Gmail, or Instagram.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        appName: {
-          type: Type.STRING,
-          description: "Display name of the application to open.",
-        },
-      },
-      required: ["appName"],
-    },
-  },
-  {
-    name: "lockPhoneScreen",
-    description:
-      "Lock the Android phone screen using DevicePolicyManager after explicit user confirmation and Device Administrator permission.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        reason: {
-          type: Type.STRING,
-          description: "Brief context for locking the phone.",
-        },
-      },
-    },
-  },
-  {
-    name: "openSystemSettings",
-    description: "Open Android Wi-Fi settings, Bluetooth settings, Device Admin settings, or general Phone Settings.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        settingType: {
-          type: Type.STRING,
-          description: "One of: 'wifi', 'bluetooth', 'phone_settings', 'device_admin'.",
-        },
-      },
-      required: ["settingType"],
-    },
-  },
-  {
-    name: "controlFlashlight",
-    description: "Turn flashlight/torch controls on or off, or open flashlight controls.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        mode: {
-          type: Type.STRING,
-          description: "One of: 'on', 'off', 'toggle'.",
-        },
-      },
-      required: ["mode"],
-    },
-  },
-  {
-    name: "checkBatteryStatus",
-    description: "Read the phone's current battery percentage and charging status.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        includeDetails: {
-          type: Type.BOOLEAN,
-          description: "True to read current battery status.",
-        },
-      },
-    },
-  },
-  {
-    name: "setDeviceAlarm",
-    description: "Set an alarm for a specific hour and minute (24-hour clock) using Android AlarmClock intent.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        hour: {
-          type: Type.INTEGER,
-          description: "Hour in 24-hour format (0-23).",
-        },
-        minute: {
-          type: Type.INTEGER,
-          description: "Minute (0-59).",
-        },
-        label: {
-          type: Type.STRING,
-          description: "Optional alarm label.",
-        },
-      },
-      required: ["hour", "minute"],
-    },
-  },
-  {
-    name: "createPersonalNote",
-    description: "Create and save a note when the user asks to write down or save a note.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        title: {
-          type: Type.STRING,
-          description: "Short title of the note.",
-        },
-        content: {
-          type: Type.STRING,
-          description: "Body content of the note.",
-        },
-      },
-      required: ["title", "content"],
-    },
-  },
-  {
-    name: "proposeMemorySave",
-    description:
-      "Save or propose saving an explicit user preference or personal fact when the user asks PIYA AI to remember something.",
-    parameters: {
-      type: Type.OBJECT,
-      properties: {
-        category: {
-          type: Type.STRING,
-          description: "Category such as 'Preference', 'Profile', 'Music', 'Routine'.",
-        },
-        fact: {
-          type: Type.STRING,
-          description: "Concise statement of the preference or fact to remember.",
-        },
-      },
-      required: ["category", "fact"],
-    },
-  },
-];
+  required: ["heardSpeech", "transcript", "language", "reply", "actionName"],
+};
 
 function buildSystemInstruction(
-  activeLanguage: SupportedLanguage,
+  preferredLanguage: SupportedLanguage,
   memories: MemoryInput[],
   contacts: ContactInput[],
   deviceState: DeviceStateInput
 ): string {
-  const languageDirective =
-    activeLanguage === "bn"
-      ? `ACTIVE LANGUAGE: BENGALI (বাংলা).
-- You MUST reply ONLY in natural, warm, polite Bengali (বাংলা লিপিতে).
-- NEVER switch to Hindi or English sentences unless quoting an app/song title.`
-      : `ACTIVE LANGUAGE: HINDI (हिन्दी).
-- You MUST reply ONLY in natural, warm, polite Hindi (देवनागरी लिपि में).
-- NEVER switch to Bengali or English sentences unless quoting an app/song title.`;
+  const defaultLangName = preferredLanguage === "hi" ? "Hindi (हिन्दी, code 'hi')" : "Bengali (বাংলা, code 'bn')";
 
   const savedMemoriesBlock =
     memories.length > 0
-      ? memories.map((m) => `- [${m.category}] ${m.fact}`).join("\n")
-      : "No saved user memories yet. Do NOT pretend to remember anything that is not listed here.";
+      ? memories.slice(0, 20).map((m) => `- [${m.category}] ${m.fact}`).join("\n")
+      : "None saved yet. Never claim to remember unsaved facts.";
 
   const contactsBlock =
     contacts.length > 0
       ? contacts
+          .slice(0, 40)
           .map((c) => {
             const digits = c.phone.replace(/\D/g, "");
             const last4 = digits.slice(-4);
-            return `- Name: "${c.name}" | Last 4 digits: ${last4} | Label: ${c.label || "Saved"}`;
+            return `- Name: "${c.name}" | Last4: ${last4} | Label: ${c.label || "Saved"}`;
           })
           .join("\n")
-      : "No saved contacts available.";
+      : "No saved contacts.";
 
   const batterySummary =
     typeof deviceState.batteryLevel === "number"
-      ? `${Math.round(deviceState.batteryLevel)}% (${deviceState.isCharging ? "Charging" : "Discharging"})`
-      : "Unknown / Not reported by device";
+      ? `${Math.round(deviceState.batteryLevel)}% (${deviceState.isCharging ? "Charging" : "On Battery"})`
+      : "Unavailable in current browser";
 
-  return `You are PIYA AI (পিয়া এআই / पिया एआई), an intelligent, warm, respectful personal AI voice assistant created by developer Poran.
+  return `You are PIYA AI (পিয়া এআই / पिया एआई), a fast, intelligent, warm personal AI voice assistant created by developer Poran.
 
-${languageDirective}
+LANGUAGE RULES (STRICT):
+1. Detect the user's spoken or typed language:
+   - If the user speaks/writes Bengali, set language="bn", write transcript in বাংলা লিপি, and reply ONLY in natural Bengali (বাংলা).
+   - If the user speaks/writes Hindi, set language="hi", write transcript in देवनागरी लिपि, and reply ONLY in natural Hindi (हिन्दी).
+   - If ambiguous, use the user's default language: ${defaultLangName}.
+   - Never randomly mix or switch languages.
+2. Keep replies crisp, friendly, and fast to speak aloud (1 to 2 sentences for commands/greetings; concise and clear for general questions).
 
-CORE BEHAVIOR & HONESTY RULES:
-1. Keep spoken responses natural, clear, conversational, and concise (typically 1 to 3 sentences for voice clarity, or structured clearly when answering detailed questions).
-2. Saved User Memories (Approved by User):
+SAVED USER MEMORIES:
 ${savedMemoriesBlock}
-Never claim to remember user preferences that are not in the list above or current conversation history.
-3. Saved Contacts Directory:
-${contactsBlock}
-4. Live Device State:
-- Platform Mode: ${deviceState.isNativeAndroid ? "Android Native Capacitor App" : "Web / Android Browser Runtime"}
-- Battery: ${batterySummary}
-- Device Admin Active: ${deviceState.isDeviceAdminActive ? "Yes" : "No"}
-- Flashlight State: ${deviceState.flashlightOn ? "On" : "Off"}
 
-5. PHONE ACTIONS & CONFIRMATION SYSTEM:
-- Whenever the user asks to call someone, open an app, search YouTube / YouTube Music, lock the phone, open Wi-Fi/Bluetooth/Phone settings, toggle flashlight, read battery, set an alarm, create a note, or remember a preference, ALWAYS invoke the matching tool declaration!
-- For sensitive or external actions (calling a contact, locking the phone, setting an alarm, opening an external app), explain clearly in ${
-    activeLanguage === "bn" ? "Bengali" : "Hindi"
-  } what you are about to do and ask for confirmation.
-- If calling a contact matches MULTIPLE saved contacts (for example two people named Rahim), list the matching names with their last 4 digits and ask the user which one to call (they can reply with the name or last 4 digits).
-- If a contact is NOT found in the directory above, honestly tell the user no matching contact was found instead of making up a phone number.`;
+SAVED CONTACTS:
+${contactsBlock}
+
+DEVICE STATE:
+- Runtime: ${deviceState.isNativeAndroid ? "Android APK" : "Mobile/Web Browser"}
+- Battery: ${batterySummary}
+- Flashlight: ${deviceState.flashlightOn ? "On" : "Off"}
+
+PHONE CONTROL ACTIONS:
+- Set actionName to the matching action whenever the user asks to:
+  * Call someone -> 'proposePhoneCall' (set contactName to the closest matching name from SAVED CONTACTS, e.g. if user says "পরাণকে কল করো" set contactName="Poran"; if user gives 4 digits set lastFourDigits)
+  * Play/search songs or videos on YouTube or YouTube Music -> 'searchYouTube' (set query and targetApp='youtube' or 'youtube_music')
+  * Open an app -> 'openApplication' (set appName)
+  * Lock phone screen -> 'lockPhoneScreen'
+  * Open Wi-Fi / Bluetooth / Phone / Device Admin settings -> 'openSystemSettings' (set settingType)
+  * Turn flashlight on/off -> 'controlFlashlight' (set flashlightMode)
+  * Check battery -> 'checkBatteryStatus' (include current battery % in reply if available)
+  * Set alarm -> 'setDeviceAlarm' (set alarmHour 0-23, alarmMinute 0-59, alarmLabel)
+  * Write/save a note -> 'createPersonalNote' (set noteTitle, noteContent)
+  * Remember a personal preference/fact -> 'proposeMemorySave' (set memoryCategory, memoryFact)
+  * Normal conversation or Q&A -> 'none'
+- For confirmable actions (calls, opening apps/YouTube, locking screen, alarms), politely state what you are preparing and ask confirmation in the user's language.`;
+}
+
+function convertStructuredToToolActions(parsed: StructuredTurnOutput): Array<{
+  id: string;
+  name: string;
+  args: Record<string, unknown>;
+}> {
+  const act = (parsed.actionName || "none").trim();
+  if (!act || act === "none") return [];
+
+  const id = `act_${Date.now()}`;
+  switch (act) {
+    case "proposePhoneCall":
+      return [
+        {
+          id,
+          name: "proposePhoneCall",
+          args: {
+            contactName: parsed.contactName || "",
+            lastFourDigits: parsed.lastFourDigits || "",
+          },
+        },
+      ];
+    case "searchYouTube":
+      return [
+        {
+          id,
+          name: "searchYouTube",
+          args: {
+            query: parsed.query || parsed.transcript || "",
+            targetApp: parsed.targetApp === "youtube_music" ? "youtube_music" : "youtube",
+          },
+        },
+      ];
+    case "openApplication":
+      return [
+        {
+          id,
+          name: "openApplication",
+          args: {
+            appName: parsed.appName || "YouTube",
+          },
+        },
+      ];
+    case "lockPhoneScreen":
+      return [{ id, name: "lockPhoneScreen", args: {} }];
+    case "openSystemSettings":
+      return [
+        {
+          id,
+          name: "openSystemSettings",
+          args: {
+            settingType: parsed.settingType || "phone_settings",
+          },
+        },
+      ];
+    case "controlFlashlight":
+      return [
+        {
+          id,
+          name: "controlFlashlight",
+          args: {
+            mode: parsed.flashlightMode || "toggle",
+          },
+        },
+      ];
+    case "checkBatteryStatus":
+      return [{ id, name: "checkBatteryStatus", args: { includeDetails: true } }];
+    case "setDeviceAlarm":
+      return [
+        {
+          id,
+          name: "setDeviceAlarm",
+          args: {
+            hour: typeof parsed.alarmHour === "number" && parsed.alarmHour >= 0 ? parsed.alarmHour : 7,
+            minute:
+              typeof parsed.alarmMinute === "number" && parsed.alarmMinute >= 0
+                ? parsed.alarmMinute
+                : 0,
+            label: parsed.alarmLabel || "PIYA AI Alarm",
+          },
+        },
+      ];
+    case "createPersonalNote":
+      return [
+        {
+          id,
+          name: "createPersonalNote",
+          args: {
+            title: parsed.noteTitle || "Note",
+            content: parsed.noteContent || parsed.transcript || "",
+          },
+        },
+      ];
+    case "proposeMemorySave":
+      return [
+        {
+          id,
+          name: "proposeMemorySave",
+          args: {
+            category: parsed.memoryCategory || "Preference",
+            fact: parsed.memoryFact || parsed.transcript || "",
+          },
+        },
+      ];
+    default:
+      return [];
+  }
+}
+
+function buildConversationHistory(history: HistoryTurn[]): Content[] {
+  const recent = Array.isArray(history) ? history.slice(-8) : [];
+  return recent
+    .filter((turn) => turn && typeof turn.text === "string" && turn.text.trim().length > 0)
+    .map((turn) => ({
+      role: turn.role === "assistant" ? "model" : "user",
+      parts: [{ text: turn.text.trim() }],
+    }));
+}
+
+function extractTranscribeText(response: unknown): string {
+  const r = response as {
+    text?: string;
+    candidates?: Array<{
+      content?: {
+        parts?: Array<{
+          text?: string;
+          audioTranscription?: { text?: string };
+        }>;
+      };
+    }>;
+  };
+  if (typeof r.text === "string" && r.text.trim()) {
+    return r.text.trim();
+  }
+  const parts = r.candidates?.[0]?.content?.parts || [];
+  const collected: string[] = [];
+  for (const p of parts) {
+    if (p.audioTranscription?.text) collected.push(p.audioTranscription.text);
+    else if (p.text) collected.push(p.text);
+  }
+  return collected.join(" ").trim();
 }
 
 function formatGeminiError(error: unknown): { status: number; message: string; code: string } {
   const raw = error instanceof Error ? error.message : String(error);
-  const explicitStatus = (error as { statusCode?: number; status?: number })?.statusCode ||
+  const explicitStatus =
+    (error as { statusCode?: number; status?: number })?.statusCode ||
     (error as { status?: number })?.status;
 
-  if (raw.includes("GEMINI_API_KEY is not configured") || explicitStatus === 503) {
+  if (raw.includes("GEMINI_API_KEY") || explicitStatus === 503) {
     return {
       status: 503,
       code: "API_KEY_MISSING",
       message:
-        "Gemini API key is missing on the server. Please verify your API key in the AI Studio Settings > Secrets panel.",
+        "সার্ভারে Gemini API key পাওয়া যায়নি। অনুগ্রহ করে Settings > Secrets প্যানেল যাচাই করুন।",
     };
   }
-  if (raw.includes("API_KEY_INVALID") || raw.includes("PERMISSION_DENIED") || explicitStatus === 403 || explicitStatus === 400) {
+  if (
+    raw.includes("API_KEY_INVALID") ||
+    raw.includes("PERMISSION_DENIED") ||
+    explicitStatus === 403
+  ) {
     return {
       status: 403,
       code: "API_KEY_INVALID",
-      message:
-        "Gemini API authentication failed (403/400). Please check your API key in the Settings > Secrets panel.",
+      message: "Gemini API key সঠিক নয় (403)। Settings > Secrets প্যানেল চেক করুন।",
     };
   }
   if (raw.includes("RESOURCE_EXHAUSTED") || raw.includes("429") || explicitStatus === 429) {
     return {
       status: 429,
       code: "QUOTA_EXCEEDED",
-      message:
-        "Gemini API rate limit or quota reached (429). Please wait a moment or upgrade your billing tier in Settings > Secrets.",
+      message: "Gemini API কোটা পূর্ণ হয়েছে (429)। কিছুক্ষণ পর আবার চেষ্টা করুন।",
     };
   }
-  if (raw.includes("NOT_FOUND") || raw.includes("404") || explicitStatus === 404) {
+  if (raw.includes("DEADLINE_EXCEEDED") || raw.includes("504") || raw.includes("timeout")) {
     return {
-      status: 404,
-      code: "MODEL_NOT_FOUND",
-      message: "Requested Gemini model endpoint was not found (404).",
+      status: 504,
+      code: "TIMEOUT",
+      message: "সার্ভার থেকে উত্তর আসতে দেরি হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
     };
   }
   return {
     status: 500,
     code: "GEMINI_BACKEND_ERROR",
-    message: raw || "Unexpected error communicating with Gemini AI service.",
+    message: "এআই সার্ভিসে সাময়িক সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
   };
 }
 
@@ -400,7 +493,19 @@ async function startServer() {
   const app = express();
   const PORT = Number(process.env.PORT) || 3000;
 
-  app.use(express.json({ limit: "18mb" }));
+  // Allow requests from Capacitor Android APK WebView as well as browser origin
+  app.use((req: Request, res: Response, next: NextFunction) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    if (req.method === "OPTIONS") {
+      res.status(204).end();
+      return;
+    }
+    next();
+  });
+
+  app.use(express.json({ limit: "15mb" }));
 
   // 1. Health & AI Connection Status Endpoint
   app.get("/api/status", async (req: Request, res: Response) => {
@@ -416,9 +521,9 @@ async function startServer() {
         online: true,
         aiConfigured: false,
         aiVerified: false,
-        model: "gemini-3.8-flash",
-        ttsModel: "gemini-3.8-flash-lite-tts",
-        sttModel: "gemini-3.5-transcribe",
+        model: FAST_CONVERSATION_MODEL,
+        ttsModel: TTS_MODEL,
+        sttModel: TRANSCRIBE_MODEL,
         message: "Backend online, but GEMINI_API_KEY is not set in Settings > Secrets.",
       });
       return;
@@ -429,10 +534,10 @@ async function startServer() {
         online: true,
         aiConfigured: true,
         aiVerified: true,
-        model: "gemini-3.8-flash",
-        ttsModel: "gemini-3.8-flash-lite-tts",
-        sttModel: "gemini-3.5-transcribe",
-        message: "PIYA AI Secure Gemini Backend Connected",
+        model: FAST_CONVERSATION_MODEL,
+        ttsModel: TTS_MODEL,
+        sttModel: TRANSCRIBE_MODEL,
+        message: "PIYA AI Fast Gemini Engine Connected",
       });
       return;
     }
@@ -440,16 +545,16 @@ async function startServer() {
     try {
       const ai = getGenAIClient();
       const ping = await ai.models.generateContent({
-        model: "gemini-3.8-flash",
-        contents: "Reply with OK",
+        model: FAST_CONVERSATION_MODEL,
+        contents: "OK",
       });
       res.status(200).json({
         online: true,
         aiConfigured: true,
         aiVerified: Boolean(ping.text),
-        model: "gemini-3.8-flash",
-        ttsModel: "gemini-3.8-flash-lite-tts",
-        sttModel: "gemini-3.5-transcribe",
+        model: FAST_CONVERSATION_MODEL,
+        ttsModel: TTS_MODEL,
+        sttModel: TRANSCRIBE_MODEL,
         message: "Live Gemini connection verified.",
       });
     } catch (error) {
@@ -458,14 +563,116 @@ async function startServer() {
         online: true,
         aiConfigured: hasKey,
         aiVerified: false,
-        model: "gemini-3.8-flash",
+        model: FAST_CONVERSATION_MODEL,
         errorCode: formatted.code,
         message: formatted.message,
       });
     }
   });
 
-  // 2. Conversational AI + Phone Tool Orchestration Endpoint
+  // 2. Ultra-Fast Single-Pass Multimodal Voice Turn (Audio -> Transcript + Reply + Phone Action in ~1.3s)
+  app.post("/api/assistant/voice-turn", async (req: Request, res: Response) => {
+    try {
+      const {
+        audioBase64,
+        mimeType = "audio/webm",
+        preferredLanguage = "bn",
+        history = [],
+        memories = [],
+        contacts = [],
+        deviceState = {},
+      } = req.body as {
+        audioBase64?: string;
+        mimeType?: string;
+        preferredLanguage?: SupportedLanguage;
+        history?: HistoryTurn[];
+        memories?: MemoryInput[];
+        contacts?: ContactInput[];
+        deviceState?: DeviceStateInput;
+      };
+
+      if (!audioBase64 || typeof audioBase64 !== "string") {
+        res.status(400).json({ error: "ভয়েস অডিও পাওয়া যায়নি।", code: "INVALID_AUDIO" });
+        return;
+      }
+
+      const prefLang: SupportedLanguage = preferredLanguage === "hi" ? "hi" : "bn";
+      const ai = getGenAIClient();
+      const systemInstruction = buildSystemInstruction(prefLang, memories, contacts, deviceState);
+      const contents = buildConversationHistory(history);
+
+      const cleanMime = (mimeType || "audio/webm").split(";")[0].trim() || "audio/webm";
+      contents.push({
+        role: "user",
+        parts: [
+          {
+            inlineData: {
+              mimeType: cleanMime,
+              data: audioBase64,
+            },
+          },
+          {
+            text:
+              prefLang === "hi"
+                ? "Listen carefully to the user's voice audio (likely Hindi or Bengali). Transcribe what they said and respond immediately as PIYA AI in the exact language spoken."
+                : "Listen carefully to the user's voice audio (likely Bengali or Hindi). Transcribe what they said and respond immediately as PIYA AI in the exact language spoken.",
+          },
+        ],
+      });
+
+      const response = await ai.models.generateContent({
+        model: FAST_CONVERSATION_MODEL,
+        contents,
+        config: {
+          systemInstruction,
+          responseMimeType: "application/json",
+          responseSchema: structuredTurnSchema,
+        },
+      });
+
+      const rawJson = (response.text || "{}").trim();
+      const parsed = JSON.parse(rawJson) as StructuredTurnOutput;
+      const transcript = (parsed.transcript || "").trim();
+
+      if (parsed.heardSpeech === false || !transcript) {
+        res.status(200).json({
+          heardSpeech: false,
+          transcript: "",
+          reply: "",
+          language: prefLang,
+          toolActions: [],
+          sources: [],
+        });
+        return;
+      }
+
+      const activeLang =
+        parsed.language === "hi" || parsed.language === "bn"
+          ? parsed.language
+          : detectActiveLanguage(transcript, prefLang);
+      const replyText = (parsed.reply || "").trim();
+      const toolActions = convertStructuredToToolActions(parsed);
+
+      res.status(200).json({
+        heardSpeech: true,
+        transcript,
+        reply:
+          replyText ||
+          (activeLang === "hi" ? "जी, बताइए मैं कैसे मदद करूँ?" : "জি, বলুন কীভাবে সাহায্য করতে পারি?"),
+        language: activeLang,
+        toolActions,
+        sources: [],
+      });
+    } catch (error) {
+      const formatted = formatGeminiError(error);
+      res.status(formatted.status).json({
+        error: formatted.message,
+        code: formatted.code,
+      });
+    }
+  });
+
+  // 3. Ultra-Fast Single-Pass Text Conversational Endpoint (~0.9s)
   app.post("/api/assistant/chat", async (req: Request, res: Response) => {
     try {
       const {
@@ -485,147 +692,54 @@ async function startServer() {
       };
 
       if (!message || typeof message !== "string" || !message.trim()) {
-        res.status(400).json({ error: "Message text is required.", code: "INVALID_INPUT" });
+        res.status(400).json({ error: "মেসেজ খালি রাখা যাবে না।", code: "INVALID_INPUT" });
         return;
       }
 
+      const trimmed = message.trim();
+      const prefLang: SupportedLanguage = preferredLanguage === "hi" ? "hi" : "bn";
+      const activeLanguage = detectActiveLanguage(trimmed, prefLang);
+
       const ai = getGenAIClient();
-      const activeLanguage = detectActiveLanguage(message.trim(), preferredLanguage === "hi" ? "hi" : "bn");
-      const systemInstruction = buildSystemInstruction(activeLanguage, memories, contacts, deviceState);
-
-      const recentHistory = Array.isArray(history) ? history.slice(-14) : [];
-      const contents: Content[] = recentHistory
-        .filter((turn) => turn && typeof turn.text === "string" && turn.text.trim().length > 0)
-        .map((turn) => ({
-          role: turn.role === "assistant" ? "model" : "user",
-          parts: [{ text: turn.text }],
-        }));
-
+      const systemInstruction = buildSystemInstruction(
+        activeLanguage,
+        memories,
+        contacts,
+        deviceState
+      );
+      const contents = buildConversationHistory(history);
       contents.push({
         role: "user",
-        parts: [{ text: message.trim() }],
+        parts: [{ text: trimmed }],
       });
 
-      // Try hybrid Search + Function Calling on gemini-3.8-flash first; if free-tier Search Grounding or model RPM hits 429,
-      // gracefully retry with functionDeclarations only and valid free-tier flash aliases before surfacing 429.
-      const candidateAttempts: Array<{
-        model: string;
-        useSearchGrounding: boolean;
-      }> = [
-        { model: "gemini-3.8-flash", useSearchGrounding: true },
-        { model: "gemini-3.8-flash", useSearchGrounding: false },
-        { model: "gemini-flash-latest", useSearchGrounding: false },
-        { model: "gemini-3.1-flash-lite", useSearchGrounding: false },
-      ];
+      const response = await ai.models.generateContent({
+        model: FAST_CONVERSATION_MODEL,
+        contents,
+        config: {
+          systemInstruction,
+          responseMimeType: "application/json",
+          responseSchema: structuredTurnSchema,
+        },
+      });
 
-      let response: Awaited<ReturnType<typeof ai.models.generateContent>> | null = null;
-      let chosenModel = "gemini-3.8-flash";
-      let lastErr: unknown = null;
-
-      for (let i = 0; i < candidateAttempts.length; i++) {
-        const attempt = candidateAttempts[i];
-        try {
-          const attemptTools = attempt.useSearchGrounding
-            ? [{ googleSearch: {} }, { functionDeclarations: assistantFunctionDeclarations }]
-            : [{ functionDeclarations: assistantFunctionDeclarations }];
-          const attemptToolConfig = attempt.useSearchGrounding
-            ? { includeServerSideToolInvocations: true }
-            : undefined;
-
-          response = await ai.models.generateContent({
-            model: attempt.model,
-            contents,
-            config: {
-              systemInstruction,
-              tools: attemptTools,
-              ...(attemptToolConfig ? { toolConfig: attemptToolConfig } : {}),
-            },
-          });
-          chosenModel = attempt.model;
-          break;
-        } catch (err) {
-          lastErr = err;
-          const errStr = err instanceof Error ? err.message : String(err);
-          const isQuotaOrNotFound =
-            errStr.includes("429") ||
-            errStr.includes("RESOURCE_EXHAUSTED") ||
-            errStr.includes("404") ||
-            errStr.includes("NOT_FOUND");
-          if (!isQuotaOrNotFound) {
-            throw err;
-          }
-          // Brief backoff before next attempt
-          await new Promise((r) => setTimeout(r, 250 * (i + 1)));
-        }
-      }
-
-      if (!response) {
-        throw lastErr || new Error("Gemini request failed after retries.");
-      }
-
-      const functionCalls = response.functionCalls || [];
-      const groundingChunks =
-        response.candidates?.[0]?.groundingMetadata?.groundingChunks
-          ?.map((chunk) => chunk.web)
-          .filter((w): w is { uri: string; title?: string } => Boolean(w?.uri)) || [];
-
-      const toolActions = functionCalls.map((fc) => ({
-        id: fc.id || `act_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
-        name: fc.name || "unknown",
-        args: (fc.args || {}) as Record<string, unknown>,
-      }));
-
-      let replyText = (response.text || "").trim();
-
-      // If the model returned only a function call without spoken text, generate a natural spoken explanation in the active language
-      if (!replyText && toolActions.length > 0) {
-        const firstTool = toolActions[0];
-        const prevContent = response.candidates?.[0]?.content;
-
-        if (prevContent) {
-          const followUp = await ai.models.generateContent({
-            model: chosenModel,
-            contents: [
-              ...contents,
-              prevContent,
-              {
-                role: "user",
-                parts: [
-                  {
-                    functionResponse: {
-                      id: firstTool.id,
-                      name: firstTool.name,
-                      response: {
-                        status: "AWAITING_CLIENT_EXECUTION_OR_CONFIRMATION",
-                        args: firstTool.args,
-                        contactsAvailable: contacts,
-                        batteryLevel: deviceState.batteryLevel,
-                        isCharging: deviceState.isCharging,
-                      },
-                    },
-                  },
-                ],
-              },
-            ],
-            config: {
-              systemInstruction:
-                systemInstruction +
-                "\nNow speak directly to the user in a single natural voice reply explaining the action or asking for confirmation.",
-            },
-          });
-          replyText = (followUp.text || "").trim();
-        }
-      }
+      const rawJson = (response.text || "{}").trim();
+      const parsed = JSON.parse(rawJson) as StructuredTurnOutput;
+      const finalLang: SupportedLanguage =
+        parsed.language === "hi" ? "hi" : parsed.language === "bn" ? "bn" : activeLanguage;
+      const replyText = (parsed.reply || "").trim();
 
       if (!replyText) {
-        throw new Error("Gemini returned an empty response.");
+        throw new Error("Empty reply from Gemini.");
       }
+
+      const toolActions = convertStructuredToToolActions(parsed);
 
       res.status(200).json({
         reply: replyText,
-        language: activeLanguage,
+        language: finalLang,
         toolActions,
-        sources: groundingChunks,
+        sources: [],
       });
     } catch (error) {
       const formatted = formatGeminiError(error);
@@ -636,7 +750,7 @@ async function startServer() {
     }
   });
 
-  // 3. Server-Side Speech-to-Text Transcription (gemini-3.5-transcribe)
+  // 4. Standalone Speech-to-Text Transcription (extracts audioTranscription.text properly)
   app.post("/api/assistant/transcribe", async (req: Request, res: Response) => {
     try {
       const {
@@ -655,30 +769,42 @@ async function startServer() {
       }
 
       const ai = getGenAIClient();
+      const cleanMime = (mimeType || "audio/webm").split(";")[0].trim() || "audio/webm";
       const langHint =
         preferredLanguage === "hi"
-          ? "The speaker is likely speaking Hindi (हिन्दी) or Bengali (বাংলা). Transcribe accurately in the spoken script (Devanagari for Hindi, Bengali script for Bengali). Return ONLY the exact spoken words, with nothing else. If there is only silence or background noise, return an empty string."
-          : "The speaker is likely speaking Bengali (বাংলা) or Hindi (हिन्दी). Transcribe accurately in the spoken script (Bengali script for Bengali, Devanagari for Hindi). Return ONLY the exact spoken words, with nothing else. If there is only silence or background noise, return an empty string.";
+          ? "Transcribe spoken Hindi (हिन्दी) or Bengali (বাংলা) accurately in native script."
+          : "Transcribe spoken Bengali (বাংলা) or Hindi (हिन्दी) accurately in native script.";
 
-      const response = await ai.models.generateContent({
-        model: "gemini-3.5-transcribe",
-        contents: {
-          parts: [
-            {
-              inlineData: {
-                mimeType,
-                data: audioBase64,
-              },
-            },
-            {
-              text: langHint,
-            },
-          ],
-        },
-      });
+      let transcript = "";
+      try {
+        const response = await ai.models.generateContent({
+          model: TRANSCRIBE_MODEL,
+          contents: {
+            parts: [
+              { inlineData: { mimeType: cleanMime, data: audioBase64 } },
+              { text: langHint },
+            ],
+          },
+        });
+        transcript = extractTranscribeText(response);
+      } catch {
+        // Fallback to fast multimodal flash-lite transcription
+        const fallback = await ai.models.generateContent({
+          model: FAST_CONVERSATION_MODEL,
+          contents: {
+            parts: [
+              { inlineData: { mimeType: cleanMime, data: audioBase64 } },
+              { text: `${langHint} Return ONLY the spoken words, or empty string if silent.` },
+            ],
+          },
+        });
+        transcript = (fallback.text || "").trim();
+      }
 
-      const transcript = (response.text || "").trim();
-      const detectedLanguage = detectActiveLanguage(transcript, preferredLanguage === "hi" ? "hi" : "bn");
+      const detectedLanguage = detectActiveLanguage(
+        transcript,
+        preferredLanguage === "hi" ? "hi" : "bn"
+      );
 
       res.status(200).json({
         transcript,
@@ -693,7 +819,7 @@ async function startServer() {
     }
   });
 
-  // 4. Server-Side Neural Text-to-Speech (gemini-3.8-flash-lite-tts)
+  // 5. Neural Studio Text-to-Speech (gemini-3.8-flash-lite-tts)
   app.post("/api/assistant/tts", async (req: Request, res: Response) => {
     try {
       const {
@@ -707,7 +833,7 @@ async function startServer() {
       };
 
       if (!text || typeof text !== "string" || !text.trim()) {
-        res.status(400).json({ error: "Text is required for speech synthesis.", code: "INVALID_TEXT" });
+        res.status(400).json({ error: "Text is required for TTS.", code: "INVALID_TEXT" });
         return;
       }
 
@@ -717,11 +843,11 @@ async function startServer() {
       const ai = getGenAIClient();
       const stylePrompt =
         language === "hi"
-          ? "Warm, friendly, clear Hindi female personal assistant voice"
-          : "Warm, friendly, clear Bengali female personal assistant voice";
+          ? "Warm, friendly, natural Hindi female personal assistant"
+          : "Warm, friendly, natural Bengali female personal assistant";
 
       const response = await ai.models.generateContent({
-        model: "gemini-3.8-flash-lite-tts",
+        model: TTS_MODEL,
         contents: [
           {
             role: "user",
@@ -749,7 +875,7 @@ async function startServer() {
 
       const base64Audio = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
       if (!base64Audio) {
-        throw new Error("Gemini TTS did not return an audio waveform.");
+        throw new Error("Gemini TTS did not return audio.");
       }
 
       res.status(200).json({
@@ -763,6 +889,26 @@ async function startServer() {
         code: formatted.code,
       });
     }
+  });
+
+  // Never allow any /api/* route to fall through to HTML index.html
+  app.all("/api/*", (req: Request, res: Response) => {
+    res.status(404).json({
+      error: `API endpoint not found: ${req.method} ${req.originalUrl}`,
+      code: "API_NOT_FOUND",
+    });
+  });
+
+  // Express JSON error guard for malformed body / payload size errors
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    if (req.path.startsWith("/api/")) {
+      res.status(400).json({
+        error: err.message || "Invalid API request payload.",
+        code: "BAD_REQUEST",
+      });
+      return;
+    }
+    next(err);
   });
 
   // Vite Dev Server or Production Static Assets

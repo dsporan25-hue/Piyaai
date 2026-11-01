@@ -10,7 +10,6 @@ import {
   Mic,
   Play,
   Settings,
-  Smartphone,
   Sparkles,
   User,
   Wrench,
@@ -28,7 +27,6 @@ import type {
   MemoryItem,
   NoteItem,
   PendingAction,
-  SystemConnectionStatus,
   ThemeId,
   UserProfile,
 } from "./types/piya";
@@ -54,40 +52,40 @@ import {
   setHardwareFlashlight,
 } from "./services/androidBridge";
 import {
+  fetchApiJson,
   PiyaVoiceEngine,
   queryMicrophonePermission,
   requestExplicitMicrophoneAccess,
 } from "./services/voiceEngine";
 import type { LipSyncFrame, MicPermissionState } from "./services/voiceEngine";
-import { PiyaCharacter3D } from "./components/PiyaCharacter3D";
+import { OFFICIAL_PIYA_CHARACTER_IMAGE, PiyaCharacter3D } from "./components/PiyaCharacter3D";
 import { AssistantFullScreen } from "./components/AssistantFullScreen";
 import { PhoneActionsPanel } from "./components/PhoneActionsPanel";
 import { MemoryVaultPanel } from "./components/MemoryVaultPanel";
 import { SettingsModal } from "./components/SettingsModal";
 import { ProfileModal } from "./components/ProfileModal";
-import { AndroidArchitecturePanel } from "./components/AndroidArchitecturePanel";
 
-type ActiveTab = "home" | "actions" | "memory" | "android";
+type ActiveTab = "home" | "actions" | "memory";
 
 const STORAGE_KEYS = {
-  settings: "piya_ai_settings_v1",
+  settings: "piya_ai_settings_v2",
   profile: "piya_ai_profile_v1",
   contacts: "piya_ai_contacts_v1",
   memories: "piya_ai_memories_v1",
   notes: "piya_ai_notes_v1",
   alarms: "piya_ai_alarms_v1",
-  history: "piya_ai_history_v1",
+  history: "piya_ai_history_v2",
 };
 
 const DEFAULT_SETTINGS: AppSettings = {
   language: "bn",
   voiceName: "Kore",
-  speechSpeed: 1.0,
+  speechSpeed: 1.05,
   theme: "classic-cyan",
   characterMode: "3d-rig",
   memoryEnabled: true,
   autoConfirmMemory: false,
-  preferNeuralTts: true,
+  preferNeuralTts: false, // Super Fast Instant Voice Mode by default
 };
 
 const DEFAULT_PROFILE: UserProfile = {
@@ -132,7 +130,7 @@ export default function App() {
     loadStoredJson<AlarmItem[]>(STORAGE_KEYS.alarms, [])
   );
   const [messages, setMessages] = useState<ChatMessage[]>(() =>
-    loadStoredJson<ChatMessage[]>(STORAGE_KEYS.history, [])
+    loadStoredJson<ChatMessage[]>(STORAGE_KEYS.history, []).filter((m) => !m.isError)
   );
 
   const [visualState, setVisualState] = useState<AssistantVisualState>("idle");
@@ -140,13 +138,6 @@ export default function App() {
   const [isOnline, setIsOnline] = useState<boolean>(
     typeof navigator !== "undefined" ? navigator.onLine : true
   );
-  const [connectionStatus, setConnectionStatus] = useState<SystemConnectionStatus>({
-    online: true,
-    aiConfigured: true,
-    aiVerified: false,
-    checking: false,
-    message: "Checking secure backend...",
-  });
 
   const [lipSync, setLipSync] = useState<LipSyncFrame>({
     mouthOpen: 0,
@@ -172,8 +163,8 @@ export default function App() {
   if (!voiceEngineRef.current) {
     voiceEngineRef.current = new PiyaVoiceEngine();
   }
+  const finishingMicRef = useRef(false);
 
-  // Sync CSS theme variables and document lang
   useEffect(() => {
     applyThemeCssVariables(settings.theme);
     document.documentElement.lang = settings.language;
@@ -201,42 +192,11 @@ export default function App() {
   }, [alarms]);
 
   useEffect(() => {
-    window.localStorage.setItem(STORAGE_KEYS.history, JSON.stringify(messages.slice(-40)));
+    window.localStorage.setItem(
+      STORAGE_KEYS.history,
+      JSON.stringify(messages.filter((m) => !m.isError).slice(-40))
+    );
   }, [messages]);
-
-  const checkBackendStatus = useCallback(async (verifyLive = false) => {
-    setConnectionStatus((prev) => ({ ...prev, checking: true }));
-    try {
-      const resp = await fetch(`/api/status${verifyLive ? "?verify=true" : ""}`);
-      if (!resp.ok) {
-        throw new Error(`Backend status returned ${resp.status}`);
-      }
-      const data = (await resp.json()) as {
-        online: boolean;
-        aiConfigured: boolean;
-        aiVerified: boolean;
-        message: string;
-        errorCode?: string;
-      };
-      setConnectionStatus({
-        online: data.online,
-        aiConfigured: data.aiConfigured,
-        aiVerified: data.aiVerified,
-        checking: false,
-        message: data.message,
-        errorCode: data.errorCode,
-      });
-    } catch (err) {
-      setConnectionStatus({
-        online: false,
-        aiConfigured: false,
-        aiVerified: false,
-        checking: false,
-        message:
-          err instanceof Error ? err.message : "Unable to reach PIYA AI backend server.",
-      });
-    }
-  }, []);
 
   const refreshDeviceTelemetry = useCallback(async () => {
     const bat = await readLiveBatteryStatus();
@@ -245,26 +205,20 @@ export default function App() {
     setDeviceAdminActive(admin);
   }, []);
 
-  // Initial mount checks + Android/Browser lifecycle safety
   useEffect(() => {
     queryMicrophonePermission().then(setMicPermission);
-    checkBackendStatus(false);
     refreshDeviceTelemetry();
 
-    const handleOnline = () => {
-      setIsOnline(true);
-      checkBackendStatus(false);
-    };
+    const handleOnline = () => setIsOnline(true);
     const handleOffline = () => {
       setIsOnline(false);
       setErrorBanner(
         settings.language === "bn"
-          ? "ইন্টারনেট সংযোগ বিচ্ছিন্ন হয়েছে। পিয়া এআই অনলাইন সংযোগ ছাড়া উত্তর তৈরি করতে পারে না।"
-          : "इंटरनेट कनेक्शन टूट गया है। पिया एआई ऑनलाइन कनेक्शन के बिना उत्तर नहीं दे सकती।"
+          ? "ইন্টারনেট সংযোগ বিচ্ছিন্ন হয়েছে।"
+          : "इंटरनेट कनेक्शन टूट गया है।"
       );
     };
     const handleVisibilityChange = () => {
-      // Never continuously listen in the background when app/tab is hidden
       if (document.hidden) {
         voiceEngineRef.current?.cancelListening();
         setVisualState((s) => (s === "listening" ? "idle" : s));
@@ -283,7 +237,7 @@ export default function App() {
       voiceEngineRef.current?.cancelListening();
       voiceEngineRef.current?.stopSpeaking();
     };
-  }, [checkBackendStatus, refreshDeviceTelemetry, settings.language]);
+  }, [refreshDeviceTelemetry, settings.language]);
 
   // Active In-App Alarm Scheduler
   useEffect(() => {
@@ -308,9 +262,9 @@ export default function App() {
     return () => window.clearInterval(timer);
   }, []);
 
-  const updateSettings = (patch: Partial<AppSettings>) => {
+  const updateSettings = useCallback((patch: Partial<AppSettings>) => {
     setSettings((prev) => ({ ...prev, ...patch }));
-  };
+  }, []);
 
   const speakAssistantReply = useCallback(
     async (text: string, lang: LanguageCode) => {
@@ -328,8 +282,8 @@ export default function App() {
           setLipSync({ mouthOpen: 0, mouthSpread: 0.35, energy: 0 });
           setVisualState("idle");
         },
-        onError: (msg) => {
-          setErrorBanner(`Voice synthesis notice: ${msg}`);
+        onError: () => {
+          setVisualState("idle");
         },
       });
     },
@@ -401,8 +355,8 @@ export default function App() {
         .join(", ");
       const disambiguateMsg =
         activeLang === "bn"
-          ? `একাধিক কন্টাক্ট পাওয়া গেছে: ${namesSummary}। অনুগ্রহ করে নাম অথবা নম্বরের শেষ চারটি ডিজিট বলুন।`
-          : `एक से अधिक कॉन्टैक्ट मिले हैं: ${namesSummary}। कृपया सही कॉन्टैक्ट चुनें या नंबर के आखिरी चार अंक बताएँ।`;
+          ? `একাধিক কন্টাক্ট পাওয়া গেছে: ${namesSummary}। অনুগ্রহ করে নাম অথবা শেষ চারটি ডিজিট বলুন।`
+          : `एक से अधिक कॉन्टैक्ट मिले हैं: ${namesSummary}। कृपया नाम या आखिरी चार अंक बताएँ।`;
 
       return {
         pending: {
@@ -410,8 +364,8 @@ export default function App() {
           type: "call_disambiguate",
           title:
             activeLang === "bn"
-              ? `${matches.length}টি মিল পাওয়া গেছে — কন্টাক্ট বেছে নিন`
-              : `${matches.length} कॉन्टैक्ट मिले — सही कॉन्टैक्ट चुनें`,
+              ? `${matches.length}টি কন্টাক্ট পাওয়া গেছে`
+              : `${matches.length} कॉन्टैक्ट मिले`,
           explanation: disambiguateMsg,
           matchedContacts: matches,
         },
@@ -454,7 +408,7 @@ export default function App() {
         try {
           await PiyaNativePlugin.placeCall({ phoneNumber: act.selectedContact.phone });
         } catch (err) {
-          setErrorBanner(err instanceof Error ? err.message : "Failed to initiate Android call.");
+          setErrorBanner(err instanceof Error ? err.message : "কল শুরু করা যায়নি।");
           return;
         }
       }
@@ -509,10 +463,10 @@ export default function App() {
           ? "ফোন লক করা হয়েছে।"
           : "फ़ोन लॉक कर दिया गया है।"
         : lang === "bn"
-        ? `ফোন লক করতে হলে ইনস্টল করা Android APK-তে Device Administrator অনুমতি সক্রিয় করতে হবে। (${lockRes.message})`
-        : `फ़ोन लॉक करने के लिए इंस्टॉल किए गए Android APK में Device Administrator अनुमति सक्रिय होनी चाहिए। (${lockRes.message})`;
+        ? "ফোন লক করতে হলে Android APK-তে Device Administrator অনুমতি সক্রিয় করুন।"
+        : "फ़ोन लॉक करने के लिए Android APK में Device Administrator अनुमति सक्रिय करें।";
       appendMessage("assistant", msg, lang, {
-        actionBadge: lockRes.locked ? "Phone Locked" : "Device Admin Required",
+        actionBadge: lockRes.locked ? "Locked" : "Device Admin",
       });
       await speakAssistantReply(msg, lang);
       return;
@@ -541,8 +495,8 @@ export default function App() {
       const formattedTime = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
       const msg =
         lang === "bn"
-          ? `${formattedTime} সময়ের জন্য "${label}" অ্যালার্ম সেট করা হয়েছে।`
-          : `${formattedTime} बजे के लिए "${label}" अलार्म सेट कर दिया गया है।`;
+          ? `${formattedTime} সময়ের জন্য অ্যালার্ম সেট করা হয়েছে।`
+          : `${formattedTime} बजे के लिए अलार्म सेट कर दिया गया है।`;
       appendMessage("assistant", msg, lang, { actionBadge: "Alarm Set" });
       await speakAssistantReply(msg, lang);
       return;
@@ -558,8 +512,8 @@ export default function App() {
       setMemories((prev) => [item, ...prev]);
       const msg =
         lang === "bn"
-          ? "আপনার পছন্দটি নিরাপদে মেমরিতে সংরক্ষণ করা হয়েছে।"
-          : "आपकी पसंद सुरक्षित रूप से मेमोरी में सहेज ली गई है।";
+          ? "আপনার তথ্যটি মেমোরিতে সংরক্ষণ করা হয়েছে।"
+          : "आपकी जानकारी मेमोरी में सहेज ली गई है।";
       appendMessage("assistant", msg, lang, { actionBadge: "Memory Saved" });
       await speakAssistantReply(msg, lang);
     }
@@ -576,13 +530,268 @@ export default function App() {
     await speakAssistantReply(msg, lang);
   }, [appendMessage, settings.language, speakAssistantReply]);
 
+  /**
+   * Checks if user text resolves an active confirmation/disambiguation dialog.
+   * Returns true if handled locally without needing an action override.
+   */
+  const tryHandlePendingConfirmation = useCallback(
+    async (spokenOrTyped: string, turnLang: LanguageCode): Promise<boolean> => {
+      if (!pendingAction) return false;
+      const trimmed = spokenOrTyped.trim();
+      const parsed = parseVoiceConfirmationIntent(trimmed);
+
+      if (pendingAction.type === "call_disambiguate" && pendingAction.matchedContacts) {
+        if (parsed.fourDigits) {
+          const matchedBy4 = pendingAction.matchedContacts.find((c) =>
+            c.phone.replace(/\D/g, "").endsWith(parsed.fourDigits!)
+          );
+          if (matchedBy4) {
+            appendMessage("user", trimmed, turnLang);
+            await handleSelectDisambiguatedContact(matchedBy4);
+            return true;
+          }
+        }
+        const matchedByName = pendingAction.matchedContacts.find((c) =>
+          c.name.toLowerCase().includes(trimmed.toLowerCase())
+        );
+        if (matchedByName) {
+          appendMessage("user", trimmed, turnLang);
+          await handleSelectDisambiguatedContact(matchedByName);
+          return true;
+        }
+        if (parsed.decision === "cancel") {
+          appendMessage("user", trimmed, turnLang);
+          await handleCancelPendingAction();
+          return true;
+        }
+        return false;
+      }
+
+      if (parsed.decision === "confirm") {
+        appendMessage("user", trimmed, turnLang);
+        if (pendingAction.intentHref && !isNativeAndroidRuntime()) {
+          if (pendingAction.intentHref.startsWith("tel:")) {
+            window.location.href = pendingAction.intentHref;
+          }
+        }
+        await handleConfirmPendingAction();
+        return true;
+      }
+
+      if (parsed.decision === "cancel") {
+        appendMessage("user", trimmed, turnLang);
+        await handleCancelPendingAction();
+        return true;
+      }
+
+      return false;
+    },
+    [
+      appendMessage,
+      handleCancelPendingAction,
+      handleConfirmPendingAction,
+      handleSelectDisambiguatedContact,
+      pendingAction,
+    ]
+  );
+
+  /**
+   * Applies Gemini toolActions + speaks PIYA AI's reply immediately.
+   */
+  const applyAssistantResponse = useCallback(
+    async (
+      userTranscript: string,
+      rawReply: string,
+      replyLang: LanguageCode,
+      toolActions: Array<{ id: string; name: string; args: Record<string, unknown> }> | undefined,
+      freshBattery: BatteryInfo
+    ) => {
+      if (replyLang !== settings.language) {
+        updateSettings({ language: replyLang });
+      }
+
+      let finalSpokenReply = rawReply;
+      let actionBadge: string | undefined;
+
+      if (toolActions && toolActions.length > 0) {
+        for (const tool of toolActions) {
+          const args = tool.args || {};
+
+          if (tool.name === "proposePhoneCall") {
+            const callPrep = prepareCallAction(
+              typeof args.contactName === "string" ? args.contactName : undefined,
+              typeof args.lastFourDigits === "string" ? args.lastFourDigits : undefined,
+              replyLang
+            );
+            setPendingAction(callPrep.pending);
+            if (callPrep.spokenOverride) {
+              finalSpokenReply = callPrep.spokenOverride;
+            }
+            actionBadge = "Phone Call";
+          } else if (tool.name === "searchYouTube") {
+            const q = String(args.query || "").trim() || userTranscript;
+            const platform =
+              args.targetApp === "youtube_music" ? "youtube_music" : "youtube";
+            const url = buildYouTubeSearchUrl(q, platform);
+            setPendingAction({
+              id: `pa_${Date.now()}`,
+              type: "youtube_search",
+              title: platform === "youtube_music" ? `YouTube Music: ${q}` : `YouTube: ${q}`,
+              explanation:
+                replyLang === "bn"
+                  ? `"${q}" ইউটিউবে খুলতে হ্যাঁ চাপুন।`
+                  : `"${q}" को YouTube पर खोलने के लिए हाँ दबाएँ।`,
+              youtubeQuery: q,
+              youtubePlatform: platform,
+              intentHref: isNativeAndroidRuntime() ? undefined : url,
+            });
+            actionBadge = "YouTube";
+          } else if (tool.name === "openApplication") {
+            const appName = String(args.appName || "App");
+            const target = resolveAppLaunchTarget(appName);
+            setPendingAction({
+              id: `pa_${Date.now()}`,
+              type: "open_app",
+              title: `${target.label}`,
+              explanation:
+                replyLang === "bn"
+                  ? `${target.label} অ্যাপটি খুলতে চান?`
+                  : `क्या आप ${target.label} ऐप खोलना चाहते हैं?`,
+              appName: target.label,
+              intentHref: isNativeAndroidRuntime() || !target.href ? undefined : target.href,
+            });
+            actionBadge = target.label;
+          } else if (tool.name === "lockPhoneScreen") {
+            setPendingAction({
+              id: `pa_${Date.now()}`,
+              type: "lock_phone",
+              title: replyLang === "bn" ? "ফোন স্ক্রিন লক" : "फ़ोन स्क्रीन लॉक",
+              explanation:
+                replyLang === "bn"
+                  ? "পিয়া এআই ফোন লক করবে। আপনি কি নিশ্চিত?"
+                  : "पिया एआई फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?",
+            });
+            actionBadge = "Lock Screen";
+          } else if (tool.name === "openSystemSettings") {
+            const rawSec = String(args.settingType || "phone_settings");
+            const sec: "wifi" | "bluetooth" | "phone_settings" | "device_admin" =
+              rawSec === "wifi" || rawSec === "bluetooth" || rawSec === "device_admin"
+                ? rawSec
+                : "phone_settings";
+            const sysPreview = await executeSystemSettingsOpen(sec);
+            setPendingAction({
+              id: `pa_${Date.now()}`,
+              type: "open_settings",
+              title: sec.replace("_", " ").toUpperCase(),
+              explanation: sysPreview.message,
+              settingSection: sec,
+              intentHref: sysPreview.intentHref,
+            });
+            actionBadge = "Settings";
+          } else if (tool.name === "controlFlashlight") {
+            const mode = String(args.mode || "toggle");
+            const nextEnable = mode === "on" ? true : mode === "off" ? false : !flashlightOn;
+            const torchRes = await setHardwareFlashlight(nextEnable);
+            setFlashlightOn(torchRes.enabled);
+            if (!torchRes.success) {
+              finalSpokenReply =
+                replyLang === "bn"
+                  ? "এই ব্রাউজারে ফ্ল্যাশলাইট কন্ট্রোল নেই। Android APK-তে এটি সরাসরি কাজ করে।"
+                  : "इस ब्राउज़र में फ़्लैशलाइट कंट्रोल उपलब्ध नहीं है। Android APK में यह सीधे काम करता है।";
+            }
+            actionBadge = "Flashlight";
+          } else if (tool.name === "checkBatteryStatus") {
+            if (!freshBattery.supported || freshBattery.level === null) {
+              finalSpokenReply =
+                replyLang === "bn"
+                  ? "আপনার বর্তমান ব্রাউজার ব্যাটারির তথ্য দিচ্ছে না। Android অ্যাপে এটি কাজ করে।"
+                  : "आपका ब्राउज़र बैटरी की जानकारी नहीं दे रहा है। Android ऐप में यह काम करता है।";
+            }
+            actionBadge = "Battery";
+          } else if (tool.name === "setDeviceAlarm") {
+            const hour = Math.max(0, Math.min(23, Number(args.hour ?? 7)));
+            const minute = Math.max(0, Math.min(59, Number(args.minute ?? 0)));
+            const label = String(args.label || "PIYA AI Alarm");
+            const tStr = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+            setPendingAction({
+              id: `pa_${Date.now()}`,
+              type: "set_alarm",
+              title: `${tStr}`,
+              explanation:
+                replyLang === "bn"
+                  ? `${tStr} সময়ে "${label}" অ্যালার্ম সেট করতে চান?`
+                  : `क्या आप ${tStr} बजे के लिए "${label}" अलार्म सेट करना चाहते हैं?`,
+              alarmData: { hour, minute, label },
+            });
+            actionBadge = `Alarm ${tStr}`;
+          } else if (tool.name === "createPersonalNote") {
+            const title = String(args.title || "Note");
+            const content = String(args.content || userTranscript);
+            const newNote: NoteItem = {
+              id: `nt_${Date.now()}`,
+              title,
+              content,
+              createdAt: new Date().toISOString(),
+            };
+            setNotes((prev) => [newNote, ...prev]);
+            actionBadge = "Note Saved";
+          } else if (tool.name === "proposeMemorySave" && settings.memoryEnabled) {
+            const category = String(args.category || "Preference");
+            const fact = String(args.fact || "");
+            if (fact) {
+              if (settings.autoConfirmMemory) {
+                setMemories((prev) => [
+                  {
+                    id: `mem_${Date.now()}`,
+                    category,
+                    fact,
+                    createdAt: new Date().toISOString(),
+                  },
+                  ...prev,
+                ]);
+                actionBadge = "Memory Saved";
+              } else {
+                setPendingAction({
+                  id: `pa_${Date.now()}`,
+                  type: "save_memory",
+                  title: replyLang === "bn" ? "মেমোরিতে সংরক্ষণ" : "मेमोरी में सहेजें",
+                  explanation:
+                    replyLang === "bn"
+                      ? `পিয়া কি এটি মনে রাখবে: "${fact}"?`
+                      : `क्या पिया यह याद रखे: "${fact}"?`,
+                  memoryData: { category, fact },
+                });
+                actionBadge = "Save Memory";
+              }
+            }
+          }
+        }
+      }
+
+      appendMessage("assistant", finalSpokenReply, replyLang, { actionBadge });
+      await speakAssistantReply(finalSpokenReply, replyLang);
+    },
+    [
+      appendMessage,
+      flashlightOn,
+      prepareCallAction,
+      settings.autoConfirmMemory,
+      settings.language,
+      settings.memoryEnabled,
+      speakAssistantReply,
+      updateSettings,
+    ]
+  );
+
   // =========================================================================
-  // CORE CONVERSATIONAL AI TURN PROCESSOR
+  // FAST TEXT CONVERSATION PROCESSOR
   // =========================================================================
   const processUserUtterance = useCallback(
     async (rawText: string, detectedLangHint?: LanguageCode) => {
       const trimmed = rawText.trim();
       if (!trimmed) return;
+
+      voiceEngineRef.current?.unlockAudioOnGesture();
 
       if (!isOnline) {
         setErrorBanner(UI_COPY[settings.language].offlineMode);
@@ -592,55 +801,8 @@ export default function App() {
       setErrorBanner(null);
       const turnLang = detectedLangHint || settings.language;
 
-      // 1. Check if user is answering an active PendingAction confirmation or 4-digit contact selection!
-      if (pendingAction) {
-        const parsed = parseVoiceConfirmationIntent(trimmed);
-
-        if (pendingAction.type === "call_disambiguate" && pendingAction.matchedContacts) {
-          if (parsed.fourDigits) {
-            const matchedBy4 = pendingAction.matchedContacts.find((c) =>
-              c.phone.replace(/\D/g, "").endsWith(parsed.fourDigits!)
-            );
-            if (matchedBy4) {
-              appendMessage("user", trimmed, turnLang);
-              await handleSelectDisambiguatedContact(matchedBy4);
-              return;
-            }
-          }
-          // Check if user spoke the full name of one of the candidates
-          const matchedByName = pendingAction.matchedContacts.find((c) =>
-            c.name.toLowerCase().includes(trimmed.toLowerCase())
-          );
-          if (matchedByName) {
-            appendMessage("user", trimmed, turnLang);
-            await handleSelectDisambiguatedContact(matchedByName);
-            return;
-          }
-          if (parsed.decision === "cancel") {
-            appendMessage("user", trimmed, turnLang);
-            await handleCancelPendingAction();
-            return;
-          }
-        } else {
-          if (parsed.decision === "confirm") {
-            appendMessage("user", trimmed, turnLang);
-            // If it's a web link intent (e.g. tel: or https://youtube), keep an actionable launch card if not native, or execute directly!
-            if (pendingAction.intentHref && !isNativeAndroidRuntime()) {
-              // Trigger safe anchor navigation for tel: URI; for http keep clickable or navigate
-              if (pendingAction.intentHref.startsWith("tel:")) {
-                window.location.href = pendingAction.intentHref;
-              }
-            }
-            await handleConfirmPendingAction();
-            return;
-          }
-          if (parsed.decision === "cancel") {
-            appendMessage("user", trimmed, turnLang);
-            await handleCancelPendingAction();
-            return;
-          }
-        }
-      }
+      const handledPending = await tryHandlePendingConfirmation(trimmed, turnLang);
+      if (handledPending) return;
 
       appendMessage("user", trimmed, turnLang);
       setVisualState("thinking");
@@ -649,13 +811,18 @@ export default function App() {
         const freshBattery = await readLiveBatteryStatus();
         setBattery(freshBattery);
 
-        const resp = await fetch("/api/assistant/chat", {
+        const { ok, status, data } = await fetchApiJson<{
+          reply?: string;
+          language?: LanguageCode;
+          toolActions?: Array<{ id: string; name: string; args: Record<string, unknown> }>;
+          error?: string;
+        }>("/api/assistant/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             message: trimmed,
             preferredLanguage: settings.language,
-            history: messages.slice(-12).map((m) => ({
+            history: messages.slice(-8).map((m) => ({
               role: m.role,
               text: m.text,
             })),
@@ -671,255 +838,164 @@ export default function App() {
           }),
         });
 
-        const data = (await resp.json()) as {
-          reply?: string;
-          language?: LanguageCode;
-          toolActions?: Array<{ id: string; name: string; args: Record<string, unknown> }>;
-          sources?: GroundingSource[];
-          error?: string;
-        };
-
-        if (!resp.ok || !data.reply) {
-          throw new Error(data.error || `Gemini service error (${resp.status})`);
+        if (!ok || !data.reply) {
+          throw new Error(data.error || `সার্ভার ত্রুটি (${status})`);
         }
 
         const replyLang: LanguageCode = data.language === "hi" ? "hi" : "bn";
-        if (replyLang !== settings.language) {
-          updateSettings({ language: replyLang });
-        }
-
-        let finalSpokenReply = data.reply;
-        let actionBadge: string | undefined;
-
-        // Process structured tool calls returned by Gemini
-        if (data.toolActions && data.toolActions.length > 0) {
-          for (const tool of data.toolActions) {
-            const args = tool.args || {};
-
-            if (tool.name === "proposePhoneCall") {
-              const callPrep = prepareCallAction(
-                typeof args.contactName === "string" ? args.contactName : undefined,
-                typeof args.lastFourDigits === "string" ? args.lastFourDigits : undefined,
-                replyLang
-              );
-              setPendingAction(callPrep.pending);
-              if (callPrep.spokenOverride) {
-                finalSpokenReply = callPrep.spokenOverride;
-              }
-              actionBadge = "Phone Call";
-            } else if (tool.name === "searchYouTube") {
-              const q = String(args.query || "").trim() || trimmed;
-              const platform =
-                args.targetApp === "youtube_music" ? "youtube_music" : "youtube";
-              const url = buildYouTubeSearchUrl(q, platform);
-              setPendingAction({
-                id: `pa_${Date.now()}`,
-                type: "youtube_search",
-                title:
-                  platform === "youtube_music"
-                    ? `YouTube Music: ${q}`
-                    : `YouTube Search: ${q}`,
-                explanation:
-                  replyLang === "bn"
-                    ? `"${q}" এর জন্য ইউটিউব খোলার জন্য নিশ্চিত করুন।`
-                    : `"${q}" को YouTube पर खोलने के लिए पुष्टि करें।`,
-                youtubeQuery: q,
-                youtubePlatform: platform,
-                intentHref: isNativeAndroidRuntime() ? undefined : url,
-              });
-              actionBadge = "YouTube Search";
-            } else if (tool.name === "openApplication") {
-              const appName = String(args.appName || "App");
-              const target = resolveAppLaunchTarget(appName);
-              setPendingAction({
-                id: `pa_${Date.now()}`,
-                type: "open_app",
-                title: `Open ${target.label}`,
-                explanation:
-                  replyLang === "bn"
-                    ? `${target.label} অ্যাপটি খুলতে চান?`
-                    : `क्या आप ${target.label} ऐप खोलना चाहते हैं?`,
-                appName: target.label,
-                intentHref: isNativeAndroidRuntime() || !target.href ? undefined : target.href,
-              });
-              actionBadge = `Open ${target.label}`;
-            } else if (tool.name === "lockPhoneScreen") {
-              setPendingAction({
-                id: `pa_${Date.now()}`,
-                type: "lock_phone",
-                title: replyLang === "bn" ? "ফোন স্ক্রিন লক নিশ্চিতকরণ" : "फ़ोन स्क्रीन लॉक पुष्टि",
-                explanation:
-                  replyLang === "bn"
-                    ? "পিয়া এআই Android DevicePolicyManager ব্যবহার করে ফোন লক করবে। আপনি কি নিশ্চিত?"
-                    : "पिया एआई Android DevicePolicyManager का उपयोग करके फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?",
-              });
-              actionBadge = "Lock Screen";
-            } else if (tool.name === "openSystemSettings") {
-              const rawSec = String(args.settingType || "phone_settings");
-              const sec: "wifi" | "bluetooth" | "phone_settings" | "device_admin" =
-                rawSec === "wifi" || rawSec === "bluetooth" || rawSec === "device_admin"
-                  ? rawSec
-                  : "phone_settings";
-              const sysPreview = await executeSystemSettingsOpen(sec);
-              setPendingAction({
-                id: `pa_${Date.now()}`,
-                type: "open_settings",
-                title: `Open ${sec.replace("_", " ").toUpperCase()}`,
-                explanation: sysPreview.message,
-                settingSection: sec,
-                intentHref: sysPreview.intentHref,
-              });
-              actionBadge = "System Settings";
-            } else if (tool.name === "controlFlashlight") {
-              const mode = String(args.mode || "toggle");
-              const nextEnable = mode === "on" ? true : mode === "off" ? false : !flashlightOn;
-              const torchRes = await setHardwareFlashlight(nextEnable);
-              setFlashlightOn(torchRes.enabled);
-              if (!torchRes.success) {
-                finalSpokenReply =
-                  replyLang === "bn"
-                    ? `এই ব্রাউজার বা ডিভাইসে ফ্ল্যাশলাইট হার্ডওয়্যার পাওয়া যায়নি। (${torchRes.message})`
-                    : `इस ब्राउज़र या डिवाइस पर फ़्लैशलाइट हार्डवेयर उपलब्ध नहीं है। (${torchRes.message})`;
-              }
-              actionBadge = "Flashlight";
-            } else if (tool.name === "checkBatteryStatus") {
-              if (!freshBattery.supported || freshBattery.level === null) {
-                finalSpokenReply =
-                  replyLang === "bn"
-                    ? "দুঃখিত, আপনার বর্তমান ব্রাউজার ব্যাটারির তথ্য প্রদান করছে না। Android APK-তে এটি সরাসরি কাজ করে।"
-                    : "क्षमा करें, आपका वर्तमान ब्राउज़र बैटरी की जानकारी प्रदान नहीं कर रहा है। Android APK में यह सीधे काम करता है।";
-              }
-              actionBadge = "Battery Readout";
-            } else if (tool.name === "setDeviceAlarm") {
-              const hour = Math.max(0, Math.min(23, Number(args.hour ?? 7)));
-              const minute = Math.max(0, Math.min(59, Number(args.minute ?? 0)));
-              const label = String(args.label || "PIYA AI Alarm");
-              const tStr = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-              setPendingAction({
-                id: `pa_${Date.now()}`,
-                type: "set_alarm",
-                title: `Set Alarm · ${tStr}`,
-                explanation:
-                  replyLang === "bn"
-                    ? `${tStr} সময়ে "${label}" অ্যালার্ম সেট করতে চান?`
-                    : `क्या आप ${tStr} बजे के लिए "${label}" अलार्म सेट करना चाहते हैं?`,
-                alarmData: { hour, minute, label },
-              });
-              actionBadge = `Alarm ${tStr}`;
-            } else if (tool.name === "createPersonalNote") {
-              const title = String(args.title || "Voice Note");
-              const content = String(args.content || trimmed);
-              const newNote: NoteItem = {
-                id: `nt_${Date.now()}`,
-                title,
-                content,
-                createdAt: new Date().toISOString(),
-              };
-              setNotes((prev) => [newNote, ...prev]);
-              actionBadge = "Note Saved";
-            } else if (tool.name === "proposeMemorySave" && settings.memoryEnabled) {
-              const category = String(args.category || "Preference");
-              const fact = String(args.fact || "");
-              if (fact) {
-                if (settings.autoConfirmMemory) {
-                  setMemories((prev) => [
-                    {
-                      id: `mem_${Date.now()}`,
-                      category,
-                      fact,
-                      createdAt: new Date().toISOString(),
-                    },
-                    ...prev,
-                  ]);
-                  actionBadge = "Memory Saved";
-                } else {
-                  setPendingAction({
-                    id: `pa_${Date.now()}`,
-                    type: "save_memory",
-                    title:
-                      replyLang === "bn"
-                        ? "মেমরিতে সংরক্ষণের অনুমতি"
-                        : "मेमोरी में सहेजने की अनुमति",
-                    explanation:
-                      replyLang === "bn"
-                        ? `পিয়া এআই কি এই তথ্যটি মনে রাখবে: "${fact}"?`
-                        : `क्या पिया एआई यह जानकारी याद रखे: "${fact}"?`,
-                    memoryData: { category, fact },
-                  });
-                  actionBadge = "Approve Memory";
-                }
-              }
-            }
-          }
-        }
-
-        appendMessage("assistant", finalSpokenReply, replyLang, {
-          sources: data.sources,
-          actionBadge,
-        });
-        await speakAssistantReply(finalSpokenReply, replyLang);
+        await applyAssistantResponse(
+          trimmed,
+          data.reply,
+          replyLang,
+          data.toolActions,
+          freshBattery
+        );
       } catch (err) {
         setVisualState("idle");
         const errMsg =
-          err instanceof Error
-            ? err.message
-            : "Failed to generate response from Gemini backend.";
+          err instanceof Error ? err.message : "উত্তর তৈরিতে সমস্যা হয়েছে। আবার চেষ্টা করুন।";
         setErrorBanner(errMsg);
-        appendMessage("assistant", errMsg, turnLang, { isError: true });
       }
     },
     [
       appendMessage,
+      applyAssistantResponse,
       contacts,
       deviceAdminActive,
       flashlightOn,
-      handleCancelPendingAction,
-      handleConfirmPendingAction,
-      handleSelectDisambiguatedContact,
       isOnline,
       memories,
       messages,
-      pendingAction,
-      prepareCallAction,
-      settings.autoConfirmMemory,
       settings.language,
       settings.memoryEnabled,
-      speakAssistantReply,
+      tryHandlePendingConfirmation,
     ]
   );
 
   // =========================================================================
-  // EXPLICIT MICROPHONE ACTIVATION & TRANSCRIPTION
+  // SINGLE-PASS MICROPHONE CAPTURE -> VOICE TURN (~1.3s END-TO-END)
   // =========================================================================
   const finishActiveMicCapture = useCallback(async () => {
-    if (!voiceEngineRef.current) return;
+    if (!voiceEngineRef.current || finishingMicRef.current) return;
+    finishingMicRef.current = true;
     setVisualState("thinking");
     setMicLevel(0);
+
     try {
-      const { transcript, detectedLanguage } =
-        await voiceEngineRef.current.finishListeningAndTranscribe(settings.language);
+      const payload = await voiceEngineRef.current.finishListeningRawAudio();
       setInterimTranscript("");
-      if (!transcript.trim()) {
+
+      if (!payload) {
         setVisualState("idle");
         setErrorBanner(
           settings.language === "bn"
-            ? "কোনো স্পষ্ট কথা শোনা যায়নি। অনুগ্রহ করে আবার মাইক্রোফোন ট্যাপ করে বলুন।"
-            : "कोई स्पष्ट आवाज़ सुनाई नहीं दी। कृपया माइक्रोफ़ोन टैप करके फिर से बोलें।"
+            ? "কোনো কথা শোনা যায়নি। মাইক বাটনে ট্যাপ করে স্পষ্টভাবে বলুন।"
+            : "कोई आवाज़ नहीं मिली। माइक दबाकर स्पष्ट रूप से बोलें।"
         );
         return;
       }
-      await processUserUtterance(transcript, detectedLanguage);
+
+      // If browser captured text only without audio bytes
+      if (!payload.audioBase64 && payload.webFallbackTranscript) {
+        await processUserUtterance(payload.webFallbackTranscript, settings.language);
+        return;
+      }
+
+      const freshBattery = await readLiveBatteryStatus();
+      setBattery(freshBattery);
+
+      const { ok, status, data } = await fetchApiJson<{
+        heardSpeech?: boolean;
+        transcript?: string;
+        reply?: string;
+        language?: LanguageCode;
+        toolActions?: Array<{ id: string; name: string; args: Record<string, unknown> }>;
+        error?: string;
+      }>("/api/assistant/voice-turn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          audioBase64: payload.audioBase64,
+          mimeType: payload.mimeType,
+          preferredLanguage: settings.language,
+          history: messages.slice(-8).map((m) => ({
+            role: m.role,
+            text: m.text,
+          })),
+          memories: settings.memoryEnabled ? memories : [],
+          contacts,
+          deviceState: {
+            batteryLevel: freshBattery.level,
+            isCharging: freshBattery.charging,
+            isNativeAndroid: isNativeAndroidRuntime(),
+            isDeviceAdminActive: deviceAdminActive,
+            flashlightOn,
+          },
+        }),
+      });
+
+      if (!ok) {
+        if (payload.webFallbackTranscript) {
+          await processUserUtterance(payload.webFallbackTranscript, settings.language);
+          return;
+        }
+        throw new Error(data.error || `ভয়েস সার্ভিস ত্রুটি (${status})`);
+      }
+
+      const transcript = (data.transcript || payload.webFallbackTranscript || "").trim();
+      if (data.heardSpeech === false || !transcript) {
+        setVisualState("idle");
+        setErrorBanner(
+          settings.language === "bn"
+            ? "স্পষ্ট কথা শোনা যায়নি। অনুগ্রহ করে আবার মাইক ট্যাপ করে বলুন।"
+            : "स्पष्ट आवाज़ सुनाई नहीं दी। कृपया माइक टैप करके फिर से बोलें।"
+        );
+        return;
+      }
+
+      const replyLang: LanguageCode = data.language === "hi" ? "hi" : "bn";
+
+      // First check if user spoke "হ্যাঁ" / "না" / 4-digits for an active PendingAction
+      const handledPending = await tryHandlePendingConfirmation(transcript, replyLang);
+      if (handledPending) {
+        return;
+      }
+
+      appendMessage("user", transcript, replyLang);
+      await applyAssistantResponse(
+        transcript,
+        data.reply || "",
+        replyLang,
+        data.toolActions,
+        freshBattery
+      );
     } catch (err) {
       setVisualState("idle");
       setInterimTranscript("");
       setErrorBanner(
-        err instanceof Error ? err.message : "Speech recognition encountered an error."
+        err instanceof Error ? err.message : "ভয়েস চিনতে সমস্যা হয়েছে। আবার চেষ্টা করুন।"
       );
+    } finally {
+      finishingMicRef.current = false;
     }
-  }, [processUserUtterance, settings.language]);
+  }, [
+    appendMessage,
+    applyAssistantResponse,
+    contacts,
+    deviceAdminActive,
+    flashlightOn,
+    memories,
+    messages,
+    processUserUtterance,
+    settings.language,
+    settings.memoryEnabled,
+    tryHandlePendingConfirmation,
+  ]);
 
   const handleToggleMic = useCallback(async () => {
     if (!voiceEngineRef.current) return;
+
+    voiceEngineRef.current.unlockAudioOnGesture();
 
     if (visualState === "listening") {
       await finishActiveMicCapture();
@@ -927,17 +1003,6 @@ export default function App() {
     }
 
     setErrorBanner(null);
-    const perm = await requestExplicitMicrophoneAccess();
-    setMicPermission(perm.state);
-    if (perm.state !== "granted") {
-      setErrorBanner(
-        perm.error ||
-          (settings.language === "bn"
-            ? "মাইক্রোফোন অনুমতি প্রত্যাখ্যান করা হয়েছে।"
-            : "माइक्रोफ़ोन अनुमति अस्वीकार कर दी गई है।")
-      );
-      return;
-    }
 
     try {
       setInterimTranscript("");
@@ -950,11 +1015,23 @@ export default function App() {
           finishActiveMicCapture();
         },
       });
+      setMicPermission("granted");
     } catch (err) {
       setVisualState("idle");
-      setErrorBanner(err instanceof Error ? err.message : "Could not start microphone.");
+      const msg = err instanceof Error ? err.message : "মাইক্রোফোন চালু করা যায়নি।";
+      if (/অনুমতি|অনুমোদন|allow|permission|अनुमति/i.test(msg)) {
+        setMicPermission("denied");
+      }
+      setErrorBanner(msg);
     }
   }, [finishActiveMicCapture, settings.language, visualState]);
+
+  const handleCancelMic = useCallback(() => {
+    voiceEngineRef.current?.cancelListening();
+    setInterimTranscript("");
+    setMicLevel(0);
+    setVisualState("idle");
+  }, []);
 
   const handleStopSpeaking = useCallback(() => {
     voiceEngineRef.current?.stopSpeaking();
@@ -970,11 +1047,12 @@ export default function App() {
     setAlarms([]);
     setContacts(DEFAULT_CONTACTS);
     setSettings(DEFAULT_SETTINGS);
-    setActionStatusToast("All saved conversations, memories, notes, and custom data cleared.");
-  }, []);
+    setActionStatusToast(
+      settings.language === "bn" ? "সব সংরক্ষিত ডেটা মুছে ফেলা হয়েছে।" : "सारा डेटा हटा दिया गया है।"
+    );
+  }, [settings.language]);
 
   const copy = UI_COPY[settings.language];
-  const currentTheme = PIYA_THEMES[settings.theme];
 
   const voiceStatusText = !isOnline
     ? copy.offlineMode
@@ -996,7 +1074,7 @@ export default function App() {
           <div className="flex items-center gap-2.5 text-sm font-semibold">
             <BellRing className="w-5 h-5" />
             <span>
-              Alarm Ringing: {String(ringingAlarm.hour).padStart(2, "0")}:
+              {String(ringingAlarm.hour).padStart(2, "0")}:
               {String(ringingAlarm.minute).padStart(2, "0")} — {ringingAlarm.label}
             </span>
           </div>
@@ -1005,28 +1083,34 @@ export default function App() {
             onClick={() => setRingingAlarm(null)}
             className="min-h-[38px] px-4 rounded-lg bg-slate-950 text-white text-xs font-semibold whitespace-nowrap shrink-0"
           >
-            Dismiss Alarm
+            বন্ধ করুন
           </button>
         </div>
       )}
 
-      {/* Top Navigation Bar (Strict 3-Zone Contract: Brand — Nav Links — Primary Action) */}
-      <header className="sticky top-0 z-30 flex items-center justify-between gap-8 px-5 sm:px-8 h-16 border-b border-[var(--piya-border)] bg-[#060b18]/95">
+      {/* Clean Top Bar (Brand — 3 Navigation Tabs — Start CTA) */}
+      <header className="sticky top-0 z-30 flex items-center justify-between gap-4 px-4 sm:px-8 h-16 border-b border-[var(--piya-border)] bg-[#060b18]/95">
         <button
           type="button"
           onClick={() => setActiveTab("home")}
-          className="font-display text-xl font-bold tracking-tight text-white whitespace-nowrap shrink-0 text-left"
+          className="flex items-center gap-2.5 shrink-0 text-left"
         >
-          PIYA AI
+          <img
+            src={OFFICIAL_PIYA_CHARACTER_IMAGE}
+            alt="PIYA AI"
+            className="w-9 h-9 rounded-xl object-cover object-[50%_16%] border border-[var(--piya-border)]"
+          />
+          <span className="font-display text-lg sm:text-xl font-bold tracking-tight text-white whitespace-nowrap">
+            PIYA AI
+          </span>
         </button>
 
         <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
           {(
             [
-              { id: "home" as ActiveTab, label: "Main Stage" },
-              { id: "actions" as ActiveTab, label: "Phone Actions" },
-              { id: "memory" as ActiveTab, label: "Memory Vault" },
-              { id: "android" as ActiveTab, label: "Android APK" },
+              { id: "home" as ActiveTab, label: copy.tabHome },
+              { id: "actions" as ActiveTab, label: copy.tabActions },
+              { id: "memory" as ActiveTab, label: copy.tabMemory },
             ] as const
           ).map((item) => (
             <button
@@ -1047,100 +1131,98 @@ export default function App() {
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
-            onClick={() => setFullScreenAssistant(true)}
-            className="min-h-[42px] px-4 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold hover:opacity-95 transition-opacity whitespace-nowrap shrink-0"
+            onClick={() => setProfileOpen(true)}
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl border border-slate-800 bg-[#0b1326] text-slate-200 hover:text-white transition-colors"
+            aria-label="Profile"
+          >
+            <User className="w-4 h-4" style={{ color: "var(--piya-accent-bright)" }} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setSettingsOpen(true)}
+            className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-xl border border-slate-800 bg-[#0b1326] text-slate-200 hover:text-white transition-colors"
+            aria-label="Settings"
+          >
+            <Settings className="w-4 h-4" style={{ color: "var(--piya-accent-bright)" }} />
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              voiceEngineRef.current?.unlockAudioOnGesture();
+              setFullScreenAssistant(true);
+            }}
+            className="min-h-[40px] px-3.5 py-2 rounded-xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] text-xs font-semibold hover:opacity-95 transition-opacity whitespace-nowrap shrink-0"
           >
             {copy.startAssistant}
           </button>
         </div>
       </header>
 
-      {/* Main Content Container (Full 1440px Desktop Presence + Mobile Ergonomics) */}
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-8 py-6 pb-24 md:pb-10">
+      {/* Main Content Container */}
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-8 py-5 pb-24 md:pb-10">
         {activeTab === "home" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-            {/* Left Column: PIYA AI Main Screen Controls, Profile, Settings, Language, & Start CTA */}
-            <div className="lg:col-span-6 flex flex-col justify-between space-y-6 rounded-3xl border border-[var(--piya-border)] bg-[var(--piya-surface)] p-6 sm:p-8">
-              <div className="space-y-5">
-                {/* Unboxed Clean Voice Status & Developer Metadata */}
-                <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
-                  <div>
-                    <span style={{ color: "var(--piya-accent-bright)" }} className="font-semibold">
-                      {voiceStatusText}
-                    </span>
-                    <span className="mx-2" aria-hidden="true">
-                      ·
-                    </span>
-                    <span>{currentTheme.name}</span>
-                    <span className="mx-2" aria-hidden="true">
-                      ·
-                    </span>
-                    <span>Developer: Poran</span>
-                  </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+            {/* Official PIYA AI Main Character Stage (Shown First on Mobile for Immediate Presence) */}
+            <div className="lg:col-span-6 lg:order-2 rounded-3xl border border-[var(--piya-border)] bg-[#02050d] h-[440px] sm:h-[540px] lg:h-[600px] flex flex-col overflow-hidden relative">
+              <div className="flex-1 min-h-0">
+                <PiyaCharacter3D
+                  visualState={visualState}
+                  themeId={settings.theme}
+                  lipSync={lipSync}
+                  micLevel={micLevel}
+                  compactPreview
+                />
+              </div>
+            </div>
 
-                  {/* Profile & Settings Triggers on Main Screen (Section 7) */}
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setProfileOpen(true)}
-                      className="min-h-[44px] px-3 rounded-xl border border-slate-800 bg-[#060c1a] text-xs font-medium text-slate-200 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors"
-                    >
-                      <User className="w-4 h-4" style={{ color: "var(--piya-accent-bright)" }} />
-                      <span>{profile.signedIn ? profile.displayName : "Profile"}</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSettingsOpen(true)}
-                      className="min-h-[44px] px-3 rounded-xl border border-slate-800 bg-[#060c1a] text-xs font-medium text-slate-200 hover:text-white flex items-center gap-1.5 whitespace-nowrap shrink-0 transition-colors"
-                    >
-                      <Settings className="w-4 h-4" style={{ color: "var(--piya-accent-bright)" }} />
-                      <span>Settings</span>
-                    </button>
-                  </div>
+            {/* Clean Main Controls Card */}
+            <div className="lg:col-span-6 lg:order-1 flex flex-col justify-between space-y-6 rounded-3xl border border-[var(--piya-border)] bg-[var(--piya-surface)] p-5 sm:p-8">
+              <div className="space-y-5">
+                {/* Voice Status Indicator */}
+                <div className="text-xs font-semibold" style={{ color: "var(--piya-accent-bright)" }}>
+                  {voiceStatusText}
                 </div>
 
-                {/* Expressive Display Headline */}
-                <div className="space-y-3">
+                {/* Title & Subtitle */}
+                <div className="space-y-2.5">
                   <h1
-                    className="font-display text-3xl sm:text-5xl font-bold tracking-tight text-white leading-[1.12]"
+                    className="font-display text-2xl sm:text-4xl font-bold tracking-tight text-white leading-snug"
                     style={{ textWrap: "balance" }}
                   >
-                    Natural Voice Intelligence in Bengali &amp; Hindi
+                    {copy.heroTitle}
                   </h1>
-                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-xl">
-                    {copy.subtitle}. Converse naturally with PIYA AI, ask real-world questions
-                    powered by Gemini, and execute confirmed actions on your Android phone.
+                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    {copy.subtitle}
                   </p>
                 </div>
 
-                {/* Language Selector & Theme Quick Switch */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+                {/* Language Switch & 5 Theme Swatches */}
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
                   <div className="flex items-center gap-1 p-1 rounded-xl bg-[#060c1a] border border-slate-800">
                     <button
                       type="button"
                       onClick={() => updateSettings({ language: "bn" })}
-                      className={`min-h-[40px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                      className={`min-h-[38px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
                         settings.language === "bn"
                           ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]"
                           : "text-slate-300 hover:text-white"
                       }`}
                     >
-                      বাংলা (Bengali)
+                      বাংলা
                     </button>
                     <button
                       type="button"
                       onClick={() => updateSettings({ language: "hi" })}
-                      className={`min-h-[40px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
+                      className={`min-h-[38px] px-4 rounded-lg text-xs font-semibold transition-colors whitespace-nowrap shrink-0 ${
                         settings.language === "hi"
                           ? "bg-[var(--piya-accent)] text-[var(--piya-on-accent)]"
                           : "text-slate-300 hover:text-white"
                       }`}
                     >
-                      हिन्दी (Hindi)
+                      हिन्दी
                     </button>
                   </div>
 
-                  {/* 5 Theme Swatches */}
                   <div className="flex items-center gap-2">
                     {(Object.keys(PIYA_THEMES) as ThemeId[]).map((tId) => {
                       const t = PIYA_THEMES[tId];
@@ -1156,7 +1238,7 @@ export default function App() {
                               : "border-slate-800 bg-[#060c1a] hover:border-slate-600"
                           }`}
                           title={t.name}
-                          aria-label={`Switch theme to ${t.name}`}
+                          aria-label={t.name}
                         >
                           <span
                             className="w-4 h-4 rounded-full"
@@ -1168,12 +1250,15 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Primary Start Assistant CTA */}
-                <div className="flex flex-wrap items-center gap-3 pt-2">
+                {/* Primary Start Assistant & Instant Speak Buttons */}
+                <div className="flex flex-wrap items-center gap-3 pt-1">
                   <button
                     type="button"
-                    onClick={() => setFullScreenAssistant(true)}
-                    className="min-h-[54px] px-7 py-3 rounded-2xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] font-semibold text-sm flex items-center justify-center gap-2.5 shadow-lg transition-transform active:scale-[0.98] whitespace-nowrap shrink-0"
+                    onClick={() => {
+                      voiceEngineRef.current?.unlockAudioOnGesture();
+                      setFullScreenAssistant(true);
+                    }}
+                    className="min-h-[52px] px-6 py-3 rounded-2xl bg-[var(--piya-accent)] text-[var(--piya-on-accent)] font-semibold text-sm flex items-center justify-center gap-2 shadow-lg transition-transform active:scale-[0.98] whitespace-nowrap shrink-0"
                   >
                     <Play className="w-4 h-4 fill-current" />
                     <span>{copy.startAssistant}</span>
@@ -1182,12 +1267,13 @@ export default function App() {
                   <button
                     type="button"
                     onClick={() => {
+                      voiceEngineRef.current?.unlockAudioOnGesture();
                       setFullScreenAssistant(true);
-                      setTimeout(() => {
+                      window.setTimeout(() => {
                         handleToggleMic();
-                      }, 120);
+                      }, 80);
                     }}
-                    className="min-h-[54px] px-5 py-3 rounded-2xl border border-[var(--piya-border)] bg-[#060c1a] text-slate-100 hover:text-white font-medium text-sm flex items-center gap-2 whitespace-nowrap shrink-0 transition-colors"
+                    className="min-h-[52px] px-5 py-3 rounded-2xl border border-[var(--piya-border)] bg-[#060c1a] text-slate-100 hover:text-white font-semibold text-sm flex items-center gap-2 whitespace-nowrap shrink-0 transition-colors"
                   >
                     <Mic className="w-4 h-4" style={{ color: "var(--piya-accent-bright)" }} />
                     <span>{copy.tapToSpeak}</span>
@@ -1195,51 +1281,24 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Try Instant Voice/Command Prompts */}
-              <div className="pt-5 border-t border-slate-800/80 space-y-2.5">
-                <div className="text-xs font-medium text-slate-400">
-                  Try a command in {settings.language === "bn" ? "বাংলা" : "हिन्दी"}:
-                </div>
+              {/* Quick 1-Tap Commands */}
+              <div className="pt-4 border-t border-slate-800/80 space-y-2.5">
                 <div className="flex flex-wrap gap-2">
                   {copy.samplePrompts.map((promptText) => (
                     <button
                       key={promptText}
                       type="button"
                       onClick={() => {
+                        voiceEngineRef.current?.unlockAudioOnGesture();
                         setFullScreenAssistant(true);
                         processUserUtterance(promptText, settings.language);
                       }}
-                      className="min-h-[40px] px-3.5 py-1.5 rounded-xl border border-slate-800 bg-[#060c1a] hover:border-[var(--piya-accent)] text-xs text-slate-200 hover:text-white text-left transition-colors"
+                      className="min-h-[38px] px-3 py-1.5 rounded-xl border border-slate-800 bg-[#060c1a] hover:border-[var(--piya-accent)] text-xs text-slate-200 hover:text-white text-left transition-colors"
                     >
                       {promptText}
                     </button>
                   ))}
                 </div>
-              </div>
-            </div>
-
-            {/* Right Column: Official PIYA AI Main Character Stage (Head-to-Toe Uncropped) */}
-            <div className="lg:col-span-6 rounded-3xl border border-[var(--piya-border)] bg-[#02050d] min-h-[520px] lg:min-h-[620px] flex flex-col overflow-hidden relative">
-              <div className="flex-1 min-h-0">
-                <PiyaCharacter3D
-                  visualState={visualState}
-                  themeId={settings.theme}
-                  lipSync={lipSync}
-                  micLevel={micLevel}
-                  compactPreview
-                />
-              </div>
-
-              <div className="px-5 py-3 border-t border-slate-800/80 bg-[#081022] flex items-center justify-between gap-3 text-xs text-slate-400">
-                <span>PIYA AI Official Main Character · Full head-to-toe view</span>
-                <button
-                  type="button"
-                  onClick={() => setFullScreenAssistant(true)}
-                  className="font-semibold hover:underline whitespace-nowrap shrink-0"
-                  style={{ color: "var(--piya-accent-bright)" }}
-                >
-                  Open Full Screen
-                </button>
               </div>
             </div>
           </div>
@@ -1263,6 +1322,7 @@ export default function App() {
             onImportContacts={(imported) => setContacts((prev) => [...imported, ...prev])}
             onDeleteContact={(id) => setContacts((prev) => prev.filter((c) => c.id !== id))}
             onRequestCallByQuery={(q) => {
+              voiceEngineRef.current?.unlockAudioOnGesture();
               const callPrep = prepareCallAction(q, undefined, settings.language);
               setPendingAction(callPrep.pending);
               setFullScreenAssistant(true);
@@ -1283,7 +1343,7 @@ export default function App() {
                 },
                 ...prev,
               ]);
-              setActionStatusToast(`Saved note: "${title}"`);
+              setActionStatusToast(`নোট সংরক্ষিত: "${title}"`);
             }}
             onDeleteNote={(id) => setNotes((prev) => prev.filter((n) => n.id !== id))}
             onAddAlarm={(hour, minute, label) => {
@@ -1291,7 +1351,7 @@ export default function App() {
               setPendingAction({
                 id: `pa_${Date.now()}`,
                 type: "set_alarm",
-                title: `Confirm Alarm · ${tStr}`,
+                title: `${tStr}`,
                 explanation:
                   settings.language === "bn"
                     ? `${tStr} সময়ে "${label}" অ্যালার্ম সেট করতে চান?`
@@ -1313,8 +1373,8 @@ export default function App() {
               setBattery(bat);
               setActionStatusToast(
                 bat.supported && bat.level !== null
-                  ? `Live Battery: ${bat.level}% (${bat.charging ? "Charging" : "On Battery"})`
-                  : "Web Battery API is unavailable on this browser; supported in Android WebView & Capacitor APK."
+                  ? `ব্যাটারি: ${bat.level}%`
+                  : "বর্তমান ব্রাউজারে ব্যাটারি রিডিং নেই; Android APK-তে উপলব্ধ।"
               );
             }}
             onToggleFlashlight={async () => {
@@ -1329,7 +1389,7 @@ export default function App() {
                 setPendingAction({
                   id: `pa_${Date.now()}`,
                   type: "open_settings",
-                  title: `Open Android ${sec.replace("_", " ")}`,
+                  title: sec.replace("_", " ").toUpperCase(),
                   explanation: res.message,
                   settingSection: sec,
                   intentHref: res.intentHref,
@@ -1341,14 +1401,11 @@ export default function App() {
               setPendingAction({
                 id: `pa_${Date.now()}`,
                 type: "lock_phone",
-                title:
-                  settings.language === "bn"
-                    ? "ফোন স্ক্রিন লক নিশ্চিতকরণ"
-                    : "फ़ोन स्क्रीन लॉक पुष्टि",
+                title: settings.language === "bn" ? "ফোন স্ক্রিন লক" : "फ़ोन स्क्रीन लॉक",
                 explanation:
                   settings.language === "bn"
-                    ? "পিয়া এআই Android DevicePolicyManager ব্যবহার করে ফোন লক করবে। নিশ্চিত করতে চান?"
-                    : "पिया एआई Android DevicePolicyManager से फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?",
+                    ? "পিয়া এআই ফোন লক করবে। নিশ্চিত করতে চান?"
+                    : "पिया एआई फ़ोन लॉक करेगी। क्या आप पुष्टि करते हैं?",
               });
               setFullScreenAssistant(true);
             }}
@@ -1380,18 +1437,15 @@ export default function App() {
             onClearHistory={() => setMessages([])}
           />
         )}
-
-        {activeTab === "android" && <AndroidArchitecturePanel />}
       </main>
 
-      {/* Mobile Ergonomic Bottom Navigation Bar (< 15% Viewport Height Cap) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 h-16 border-t border-[var(--piya-border)] bg-[#060b18]/95 grid grid-cols-4 items-center">
+      {/* Clean 3-Tab Mobile Bottom Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-30 h-16 border-t border-[var(--piya-border)] bg-[#060b18]/95 grid grid-cols-3 items-center">
         {(
           [
-            { id: "home" as ActiveTab, label: "Assistant", Icon: Sparkles },
-            { id: "actions" as ActiveTab, label: "Actions", Icon: Wrench },
-            { id: "memory" as ActiveTab, label: "Memory", Icon: Brain },
-            { id: "android" as ActiveTab, label: "Android", Icon: Smartphone },
+            { id: "home" as ActiveTab, label: copy.tabHome, Icon: Sparkles },
+            { id: "actions" as ActiveTab, label: copy.tabActions, Icon: Wrench },
+            { id: "memory" as ActiveTab, label: copy.tabMemory, Icon: Brain },
           ] as const
         ).map(({ id, label, Icon }) => {
           const active = activeTab === id;
@@ -1408,7 +1462,7 @@ export default function App() {
                 className="w-5 h-5"
                 style={active ? { color: "var(--piya-accent-bright)" } : undefined}
               />
-              <span className="text-[10px] font-medium mt-1 whitespace-nowrap">{label}</span>
+              <span className="text-[11px] font-medium mt-1 whitespace-nowrap">{label}</span>
             </button>
           );
         })}
@@ -1437,6 +1491,7 @@ export default function App() {
           onOpenSettings={() => setSettingsOpen(true)}
           onChangeLanguage={(lang) => updateSettings({ language: lang })}
           onToggleMic={handleToggleMic}
+          onCancelMic={handleCancelMic}
           onStopSpeaking={handleStopSpeaking}
           onSendTextCommand={(txt) => processUserUtterance(txt)}
           onConfirmPendingAction={handleConfirmPendingAction}
@@ -1451,7 +1506,6 @@ export default function App() {
         open={settingsOpen}
         settings={settings}
         micPermission={micPermission}
-        connectionStatus={connectionStatus}
         memoriesCount={memories.length}
         onClose={() => setSettingsOpen(false)}
         onUpdateSettings={updateSettings}
@@ -1460,12 +1514,12 @@ export default function App() {
           setMicPermission(res.state);
           if (res.error) setErrorBanner(res.error);
         }}
-        onVerifyConnection={() => checkBackendStatus(true)}
         onTestVoiceSample={() => {
+          voiceEngineRef.current?.unlockAudioOnGesture();
           const sample =
             settings.language === "bn"
-              ? "নমস্কার, আমি পিয়া এআই। আমি আপনার কথা শুনতে এবং সাহায্য করতে প্রস্তুত।"
-              : "नमस्ते, मैं पिया एआई हूँ। मैं आपकी सहायता करने के लिए तैयार हूँ।";
+              ? "নমস্কার, আমি পিয়া এআই। আমি দ্রুত আপনার কথা শুনতে ও সাহায্য করতে প্রস্তুত।"
+              : "नमस्ते, मैं पिया एआई हूँ। मैं तुरंत आपकी मदद करने के लिए तैयार हूँ।";
           speakAssistantReply(sample, settings.language);
         }}
         onClearMemories={() => setMemories([])}
@@ -1488,7 +1542,7 @@ export default function App() {
         onDeleteAllUserData={handleResetAllData}
       />
 
-      {/* Dismissible Status Toast when on non-fullscreen tabs */}
+      {/* Dismissible Status Toast */}
       {actionStatusToast && activeTab !== "actions" && (
         <div className="fixed bottom-20 md:bottom-6 right-6 z-40 max-w-sm rounded-xl border border-[var(--piya-border)] bg-[#0b1428] px-4 py-3 shadow-xl flex items-start gap-3 text-xs text-slate-200">
           <span className="flex-1">{actionStatusToast}</span>
@@ -1496,7 +1550,7 @@ export default function App() {
             type="button"
             onClick={() => setActionStatusToast(null)}
             className="text-slate-400 hover:text-white"
-            aria-label="Close notification"
+            aria-label="Close"
           >
             <X className="w-4 h-4" />
           </button>
