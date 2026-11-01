@@ -1,0 +1,6 @@
+{
+  "name": "PIYA AI",
+  "description": "Personal AI voice assistant for Android featuring Bengali and Hindi conversation, a full-body 3D anime character, Gemini intelligence, and confirmable phone control actions.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
